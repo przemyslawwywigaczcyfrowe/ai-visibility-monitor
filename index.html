@@ -9,993 +9,683 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,300..700&display=swap">
 <style>
-/* Same look as the "Market monitoring" panel of cyfrowe.pl. */
+/* Look of the cyfrowe.pl product panels (white bar, white rail, #F0F4F9 canvas, Google Sans).
+   One idea per screen: a colour matrix of prompts x models shows at a glance where we are recommended. */
 :root {
-  --paper:#F0F4F9; --white:#FFFFFF; --card:#FFFFFF; --card-q:#F1F4F9;
-  --edge:#DADCE0; --edge-q:#E3E6EA; --ink:#1F1F1F; --ink2:#444746; --muted:#5F6368;
-  --rule:#E3E6EA; --hair:#EEF1F4; --track:#E3E8EF;
-  --r-card:28px; --r-box:20px;
-  --acc:#0B57D0; --acc-dark:#0842A0; --acc-weak:#A8C7FA; --acc-soft:#D3E3FD;
-  --good:#146C2E; --good-soft:#E6F4EA; --bad:#B3261E; --bad-soft:#FCE8E6; --warn:#9A3412; --warn-soft:#FEEFE3;
-  --on-good:#0D652D; --on-bad:#B3261E;
-  --s1:#0B57D0; --s2:#C26401;
-  --bar-h:64px;
+  --paper:#F0F4F9; --card:#FFFFFF; --edge:#DADCE0; --rule:#E3E6EA; --hair:#EEF1F4; --track:#E3E8EF;
+  --ink:#1F1F1F; --ink2:#444746; --muted:#5F6368; --faint:#80868B;
+  --acc:#0B57D0; --acc-dark:#0842A0; --acc-soft:#D3E3FD; --acc-weak:#A8C7FA;
+  --g1:#137333; --g2:#CEEAD6; --g2t:#0D652D; --g3:#E6F4EA; --g3t:#137333; --g0:#F1F3F4;
+  --up:#137333; --up-soft:#E6F4EA; --down:#B3261E; --down-soft:#FCE8E6;
   --f:"Google Sans Flex","Google Sans Text","Google Sans",Roboto,Arial,sans-serif;
 }
 * { box-sizing:border-box; margin:0; padding:0; }
-html { background:var(--paper); }
-body { background:var(--paper); color:var(--ink); font-family:var(--f); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
-:focus-visible { outline:2px solid var(--acc); outline-offset:2px; border-radius:4px; }
-.ic { width:16px; height:16px; flex:none; fill:currentColor; display:block; }
+html, body { background:var(--paper); }
+body { color:var(--ink); font-family:var(--f); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+button { font-family:inherit; }
+:focus-visible { outline:2px solid var(--acc); outline-offset:2px; border-radius:6px; }
+.num { font-variant-numeric:tabular-nums; }
+.ic { width:20px; height:20px; fill:currentColor; display:block; flex:none; }
+[hidden] { display:none !important; }
 
-/* pasek górny */
-.appbar { position:fixed; top:0; left:0; right:0; height:var(--bar-h); z-index:50; display:flex; align-items:center;
-  gap:16px; padding:0 20px 0 16px; background:var(--white); border-bottom:1px solid var(--edge); }
-.appbar .logo { width:32px; height:32px; border-radius:9px; background:var(--acc); color:#fff; display:grid; place-items:center; flex:none; }
-.appbar .logo .ic { width:19px; height:19px; }
-.appbar .nazwa { font-size:22px; font-weight:400; white-space:nowrap; margin-right:12px; }
-.appbar .szukaj { flex:0 1 560px; display:flex; align-items:center; gap:12px; height:46px; padding:0 18px;
-  border-radius:999px; background:var(--paper); min-width:0; }
-.appbar .szukaj:focus-within { background:var(--white); box-shadow:0 1px 3px rgba(60,64,67,.2), 0 2px 8px rgba(60,64,67,.12); }
-.appbar .szukaj .ic { width:20px; height:20px; fill:var(--muted); }
-.appbar .szukaj input { flex:1; min-width:0; border:0; background:transparent; outline:none; font:400 15px var(--f); color:var(--ink); }
-.appbar .gap { flex:1; }
-.appbar .stan { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:500; color:var(--on-good);
-  background:var(--good-soft); border:1px solid #C4E7CF; padding:5px 12px; border-radius:999px; white-space:nowrap; }
-.appbar .stan.trwa { color:var(--warn); background:var(--warn-soft); border-color:#F6D2B8; }
-.appbar .stan .ic { width:14px; height:14px; }
-.appbar .seg button { height:34px; padding:0 14px; }
-.appbar .seg button small { font-size:11.5px; font-weight:500; color:var(--muted); margin-left:5px; }
-@media (max-width:1500px) { .appbar .seg button small { display:none; } }
+/* ---------- sign-in ---------- */
+.brama { display:grid; place-items:center; min-height:100vh; padding:16px; }
+body:not(.zamkniety) .brama { display:none; }
+body.zamkniety .appbar, body.zamkniety .rail, body.zamkniety .main { display:none; }
+.brama form { width:min(440px,100%); background:#fff; border:1px solid var(--edge); border-radius:28px; padding:40px 36px 32px; display:flex; flex-direction:column; gap:16px; }
+.brama .logo-eig { width:96px; height:96px; border-radius:20px; background:#000 url(assets/eig-logo.png) center/cover; }
+.brama h1 { font-size:30px; font-weight:600; letter-spacing:-.01em; }
+.brama p { font-size:15px; color:var(--ink2); }
+.brama input[type=password] { height:52px; border-radius:14px; border:1px solid var(--edge); padding:0 18px; font:400 16px var(--f); background:var(--paper); outline:none; }
+.brama input[type=password]:focus { border-color:var(--acc); background:#fff; }
+.brama label { display:flex; gap:8px; align-items:center; font-size:14px; color:var(--ink2); cursor:pointer; }
+.brama .postep { font-size:13.5px; color:var(--muted); min-height:20px; }
+.brama .blad { font-size:14px; color:var(--down); font-weight:500; min-height:20px; }
 
-/* szyna */
-.shell { display:grid; grid-template-columns:80px minmax(0,1fr); min-height:100vh; padding-top:var(--bar-h); }
-.rail { padding:12px 0 60px; position:sticky; top:var(--bar-h); height:calc(100vh - var(--bar-h)); display:flex;
-  flex-direction:column; align-items:center; gap:4px; background:var(--white); border-right:1px solid var(--edge); }
-.rlink { width:72px; padding:4px 0 6px; display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--muted);
-  background:transparent; border:0; cursor:pointer; text-decoration:none; font:500 11px/1.25 var(--f); text-align:center; }
-.rlink .pg { width:56px; height:32px; border-radius:999px; display:grid; place-items:center; transition:background .18s, color .18s; }
-.rlink .ic { width:20px; height:20px; }
-.rlink:hover .pg { background:var(--hair); color:var(--ink); }
-.rlink.on { color:var(--acc-dark); font-weight:700; }
-.rlink.on .pg { background:var(--acc-soft); color:var(--acc-dark); }
-.rlink .lic { font-size:10px; color:var(--bad); }
-.rail-div { width:40px; height:1px; background:var(--rule); margin:8px 0; flex:none; }
-.rail .dol { margin-top:auto; }
-
-/* treść */
-.main { padding:28px 32px 52px; min-width:0; }
-.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; font:500 14px var(--f); color:var(--acc);
-  background:var(--card); border:1px solid var(--edge); padding:0 20px; height:40px; border-radius:999px; cursor:pointer;
-  white-space:nowrap; text-decoration:none; transition:background .16s, color .16s; }
+/* ---------- shell ---------- */
+.btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 22px; border-radius:999px; border:1px solid var(--edge);
+  background:#fff; color:var(--acc); font:500 14.5px var(--f); cursor:pointer; text-decoration:none; white-space:nowrap; }
 .btn:hover { background:var(--hair); }
-.btn.primary { background:var(--acc); color:#fff; border-color:var(--acc); height:44px; padding:0 22px; font-weight:700; }
+.btn.primary { background:var(--acc); border-color:var(--acc); color:#fff; font-weight:600; }
 .btn.primary:hover { background:var(--acc-dark); }
 .btn[disabled] { opacity:.6; cursor:default; }
 .btn .ic { width:18px; height:18px; }
 
-/* nagłówek z wnioskiem */
-.verdict { border-radius:var(--r-card); padding:30px 32px 26px; margin-bottom:16px; border:1px solid var(--edge); background:var(--card);
-  display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
-.verdict .vwrap { min-width:0; flex:1 1 560px; }
-.verdict .okr { font-size:13px; color:var(--muted); }
-.verdict .vt { font-size:34px; font-weight:700; letter-spacing:-.01em; margin:6px 0 8px; line-height:1.18; }
-.verdict .vt .zle { color:var(--bad); } .verdict .vt .dobrze { color:var(--good); } .verdict .vt .akc { color:var(--acc); }
-.verdict .vs { font-size:15px; color:var(--ink2); }
-.verdict .vs b { font-weight:700; color:var(--ink); }
-.verdict .vprawo { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-.verdict .vnota { flex-basis:100%; margin-top:2px; padding-top:16px; border-top:1px solid var(--rule); font-size:12.5px; line-height:1.55; color:var(--muted); }
-.seg { display:inline-flex; padding:4px; gap:2px; border-radius:999px; background:var(--paper); border:1px solid var(--edge-q); }
-.seg button { border:0; background:transparent; font:500 14px var(--f); color:var(--ink2); height:36px; padding:0 16px; border-radius:999px; cursor:pointer; white-space:nowrap; }
-.seg button:hover { color:var(--ink); }
-.seg button.on { background:var(--white); color:var(--ink); font-weight:700; box-shadow:0 1px 2px rgba(60,64,67,.15), 0 1px 3px rgba(60,64,67,.1); }
+.appbar { position:fixed; top:0; left:0; right:0; height:64px; z-index:50; display:flex; align-items:center; gap:14px; padding:0 24px 0 16px;
+  background:#fff; border-bottom:1px solid var(--edge); }
+.appbar .logo { width:36px; height:36px; border-radius:10px; background:#000 url(assets/eig-mark.png) center/cover; flex:none; }
+.appbar .marka { display:flex; flex-direction:column; line-height:1.15; white-space:nowrap; }
+.appbar .marka b { font-size:20px; font-weight:500; }
+.appbar .marka small { font-size:11.5px; color:var(--muted); font-weight:500; }
+.appbar .gap { flex:1; }
+.appbar .stan { font-size:13px; color:var(--muted); white-space:nowrap; }
+.tabs { display:flex; align-self:stretch; margin-left:32px; }
+.tabs button { display:flex; flex-direction:column; justify-content:center; align-items:flex-start; padding:0 18px; border:0; background:none; cursor:pointer;
+  border-bottom:3px solid transparent; color:var(--muted); line-height:1.25; }
+.tabs button b { font-size:15px; font-weight:600; color:var(--ink2); }
+.tabs button span { font-size:12px; }
+.tabs button:hover b { color:var(--ink); }
+.tabs button.on { border-bottom-color:var(--acc); }
+.tabs button.on b { color:var(--acc-dark); }
 
-/* kafle */
-.mrow { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; margin-bottom:14px; }
-.mrow .m { padding:20px 22px; background:var(--card); border:1px solid var(--edge); border-radius:var(--r-box); min-width:0; }
-.mrow .mk { font-size:14px; font-weight:500; color:var(--ink2); line-height:1.3; }
-.mrow .mv { font-size:38px; font-weight:400; letter-spacing:-.02em; margin:6px 0 6px; font-variant-numeric:tabular-nums; white-space:nowrap; }
-.mrow .mv.zle { color:var(--bad); } .mrow .mv.dobrze { color:var(--good); }
-.mrow .mv small { font-size:18px; color:var(--muted); margin-left:4px; letter-spacing:0; }
-.mrow .mx { font-size:12px; color:var(--muted); line-height:1.5; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-.mrow .mx b { color:var(--ink2); font-weight:600; }
+.rail { position:fixed; top:64px; left:0; bottom:0; width:80px; z-index:40; background:#fff; border-right:1px solid var(--edge);
+  display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 0 16px; }
+.rlink { width:72px; display:flex; flex-direction:column; align-items:center; gap:4px; padding:4px 0 6px; border:0; background:none; cursor:pointer;
+  color:var(--muted); font:500 11px/1.25 var(--f); text-align:center; }
+.rlink .pg { width:56px; height:32px; border-radius:999px; display:grid; place-items:center; }
+.rlink:hover .pg { background:var(--hair); color:var(--ink); }
+.rlink.on { color:var(--acc-dark); font-weight:700; }
+.rlink.on .pg { background:var(--acc-soft); }
+.rail .dol { margin-top:auto; }
 
-/* sekcje */
-.sec { background:var(--card); border:1px solid var(--edge); border-radius:var(--r-card); padding:26px 30px 28px; margin-bottom:16px; }
-.sh { display:flex; align-items:baseline; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
-.sh h2 { font-size:22px; font-weight:500; }
-.sh .sub { font-size:13px; color:var(--muted); }
-.filtry-dec { display:flex; gap:8px; flex-wrap:wrap; margin:2px 0 14px; align-items:center; }
-.filtry-dec .gap { width:10px; }
-.chipf { border:1px solid var(--edge); background:#fff; border-radius:10px; padding:6px 14px; font:500 13px var(--f); color:var(--ink2); cursor:pointer; }
-.chipf.on { background:var(--acc-soft); border-color:var(--acc-soft); color:var(--acc-dark); }
-.chipf b { font-weight:700; margin-left:4px; }
+.main { margin:64px 0 0 80px; padding:36px 40px 64px; }
+.wrap { max-width:1680px; margin:0 auto; }
 
-/* tabele */
-.tw { overflow-x:auto; }
-table { width:100%; border-collapse:separate; border-spacing:0 2px; }
-th { font-size:12px; font-weight:500; color:var(--muted); text-align:right; padding:0 12px 12px; white-space:nowrap; }
-th:first-child, th.tl { text-align:left; }
-th.tc { text-align:center; }
-td { font-size:13px; padding:12px 8px; text-align:right; font-variant-numeric:tabular-nums; color:var(--ink2); white-space:nowrap; vertical-align:middle; }
-td.tl { text-align:left; }
-td.tc { text-align:center; }
-td:first-child { text-align:left; padding-left:8px; color:var(--ink); border-radius:14px 0 0 14px; }
-td:last-child { border-radius:0 14px 14px 0; }
-td.name { color:var(--ink); white-space:normal; min-width:280px; text-align:left; }
-td.rank { color:var(--muted); font-size:11px; width:28px; }
-.duzy { font-size:14.5px; font-weight:500; color:var(--ink); }
-.sub2 { display:block; font-size:11px; color:var(--muted); margin-top:2px; }
-tbody tr { transition:background .1s; }
-tbody tr.klik { cursor:pointer; }
-tbody tr:hover td { background:var(--card-q); }
-tbody tr.nasz td { background:#F3F7FE; }
-.trk { display:block; height:8px; border-radius:4px; background:var(--track); overflow:hidden; min-width:140px; }
-.trk i { display:block; height:100%; background:var(--acc-weak); border-radius:4px; }
-tr.nasz .trk i { background:var(--acc); }
-.szary { color:#9AA0A6; }
+/* ---------- page head ---------- */
+.kicker { font-size:14px; color:var(--muted); }
+.h1 { font-size:46px; font-weight:600; letter-spacing:-.02em; line-height:1.12; margin:6px 0 0; }
+.h1 em { font-style:normal; color:var(--acc); }
+.staty { display:flex; flex-wrap:wrap; gap:0; margin:26px 0 30px; }
+.stat { padding:0 32px; border-left:1px solid #D5DCE6; min-width:0; }
+.stat:first-child { padding-left:0; border-left:0; }
+.stat .k { font-size:13.5px; color:var(--muted); white-space:nowrap; }
+.stat .v { display:flex; align-items:baseline; gap:8px; margin-top:2px; }
+.stat .v b { font-size:32px; font-weight:400; letter-spacing:-.02em; line-height:1.15; }
+.stat .v small { font-size:15px; color:var(--muted); }
+.stat svg { display:block; margin-top:6px; }
+.chg { display:inline-flex; align-items:center; gap:3px; font-size:12.5px; font-weight:600; padding:2px 8px; border-radius:999px; white-space:nowrap; }
+.chg.up { background:var(--up-soft); color:var(--up); } .chg.down { background:var(--down-soft); color:var(--down); } .chg.same { background:var(--hair); color:var(--muted); }
 
-/* pozycja i zmiana */
-.poz { display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:28px; padding:0 8px; border-radius:999px;
-  font-weight:700; font-size:14px; font-variant-numeric:tabular-nums; }
-.poz.p1 { background:var(--good-soft); color:var(--on-good); }
-.poz.p2 { background:var(--acc-soft); color:var(--acc-dark); }
-.poz.p3 { background:#E4E9F1; color:var(--ink2); }
-.poz.brak { color:#9AA0A6; font-weight:500; }
-.poz.err { color:var(--warn); font-size:12px; }
-.chip { display:inline-flex; align-items:center; gap:4px; font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap;
-  font-size:11px; padding:2px 8px; border-radius:999px; }
-.chip.up { background:var(--good-soft); color:var(--on-good); }
-.chip.down { background:var(--bad-soft); color:var(--on-bad); }
-.chip.flat { background:#E4E9F1; color:var(--muted); }
-.zm { display:inline-block; min-width:52px; text-align:left; margin-left:6px; }
-.tag { display:inline-block; font-size:12px; font-weight:500; padding:2px 10px; border-radius:999px; white-space:nowrap;
-  background:var(--card-q); color:var(--ink2); border:1px solid var(--edge-q); margin:2px 4px 2px 0; }
-.tag.nasz { background:var(--acc); color:#fff; border-color:var(--acc); }
-.tag.wiecej { background:transparent; border-color:transparent; color:var(--muted); padding-left:2px; }
-a.adr { color:var(--acc); text-decoration:none; font-size:12.5px; }
-a.adr:hover { text-decoration:underline; }
+/* ---------- toolbar and legend ---------- */
+.toolbar { display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+.toolbar .gap { flex:1; }
+.seg { display:inline-flex; padding:4px; gap:2px; border-radius:999px; background:#E4E9F0; }
+.seg button { border:0; background:transparent; font:500 14.5px var(--f); color:var(--ink2); height:40px; padding:0 18px; border-radius:999px; cursor:pointer; }
+.seg button b { margin-left:6px; color:var(--muted); font-weight:600; }
+.seg button.on { background:#fff; color:var(--ink); font-weight:600; box-shadow:0 1px 3px rgba(60,64,67,.2); }
+.legend { display:flex; align-items:center; gap:16px; flex-wrap:wrap; font-size:13.5px; color:var(--ink2); }
+.legend .lb { color:var(--muted); }
+.legend span.e { display:inline-flex; align-items:center; gap:7px; }
+.legend i { width:24px; height:20px; border-radius:6px; display:inline-grid; place-items:center; font-style:normal; font-size:11px; font-weight:700; }
 
-/* wykres */
-.wyk { position:relative; }
-.wyk svg { display:block; width:100%; overflow:visible; }
-.wyk .os { font:500 11.5px var(--f); fill:var(--muted); }
-.legend { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--ink2); margin-bottom:8px; }
-.legend i { display:inline-block; width:14px; height:3px; border-radius:2px; vertical-align:middle; margin-right:6px; }
-.dymek { position:absolute; pointer-events:none; background:#fff; border:1px solid var(--edge); border-radius:12px; padding:8px 12px;
-  font-size:12.5px; box-shadow:0 2px 8px rgba(60,64,67,.15); white-space:nowrap; display:none; z-index:5; }
-.nodata { font-size:13px; color:var(--muted); padding:10px 0; }
+/* ---------- cards ---------- */
+.card { background:#fff; border:1px solid var(--edge); border-radius:24px; padding:26px 28px 24px; min-width:0; }
+.card h2 { font-size:21px; font-weight:600; letter-spacing:-.005em; }
+.card .sub { font-size:14px; color:var(--muted); margin-top:2px; }
+.grid2 { display:grid; grid-template-columns:minmax(0,1fr) 420px; gap:24px; align-items:start; }
+.side { display:flex; flex-direction:column; gap:24px; position:sticky; top:88px; }
 
-/* szuflada z odpowiedziami */
-.cien { position:fixed; inset:0; background:rgba(31,31,31,.28); z-index:80; display:none; }
-.szuf { position:fixed; top:0; right:0; bottom:0; width:min(1040px, 100vw); background:var(--paper); z-index:90; display:none;
-  flex-direction:column; border-left:1px solid var(--edge); }
+/* ---------- matrix ---------- */
+.mx { width:100%; border-collapse:separate; border-spacing:0; margin-top:18px; }
+.mx th { font-size:13px; font-weight:500; color:var(--muted); text-align:center; padding:0 3px 10px; vertical-align:bottom; white-space:nowrap; }
+.mx th.l { text-align:left; padding-left:0; }
+.mx th.rg { font-size:14px; font-weight:600; color:var(--ink2); padding-bottom:2px; }
+.mx th.rg small { display:block; font-size:12px; font-weight:500; color:var(--muted); }
+.mx td { padding:3px; vertical-align:middle; }
+.mx td.t { width:150px; padding:12px 16px 0 0; vertical-align:top; font-size:12.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink2); }
+.mx td.t span { display:block; font-size:13px; font-weight:500; letter-spacing:0; text-transform:none; color:var(--muted); margin-top:2px; }
+.mx td.q { padding:8px 20px 8px 0; font-size:15px; color:var(--ink); line-height:1.35; }
+.mx td.q small { display:block; font-size:12.5px; color:var(--muted); margin-top:2px; }
+.mx tr.grp td { border-top:1px solid var(--rule); }
+.mx tr.grp td.t, .mx tr.grp td.q { padding-top:16px; }
+.mx tr.grp td.c { padding-top:14px; }
+.mx td.c { width:104px; }
+.mx td.gap { width:14px; padding:0; }
+.mx tr.wiersz { cursor:pointer; }
+.mx tr.wiersz:hover td.q { color:var(--acc-dark); }
+.cell { position:relative; height:44px; border-radius:10px; display:grid; place-items:center; font-size:18px; font-weight:600; border:0; width:100%; cursor:pointer; font-variant-numeric:tabular-nums; }
+.cell:hover { box-shadow:0 0 0 2px var(--acc); }
+.p1 { background:var(--g1); color:#fff; } .p2 { background:var(--g2); color:var(--g2t); } .p3 { background:var(--g3); color:var(--g3t); }
+.p0 { background:var(--g0); color:transparent; } .pe { background:repeating-linear-gradient(45deg,#FBE9E7,#FBE9E7 6px,#fff 6px,#fff 12px); color:var(--down); font-size:12px; }
+.pn { background:#fff; border:1px dashed var(--edge); color:var(--faint); font-size:12px; font-weight:500; }
+.cell .z { position:absolute; top:-6px; right:-6px; min-width:22px; height:20px; padding:0 5px; border-radius:999px; font-size:11px; font-weight:700; display:grid; place-items:center; border:2px solid #fff; }
+.cell .z.up { background:var(--up); color:#fff; } .cell .z.down { background:var(--down); color:#fff; }
+.overview .mx td.q { font-size:14.5px; }
+.overview .mx td.c { width:84px; }
+.overview .cell { height:38px; font-size:16px; }
+
+/* ---------- market cards (overview) ---------- */
+.rk-row { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:16px; margin:28px 0 28px; }
+.rk { text-align:left; background:#fff; border:1px solid var(--edge); border-radius:20px; padding:20px 22px 18px; cursor:pointer; color:inherit; transition:border-color .15s; }
+.rk:hover { border-color:var(--acc); }
+.rk .a { display:flex; justify-content:space-between; gap:8px; font-size:13px; color:var(--muted); }
+.rk .s { font-size:19px; font-weight:600; margin-top:2px; }
+.rk .v { display:flex; align-items:baseline; gap:8px; margin-top:12px; }
+.rk .v b { font-size:44px; font-weight:400; letter-spacing:-.03em; line-height:1; }
+.rk .v small { font-size:15px; color:var(--muted); }
+.rk .m { display:flex; gap:16px; font-size:13.5px; color:var(--ink2); margin-top:10px; }
+.rk .m b { font-weight:600; }
+.rk .o { display:block; margin-top:14px; font-size:13.5px; font-weight:500; color:var(--acc); }
+
+/* ---------- side lists ---------- */
+.lb { display:flex; flex-direction:column; gap:10px; margin-top:18px; }
+.lb .r { display:grid; grid-template-columns:22px minmax(0,1fr) 34px; gap:10px; align-items:center; }
+.lb .r .n { font-size:12.5px; color:var(--faint); text-align:right; }
+.lb .r .nm { font-size:14.5px; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lb .r .nm em { font-style:normal; font-size:11.5px; font-weight:600; color:var(--acc-dark); background:var(--acc-soft); border-radius:999px; padding:1px 8px; margin-left:6px; }
+.lb .r .br { grid-column:2; height:6px; border-radius:3px; background:var(--track); overflow:hidden; margin-top:-4px; }
+.lb .r .br i { display:block; height:100%; background:#9AA0A6; border-radius:3px; }
+.lb .r.us .br i { background:var(--acc); }
+.lb .r .v { grid-row:1; grid-column:3; text-align:right; font-size:15px; font-weight:600; font-variant-numeric:tabular-nums; }
+.lb .more { border:0; background:none; color:var(--acc); font:500 13.5px var(--f); cursor:pointer; text-align:left; padding:4px 0 0 32px; }
+.nodata { font-size:14px; color:var(--muted); padding:12px 0; }
+
+/* ---------- answer drawer ---------- */
+.cien { position:fixed; inset:0; background:rgba(31,31,31,.32); z-index:80; display:none; }
+.szuf { position:fixed; top:0; right:0; bottom:0; width:min(1180px,100vw); background:var(--paper); z-index:90; display:none; flex-direction:column; box-shadow:-8px 0 32px rgba(0,0,0,.12); }
 .szuf.on { display:flex; } .cien.on { display:block; }
-.szuf .sg { background:#fff; padding:22px 28px 20px; border-bottom:1px solid var(--edge); display:flex; gap:16px; align-items:flex-start; }
-.szuf .sg h3 { font-size:24px; font-weight:700; line-height:1.25; letter-spacing:-.01em; }
-.szuf .sg .okr { font-size:13px; color:var(--muted); margin-bottom:6px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-.wybor { font:500 13px var(--f); color:var(--ink); background:var(--paper); border:1px solid var(--edge-q); border-radius:999px; padding:4px 10px; cursor:pointer; }
-.szuf .zamknij { border:0; background:var(--hair); border-radius:999px; width:40px; height:40px; display:grid; place-items:center; cursor:pointer; flex:none; color:var(--ink2); }
-.szuf .sb { overflow:auto; padding:20px 28px 40px; display:grid; grid-template-columns:repeat(auto-fit, minmax(400px, 1fr)); gap:16px; align-items:start; }
-.odp { background:#fff; border:1px solid var(--edge); border-radius:var(--r-box); padding:20px 22px; min-width:0; }
-.odp .oh { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
-.odp .oh b { font-size:18px; font-weight:500; }
-.odp .oh span { font-size:12px; color:var(--muted); }
-.odp .lab { font-size:12px; font-weight:500; color:var(--muted); margin:14px 0 6px; }
-.tresc { font-size:13.5px; line-height:1.6; color:var(--ink2); border-top:1px solid var(--rule); margin-top:16px; padding-top:14px; }
-.tresc p { margin:0 0 8px; } .tresc li { margin:0 0 6px 18px; }
-.tresc h4 { font-size:14.5px; font-weight:700; color:var(--ink); margin:14px 0 6px; }
+.szuf .sg { background:#fff; padding:24px 32px 22px; border-bottom:1px solid var(--edge); display:flex; gap:20px; align-items:flex-start; }
+.szuf .sg .kicker { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.szuf .sg h3 { font-size:26px; font-weight:600; line-height:1.25; letter-spacing:-.01em; margin-top:6px; }
+.szuf .sg .orig { font-size:15px; color:var(--muted); margin-top:4px; }
+.szuf select { font:500 14px var(--f); color:var(--ink); background:var(--paper); border:1px solid var(--edge); border-radius:999px; padding:6px 12px; cursor:pointer; }
+.szuf .x { border:0; background:var(--hair); border-radius:999px; width:44px; height:44px; display:grid; place-items:center; cursor:pointer; flex:none; color:var(--ink2); }
+.szuf .sb { overflow:auto; padding:24px 32px 48px; display:grid; grid-template-columns:repeat(auto-fit, minmax(420px,1fr)); gap:20px; align-items:start; }
+.ans { background:#fff; border:1px solid var(--edge); border-radius:20px; padding:22px 26px; min-width:0; }
+.ans .h { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.ans .h b { font-size:19px; font-weight:600; }
+.ans .h .meta { font-size:12.5px; color:var(--muted); margin-top:2px; }
+.ans .badge { font-size:14px; font-weight:600; padding:7px 14px; border-radius:999px; white-space:nowrap; }
+.ans .badge.p1 { background:var(--g1); color:#fff; } .ans .badge.p2 { background:var(--g2); color:var(--g2t); } .ans .badge.p3 { background:var(--g3); color:var(--g3t); }
+.ans .badge.p0 { background:var(--g0); color:var(--muted); }
+.ans .lab { font-size:12.5px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 8px; }
+.tags { display:flex; flex-wrap:wrap; gap:6px; }
+.tag { font-size:13px; padding:4px 12px; border-radius:999px; background:var(--hair); color:var(--ink2); }
+.tag.us { background:var(--acc); color:#fff; font-weight:600; }
+.tresc { font-size:14.5px; color:var(--ink2); line-height:1.65; border-top:1px solid var(--rule); margin-top:18px; padding-top:16px; }
+.tresc p { margin:0 0 10px; } .tresc ul { margin:0 0 10px 20px; } .tresc li { margin:0 0 6px; }
+.tresc h4 { font-size:15.5px; font-weight:700; color:var(--ink); margin:16px 0 6px; }
 .tresc a { color:var(--acc); }
-.tresc mark { background:var(--acc-soft); color:var(--acc-dark); padding:0 3px; border-radius:4px; font-weight:700; }
+.tresc mark { background:var(--acc-soft); color:var(--acc-dark); font-weight:700; padding:0 3px; border-radius:4px; }
 
-.foot { border-top:1px solid var(--rule); padding-top:16px; margin-top:4px; font-size:11px; color:var(--muted); display:flex; gap:20px; flex-wrap:wrap; }
+/* ---------- how it works ---------- */
+.metoda { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:24px; margin-top:28px; }
+.metoda h3 { font-size:16px; font-weight:600; margin:20px 0 4px; }
+.metoda h3:first-of-type { margin-top:16px; }
+.metoda p, .metoda li { font-size:15px; color:var(--ink2); line-height:1.6; }
+.metoda ul { margin:4px 0 0 20px; }
+.metoda code { font-size:13px; background:var(--paper); border:1px solid var(--rule); border-radius:6px; padding:1px 6px; }
 
-[data-widok] { display:none !important; }
-body[data-v="pytania"] [data-widok~="pytania"], body[data-v="konkurencja"] [data-widok~="konkurencja"],
-body[data-v="zrodla"] [data-widok~="zrodla"] { display:block !important; }
-body[data-v="pytania"] .mrow[data-widok~="pytania"] { display:grid !important; }
-
-@media (max-width:1430px) { .mrow .mv { font-size:32px; } }
-@media (max-width:1180px) { .mrow { grid-template-columns:repeat(2, minmax(0,1fr)); } }
-@media (max-width:1100px) { .appbar .stan { display:none; } }
-@media (max-width:899px) {
-  .shell { grid-template-columns:72px minmax(0,1fr); }
-  .rlink { width:66px; }
-  .appbar .nazwa { display:none; }
-  .main { padding:18px 16px 40px; }
-  .verdict .vt { font-size:26px; }
-  .ukr { display:none; }
-  td.name { min-width:200px; }
-  .szuf .sb { grid-template-columns:minmax(0,1fr); padding:16px; }
+@media (max-width:1500px) { .grid2 { grid-template-columns:minmax(0,1fr) 360px; } .h1 { font-size:40px; } .stat { padding:0 22px; } }
+@media (max-width:1280px) { .grid2 { grid-template-columns:minmax(0,1fr); } .side { position:static; } .rk-row { grid-template-columns:repeat(2, minmax(0,1fr)); } .metoda { grid-template-columns:minmax(0,1fr); } }
+@media (max-width:900px) {
+  body { overflow-x:hidden; }
+  .rail { top:auto; bottom:0; width:100%; height:64px; flex-direction:row; justify-content:space-around; padding:6px 0; border-right:0; border-top:1px solid var(--edge); }
+  .rail .dol { margin-top:0; }
+  .main { margin-left:0; padding:20px 16px 96px; }
+  .appbar { padding:0 12px; gap:10px; } .appbar .marka b { font-size:17px; }
+  .tabs { margin-left:4px; overflow-x:auto; min-width:0; } .tabs button { padding:0 10px; }
+  .tabs button span, .appbar .stan, .appbar .marka small { display:none; }
+  .h1 { font-size:28px; overflow-wrap:anywhere; }
+  .staty { display:grid; grid-template-columns:1fr 1fr; gap:16px 12px; }
+  .stat { border-left:0; padding:0; } .stat .k { white-space:normal; } .stat .v b { font-size:28px; }
+  .rk-row { grid-template-columns:minmax(0,1fr); }
+  .card { padding:18px 16px; }
+  .seg { flex-wrap:wrap; border-radius:20px; } .seg button { height:36px; padding:0 12px; font-size:13.5px; }
+  .mx td.t, .mx th.l:first-child { display:none; }
+  .mx td.c { width:68px; } .cell { height:40px; }
+  .overview { overflow-x:auto; } .overview .mx { min-width:860px; }
+  .szuf .sg { padding:16px; } .szuf .sg h3 { font-size:20px; } .szuf .sb { grid-template-columns:minmax(0,1fr); padding:16px; }
+  .ans { padding:18px; }
 }
-
-/* password screen */
-body.zamkniety .appbar, body.zamkniety .shell { display:none; }
-.brama { display:none; }
-body.zamkniety .brama { display:grid; place-items:center; min-height:100vh; padding:16px; }
-.brama-k { width:min(420px, 100%); background:var(--card); border:1px solid var(--edge); border-radius:var(--r-card); padding:36px 32px 30px;
-  display:flex; flex-direction:column; gap:14px; }
-.brama-k .logo { width:44px; height:44px; border-radius:12px; background:var(--acc); color:#fff; display:grid; place-items:center; }
-.brama-k .logo .ic { width:26px; height:26px; }
-.brama-k h1 { font-size:28px; font-weight:700; letter-spacing:-.01em; }
-.brama-k p { font-size:14px; color:var(--ink2); }
-.brama-k input[type=password] { height:48px; border-radius:14px; border:1px solid var(--edge); padding:0 16px; font:400 16px var(--f); background:var(--paper); outline:none; }
-.brama-k input[type=password]:focus { border-color:var(--acc); background:#fff; }
-.brama-k .pamietaj { display:flex; gap:8px; align-items:center; font-size:13px; color:var(--ink2); cursor:pointer; }
-.brama-k .btn { width:100%; }
-.brama-k .blad { min-height:20px; font-size:13px; color:var(--bad); font-weight:500; }
-
-/* ---------- EIG brand ---------- */
-.appbar .logo.eig { background:#000 url(assets/eig-mark.png) center/cover no-repeat; }
-.appbar .logo.eig .ic { display:none; }
-.appbar .marka { display:flex; flex-direction:column; line-height:1.15; margin-right:12px; white-space:nowrap; }
-.appbar .marka .nazwa { margin:0; }
-.appbar .marka small { font-size:11.5px; font-weight:500; color:var(--muted); letter-spacing:.02em; }
-.brama-k .logo-eig { width:88px; height:88px; border-radius:18px; background:#000 url(assets/eig-logo.png) center/cover no-repeat; }
-.brama-k .postep { font-size:13px; color:var(--muted); min-height:20px; }
-
-/* ---------- headline numbers: colour only for change, never for a judgement ---------- */
-.verdict .vt .akc, .verdict .vt .zle, .verdict .vt .dobrze { color:var(--acc); }
-.mrow .mv.zle, .mrow .mv.dobrze { color:var(--ink); }
-
-/* ---------- metric definitions ---------- */
-.tip { position:relative; display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; margin-left:6px;
-  border-radius:50%; border:1px solid var(--edge); background:#fff; color:var(--muted); font:700 11px var(--f); cursor:help; vertical-align:2px; }
-.tip:hover, .tip:focus { color:var(--acc-dark); border-color:var(--acc-weak); outline:none; }
-.tip .tipb { display:none; position:absolute; z-index:60; top:24px; left:-12px; width:300px; padding:12px 14px; border-radius:14px; background:#1F1F1F;
-  color:#fff; font:400 12.5px/1.5 var(--f); text-align:left; letter-spacing:0; text-transform:none; white-space:normal; box-shadow:0 4px 16px rgba(0,0,0,.18); }
-.tip:hover .tipb, .tip:focus .tipb { display:block; }
-th .tip .tipb { left:auto; right:-12px; }
-
-/* ---------- legend under filters ---------- */
-.legenda-poz { display:flex; gap:16px; flex-wrap:wrap; align-items:center; font-size:12px; color:var(--muted); margin:-4px 0 12px; }
-.legenda-poz .poz { min-width:26px; height:22px; font-size:12px; }
-.legenda-poz span.el { display:inline-flex; align-items:center; gap:6px; }
-.poz.brak { font-size:11.5px; font-weight:500; }
-.chip .ar { font-size:9px; }
-
-/* ---------- prompts: English translation under the local text ---------- */
-.tlum { display:block; font-size:12px; color:var(--muted); font-style:italic; margin-top:2px; }
-tbody tr.klik:focus-visible td { background:var(--acc-soft); outline:none; }
-
-/* ---------- overview of all markets ---------- */
-.rynki-kafle { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; margin-bottom:16px; }
-.rk { background:var(--card); border:1px solid var(--edge); border-radius:var(--r-box); padding:20px 22px; cursor:pointer; text-align:left;
-  font:inherit; color:inherit; transition:border-color .15s, background .15s; }
-.rk:hover, .rk:focus-visible { border-color:var(--acc); background:#FAFCFF; outline:none; }
-.rk > span { display:block; }
-.rk .rkn { display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:13px; color:var(--muted); font-weight:500; }
-.rk .rks { font-size:18px; font-weight:600; color:var(--ink); margin-top:2px; }
-.rk .rkv { font-size:38px; font-weight:400; letter-spacing:-.02em; margin:8px 0 2px; font-variant-numeric:tabular-nums; }
-.rk .rkv small { font-size:16px; color:var(--muted); letter-spacing:0; margin-left:4px; }
-.rk .rkm { font-size:12.5px; color:var(--ink2); display:flex; flex-direction:column; gap:3px; }
-.rk .rkm b { font-weight:600; color:var(--ink); }
-.rk .rkg { display:block; margin-top:12px; font-size:13px; font-weight:500; color:var(--acc); }
-.tem-0 { color:#9AA0A6; }
-.tem-1 { display:inline-block; min-width:64px; padding:3px 10px; border-radius:999px; background:var(--acc-soft); color:var(--acc-dark); font-weight:600; }
-.pasek-m { display:flex; height:8px; border-radius:4px; background:var(--track); overflow:hidden; margin:10px 0 10px; }
-.pasek-m i { display:block; height:100%; background:var(--acc); }
-
-/* ---------- method view ---------- */
-.metoda { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; }
-.metoda .sec { margin:0; }
-.metoda h3 { font-size:15px; font-weight:700; margin:16px 0 4px; color:var(--ink); }
-.metoda h3:first-of-type { margin-top:0; }
-.metoda p, .metoda li { font-size:14px; color:var(--ink2); line-height:1.6; }
-.metoda ul { margin:6px 0 0 18px; }
-.metoda code { font-size:12.5px; background:var(--card-q); border:1px solid var(--edge-q); border-radius:6px; padding:1px 6px; }
-.metoda .btn { margin-top:12px; }
-@media (max-width:1180px) { .rynki-kafle { grid-template-columns:repeat(2, minmax(0,1fr)); } .metoda { grid-template-columns:minmax(0,1fr); } }
-@media (max-width:640px) { .rynki-kafle { grid-template-columns:minmax(0,1fr); } }
-body[data-v="przeglad"] [data-widok~="przeglad"], body[data-v="metoda"] [data-widok~="metoda"] { display:block !important; }
-body[data-v="przeglad"] .rynki-kafle[data-widok~="przeglad"], body[data-v="metoda"] .metoda[data-widok~="metoda"] { display:grid !important; }
-body[data-v="przeglad"] #seg-rynek, body[data-v="metoda"] #seg-rynek { visibility:hidden; }
 </style>
 </head>
-<body data-v="przeglad" class="zamkniety">
+<body class="zamkniety">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<symbol id="i-search" viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 10-.7.7l.3.3v.8l5 5 1.5-1.5zm-6 0a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"/></symbol>
 <symbol id="i-home" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
-<symbol id="i-list" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></symbol>
-<symbol id="i-store" viewBox="0 0 24 24"><path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z"/></symbol>
-<symbol id="i-link" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 000 10h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 000-10z"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/></symbol>
 <symbol id="i-info" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>
-<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.99 5.99 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17 15.18 9l1.41 1.41L10 17z"/></symbol>
-<symbol id="i-close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
-<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
-<symbol id="i-down" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><path d="M18 8h-1V6A5 5 0 007 6v2H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V10a2 2 0 00-2-2zm-6 9a2 2 0 110-4 2 2 0 010 4zm3.1-9H8.9V6a3.1 3.1 0 016.2 0v2z"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
+<symbol id="i-down" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
 </defs></svg>
 
-<div class="brama" id="brama">
-  <form class="brama-k" id="brama-form" autocomplete="off">
+<div class="brama">
+  <form id="brama-form" autocomplete="off">
     <span class="logo-eig" role="img" aria-label="European Imaging Group"></span>
     <h1>AI Visibility</h1>
-    <p>Do ChatGPT and Google recommend our stores when customers ask for advice? Enter the password to open the panel. The data is encrypted and can only be read with this password.</p>
+    <p>Do ChatGPT and Google recommend our stores when customers ask for advice? Enter the password to open the panel.</p>
     <input type="password" id="haslo" placeholder="Password" autocomplete="current-password" required aria-label="Password">
-    <label class="pamietaj"><input type="checkbox" id="pamietaj"> Remember on this device</label>
-    <button class="btn primary" type="submit" id="otworz-btn"><svg class="ic"><use href="#i-lock"/></svg><span>Open</span></button>
-    <div class="postep" id="brama-postep" aria-live="polite"></div>
-    <div class="blad" id="brama-blad" role="alert"></div>
+    <label><input type="checkbox" id="pamietaj"> Remember on this device</label>
+    <button class="btn primary" type="submit" id="otworz-btn"><svg class="ic"><use href="#i-lock"/></svg>Open</button>
+    <div class="postep" id="postep" aria-live="polite"></div>
+    <div class="blad" id="blad" role="alert"></div>
   </form>
 </div>
 
 <header class="appbar">
-  <span class="logo eig" role="img" aria-label="European Imaging Group"><svg class="ic"></svg></span>
-  <span class="marka"><span class="nazwa">AI Visibility</span><small>European Imaging Group</small></span>
-  <label class="szukaj"><svg class="ic"><use href="#i-search"/></svg>
-    <input type="search" id="szukaj" placeholder="Search prompts, topics or stores" aria-label="Search prompts, topics or stores"></label>
+  <span class="logo" role="img" aria-label="European Imaging Group"></span>
+  <span class="marka"><b>AI Visibility</b><small>European Imaging Group</small></span>
+  <nav class="tabs" id="tabs" aria-label="Market"></nav>
   <span class="gap"></span>
-  <div class="seg" id="seg-rynek" role="group" aria-label="Market"></div>
-  <span class="stan" id="stan"><svg class="ic"><use href="#i-cloud"/></svg><span></span></span>
+  <span class="stan" id="stan"></span>
 </header>
 
-<div class="shell">
-  <aside class="rail">
-    <button class="rlink on" data-idz="przeglad" title="All four markets side by side"><span class="pg"><svg class="ic"><use href="#i-home"/></svg></span>Overview</button>
-    <div class="rail-div"></div>
-    <button class="rlink" data-idz="pytania" title="Our position for every prompt in one market"><span class="pg"><svg class="ic"><use href="#i-list"/></svg></span>Prompts</button>
-    <button class="rlink" data-idz="konkurencja" title="Which stores the models recommend in one market"><span class="pg"><svg class="ic"><use href="#i-store"/></svg></span>Competitors</button>
-    <button class="rlink" data-idz="zrodla" title="Which websites the models cite in one market"><span class="pg"><svg class="ic"><use href="#i-link"/></svg></span>Sources</button>
-    <button class="rlink dol" data-idz="metoda" title="What every number means and how it is measured"><span class="pg"><svg class="ic"><use href="#i-info"/></svg></span>How it works</button>
-    <button class="rlink" id="zablokuj" title="Sign out and forget the password on this device"><span class="pg"><svg class="ic"><use href="#i-lock"/></svg></span>Sign out</button>
-  </aside>
+<nav class="rail" aria-label="Views">
+  <button class="rlink" data-v="grupa"><span class="pg"><svg class="ic"><use href="#i-home"/></svg></span>Group</button>
+  <button class="rlink" data-v="rynek"><span class="pg"><svg class="ic"><use href="#i-grid"/></svg></span>Market</button>
+  <button class="rlink dol" data-v="metoda"><span class="pg"><svg class="ic"><use href="#i-info"/></svg></span>How it works</button>
+  <button class="rlink" id="wyloguj"><span class="pg"><svg class="ic"><use href="#i-lock"/></svg></span>Sign out</button>
+</nav>
 
-  <main class="main">
-    <div class="verdict" id="werdykt"></div>
-
-    <div class="rynki-kafle" id="rynki-kafle" data-widok="przeglad"></div>
-    <section class="sec" data-widok="przeglad">
-      <div class="sh"><h2>Prompts where each store is mentioned, by topic</h2><span class="sub">latest run of each market, both models together</span></div>
-      <div class="tw" id="tab-przeglad"></div>
-    </section>
-
-    <div class="mrow" id="kafle" data-widok="pytania"></div>
-    <section class="sec" data-widok="pytania">
-      <div class="sh"><h2>Prompts</h2><span class="sub" id="pyt-sub"></span></div>
-      <div class="filtry-dec" id="filtry"></div>
-      <div class="legenda-poz" id="legenda"></div>
-      <div class="tw" id="tab-pytania"></div>
-    </section>
-    <section class="sec" data-widok="pytania" id="sek-wykres">
-      <div class="sh"><h2>Mentions over time</h2><span class="sub">share of the 25 prompts where each model mentions the store, one point per run</span></div>
-      <div class="wyk" id="wykres"></div>
-    </section>
-    <section class="sec" data-widok="konkurencja">
-      <div class="sh"><h2>Stores named in the answers</h2><span class="sub" id="konk-sub"></span></div>
-      <div class="tw" id="tab-sklepy"></div>
-    </section>
-    <section class="sec" data-widok="zrodla">
-      <div class="sh"><h2>Websites the models cite as sources</h2><span class="sub">latest run</span></div>
-      <div class="tw" id="tab-zrodla"></div>
-    </section>
-
-    <div class="metoda" id="metoda" data-widok="metoda"></div>
-  </main>
-</div>
+<main class="main"><div class="wrap" id="tresc"></div></main>
 
 <div class="cien" id="cien"></div>
-<aside class="szuf" id="szuf" role="dialog" aria-modal="true" aria-labelledby="sz-tyt">
-  <div class="sg"><div style="flex:1;min-width:0"><div class="okr" id="sz-okr"></div><h3 id="sz-tyt"></h3><div class="tlum" id="sz-tlum"></div></div>
-    <button class="zamknij" id="sz-x" title="Close" aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button></div>
-  <div class="sb" id="sz-tresc"></div>
+<aside class="szuf" id="szuf" role="dialog" aria-modal="true" aria-labelledby="sz-h">
+  <div class="sg"><div style="flex:1;min-width:0"><div class="kicker" id="sz-k"></div><h3 id="sz-h"></h3><div class="orig" id="sz-o"></div></div>
+    <button class="x" id="sz-x" aria-label="Close"><svg class="ic"><use href="#i-close"/></svg></button></div>
+  <div class="sb" id="sz-b"></div>
 </aside>
 
 <script>
 /* ============================ AI VISIBILITY ============================
-   Static panel on GitHub Pages. The results in data/ are encrypted with AES-256-GCM.
-   The key is derived from the password in the browser (PBKDF2-SHA-256), so the password
-   never leaves the device and the server only holds ciphertext.
+   Static panel on GitHub Pages. data/*.enc is encrypted with AES-256-GCM, the key is derived
+   from the password in the browser (PBKDF2-SHA-256). config/config.json is public: prompts,
+   English translations and the store watch list.
    ======================================================================= */
 var REPO = 'przemyslawwywigaczcyfrowe/ai-visibility-monitor';
-var D = null, IDX = null;
-var KOLORY = ['var(--s1)', 'var(--s2)', '#7B1FA2'];
-var stan = { v: 'przeglad', model: 'oba', filtr: 'wszystkie', temat: '', q: '' };
-var KLUCZ = null, PLIKI = {}, STARTY = {};
-
-/* Definitions shown next to every number. One wording, used in tooltips and in "How it works". */
-var DEF = {
-  mentioned: 'A prompt counts as "mentioned" when the answer names our store in its text (or links to our website). With both models selected, a prompt counts when at least one model mentions us.',
-  position: 'Position = the place of our store in the order in which the answer names stores. 1 means our store is the first store named. Lower is better. Only stores from our watch list are counted.',
-  first: 'Number of answers (not prompts) in which our store is the first store named. Each prompt has one answer per model.',
-  cited: 'Prompts where at least one answer lists a page of our website among its sources (the links the model shows as evidence). A store can be cited without being named in the text, and the other way round.',
-  change: 'Change compared with the previous run of the same market. Answers vary from day to day, so look at the trend over several runs, not a single move.'
-};
-function tip(t) { return '<span class="tip" tabindex="0" aria-label="' + esc(t) + '">?<span class="tipb">' + esc(t) + '</span></span>'; }
+var KLUCZ = null, IDX = null, CFG = null, M = [], ENG = [], RUNS = {}, CELL = {}, DET = {}, START = {};
+var stan = { v: 'grupa', rynek: 'PL', filtr: 'all', wiecej: false };
+var MIES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-function pl(n, d) { d = d || 0; return Number(n).toLocaleString('en-GB', { minimumFractionDigits: d, maximumFractionDigits: d }); }
-var MIES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-/* Run times are shown in the viewer's own time zone, with its name, so every country reads them right. */
-function dataPl(p) {
-  var iso = STARTY[p];
-  if (iso) { var d = new Date(iso); return d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }); }
-  var m = String(p || '').match(/(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d)/); return m ? (+m[3]) + ' ' + MIES[+m[2] - 1] + ' ' + m[1] + ', ' + m[4] + ' Warsaw time' : (p || '');
-}
-function dataKrotko(p) { var m = String(p).match(/\d{4}-(\d\d)-(\d\d)/); return m ? (+m[2]) + ' ' + MIES[+m[1] - 1] : p; }
 function ic(id) { return '<svg class="ic"><use href="#' + id + '"/></svg>'; }
+function fmt(n, d) { return Number(n).toLocaleString('en-GB', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
+/* Run times in the viewer's own time zone, with its name. */
+function kiedy(run, krotko) {
+  var iso = START[run]; if (!iso) return run || '';
+  return new Date(iso).toLocaleString('en-GB', krotko ? { day: 'numeric', month: 'short' } :
+    { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+}
+function krotki(e) { return e.replace(' AI Mode', ''); }
 
 /* ---------- decryption (same format as scripts/lib.mjs) ---------- */
 function b64(s) { var b = atob(s.trim()), u = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
 function b64z(u) { var s = ''; for (var i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s); }
-async function kluczZHasla(haslo) {
+async function kluczZHasla(h) {
   var sol = await (await fetch('data/salt.json', { cache: 'no-store' })).json();
-  var baza = await crypto.subtle.importKey('raw', new TextEncoder().encode(haslo), 'PBKDF2', false, ['deriveKey']);
-  return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sol.salt), iterations: sol.iterations },
-    baza, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
+  var baza = await crypto.subtle.importKey('raw', new TextEncoder().encode(h), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sol.salt), iterations: sol.iterations }, baza, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
 }
-async function odszyfruj(sciezka) {
-  var res = await fetch(sciezka, { cache: 'no-store' });
+async function odszyfruj(path) {
+  var res = await fetch(path, { cache: 'no-store' });
   if (!res.ok) throw new Error(res.status === 404 ? 'NO_DATA' : 'HTTP ' + res.status);
   var raw = b64(await res.text());
-  var jawny = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, KLUCZ, raw.slice(12));
-  var strumien = new Blob([jawny]).stream().pipeThrough(new DecompressionStream('gzip'));
-  return JSON.parse(await new Response(strumien).text());
+  var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, KLUCZ, raw.slice(12));
+  return JSON.parse(await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
 }
-var CACHE_RUN = {};
-function pomiarPlik(run) {
-  if (!CACHE_RUN[run]) CACHE_RUN[run] = odszyfruj('data/runs/' + PLIKI[run] + '.enc').then(function (o) { return o.details; });
-  return CACHE_RUN[run];
+var PLIKI = {}, CACHE = {};
+function szczegoly(run) {
+  if (!CACHE[run]) CACHE[run] = odszyfruj('data/runs/' + PLIKI[run] + '.enc').then(function (o) { return o.details; });
+  return CACHE[run];
 }
 
-/* ---------- loading ---------- */
+/* ---------- data model ---------- */
 async function wczytaj() {
-  var idx = IDX = await odszyfruj('data/index.enc');
-  idx.runs.forEach(function (r) { PLIKI[r.run] = r.file; if (r.start) STARTY[r.run] = r.start; });
-  var dane = {
-    rynki: idx.markets.map(function (m) { return { kod: m.code, nazwa: m.name, miasto: m.city, sklep: m.store, domeny: m.domains, wzorzec: m.pattern }; }),
-    modele: idx.engines.map(function (e) { return { silnik: e.label, model: e.model, note: e.note || '' }; }),
-    pytania: idx.prompts.map(function (p) { return { rynek: p.market, id: p.id, pytanie: p.text, temat: p.topic, aktywne: true }; }),
-    przebiegi: idx.runs.map(function (r) { return r.run; }).sort(),
-    hist: idx.hist, szczegoly: {}, koszty: idx.runs.map(function (r) { return [r.run, r.cost]; })
-  };
-  /* Full answers of the latest run of every market. */
-  var ost = {};
-  idx.hist.forEach(function (r) { var k = r[1].slice(0, 2); if (!ost[k] || r[0] > ost[k]) ost[k] = r[0]; });
-  var runy = Object.keys(ost).map(function (k) { return ost[k]; }).filter(function (v, i, a) { return a.indexOf(v) === i; });
-  var det = await Promise.all(runy.map(pomiarPlik));
-  runy.forEach(function (run, i) {
-    Object.keys(det[i]).forEach(function (k) { if (ost[k.slice(0, 2)] === run) dane.szczegoly[k] = szczegol(det[i][k]); });
+  var w = await Promise.all([odszyfruj('data/index.enc'), fetch('config/config.json', { cache: 'no-store' }).then(function (r) { return r.json(); })]);
+  IDX = w[0]; CFG = w[1];
+  IDX.runs.forEach(function (r) { PLIKI[r.run] = r.file; START[r.run] = r.start; });
+  ENG = IDX.engines.map(function (e) { return e.label; });
+  CELL = {}; RUNS = {};
+  IDX.hist.forEach(function (h) {
+    CELL[h[0] + '|' + h[1] + '|' + h[2]] = h;
+    var k = h[1].slice(0, 2); (RUNS[k] = RUNS[k] || []); if (RUNS[k].indexOf(h[0]) < 0) RUNS[k].push(h[0]);
   });
-  return dane;
-}
-function szczegol(d) { return { czas: d.time, model: d.model, adres: d.url, zrodla: d.sources, odp: d.answer, koszt: d.cost, blad: d.error }; }
-
-async function otworzPanel(haslo, pamietaj) {
-  var post = document.getElementById('brama-postep');
-  if (haslo) { post.textContent = 'Checking the password…'; KLUCZ = await kluczZHasla(haslo); }
-  post.textContent = 'Decrypting the data…';
-  D = await wczytaj();
-  if (haslo) {
-    var surowy = b64z(new Uint8Array(await crypto.subtle.exportKey('raw', KLUCZ)));
-    try { sessionStorage.setItem('aiv-key', surowy); if (pamietaj) localStorage.setItem('aiv-key', surowy); } catch (e) {}
-  }
-  post.textContent = '';
-  start();
-  document.body.classList.remove('zamkniety');
-}
-async function kluczZPamieci() {
-  var s = null;
-  try { s = sessionStorage.getItem('aiv-key') || localStorage.getItem('aiv-key'); } catch (e) {}
-  if (!s) return false;
-  KLUCZ = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt']);
-  return true;
-}
-document.getElementById('brama-form').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  var bl = document.getElementById('brama-blad'), btn = document.getElementById('otworz-btn');
-  bl.textContent = ''; btn.disabled = true;
-  try { await otworzPanel(document.getElementById('haslo').value, document.getElementById('pamietaj').checked); }
-  catch (err) {
-    var t = String(err && (err.name + ' ' + err.message));
-    bl.textContent = /NO_DATA/.test(t) ? 'There are no results yet. The first measurement has not finished.' :
-      /OperationError|decrypt/i.test(t) ? 'Wrong password. Check it and try again.' : 'Could not load the data: ' + (err && err.message || err);
-  }
-  document.getElementById('brama-postep').textContent = '';
-  btn.disabled = false;
-});
-document.getElementById('zablokuj').onclick = function () {
-  try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (e) {}
-  location.reload();
-};
-
-/* ---------- market ---------- */
-var SILNIKI, MODEL, WSZ, RYN, PYT, OST, POP, NASZ_DOM, NASZ_WZ, H = {}, TLUM = {};
-function escRe(x) { return String(x).replace(/[.*+?^{}$()|[\]\\]/g, '\\$&'); }
-function ustawRynek(kod) {
-  RYN = D.rynki.filter(function (r) { return r.kod === kod; })[0] || D.rynki[0];
-  D.nasz = RYN.sklep;
-  D.pytania = WSZ.pytania.filter(function (p) { return p.rynek === RYN.kod; });
-  var ids = {}; PYT = {};
-  D.pytania.forEach(function (p) { ids[p.id] = 1; PYT[p.id] = p; });
-  H = {};
-  WSZ.hist.forEach(function (r) { if (ids[r[1]]) (H[r[0]] = H[r[0]] || []).push(r); });
-  D.przebiegi = WSZ.przebiegi.filter(function (p) { return H[p]; });
-  OST = D.przebiegi[D.przebiegi.length - 1] || '';
-  POP = D.przebiegi[D.przebiegi.length - 2] || '';
-  NASZ_DOM = new RegExp('(^|\\.)(' + RYN.domeny.map(escRe).join('|') + ')$');
-  try { NASZ_WZ = new RegExp('(' + (RYN.wzorzec || escRe(RYN.sklep)) + ')', 'gi'); }
-  catch (e) { NASZ_WZ = new RegExp('(' + escRe(RYN.sklep) + ')', 'gi'); }
-}
-/* Market chosen by the user (not the silent switches used to compute the overview). */
-function wybierzRynek(kod) {
-  ustawRynek(kod); stan.rynek = RYN.kod; stan.temat = '';
-  try { localStorage.setItem('aiv-market', RYN.kod); } catch (e) {}
-}
-/* English version of a prompt: the prompt sets are parallel, number N is the same question in every
-   language, and the UK set is in English. */
-function angielski(p) { if (p.rynek === 'UK') return ''; return TLUM[p.id.replace(/^[A-Z]+/, '')] || ''; }
-
-function wiersz(przebieg, id, s) {
-  var l = H[przebieg] || [];
-  for (var i = 0; i < l.length; i++) if (l[i][1] === id && l[i][2] === s) return l[i];
-  return null;
-}
-function wybrane() { return stan.model === 'oba' ? SILNIKI : [stan.model]; }
-function jestW(przebieg, id, s) { return s.some(function (x) { var r = wiersz(przebieg, id, x); return r && r[3] != null; }); }
-
-function miary(przebieg, silniki, ids) {
-  var l = (H[przebieg] || []).filter(function (r) { return silniki.indexOf(r[2]) >= 0 && !r[6] && (!ids || ids.indexOf(r[1]) >= 0); });
-  var jest = l.filter(function (r) { return r[3] != null; });
-  var suma = jest.reduce(function (a, r) { return a + r[3]; }, 0);
-  return { n: l.length, jest: jest.length, srednia: jest.length ? suma / jest.length : null,
-    pierwsze: jest.filter(function (r) { return r[3] === 1; }).length, top3: jest.filter(function (r) { return r[3] <= 3; }).length };
-}
-/* The unit is the prompt, like a keyword in an SEO rank tracker. */
-function pytaniaMiary(przebieg, silniki, ids) {
-  var lista = D.pytania.filter(function (p) {
-    if (ids && ids.indexOf(p.id) < 0) return false;
-    return silniki.some(function (x) { var r = wiersz(przebieg, p.id, x); return r && !r[6]; });
+  Object.keys(RUNS).forEach(function (k) { RUNS[k].sort(); });
+  M = IDX.markets.map(function (m) {
+    var prompts = IDX.prompts.filter(function (p) { return p.market === m.code; }).map(function (p) {
+      var n = +p.id.slice(2);
+      return { id: p.id, n: n, text: p.text, topic: p.topic, en: (CFG.prompts_en && CFG.prompts_en[m.code] || [])[n - 1] || p.text, label: (CFG.labels || [])[n - 1] || p.text };
+    });
+    var re; try { re = new RegExp('(' + (m.pattern || m.store) + ')', 'gi'); } catch (e) { re = /$^/g; }
+    return { code: m.code, name: m.name, city: m.city, store: m.store, domains: m.domains, re: re, prompts: prompts };
   });
-  var jest = lista.filter(function (p) { return jestW(przebieg, p.id, silniki); });
-  var cyt = lista.filter(function (p) { return silniki.some(function (x) { var r = wiersz(przebieg, p.id, x); return r && r[5]; }); });
-  return { n: lista.length, jest: jest.length, cyt: cyt.length, proc: lista.length ? jest.length / lista.length * 100 : 0 };
+  /* Latest run of every market, with full answers. */
+  await Promise.all(M.map(function (m) { var r = ostatni(m); return r ? szczegoly(r).then(function (d) { DET[r] = d; }) : null; }));
 }
-function sklepyMiary(przebieg, silniki) {
-  var l = (H[przebieg] || []).filter(function (r) { return silniki.indexOf(r[2]) >= 0 && !r[6]; });
-  var m = {};
-  l.forEach(function (r) {
-    if (!r[4]) return;
-    r[4].split('; ').forEach(function (nazwa, i) {
-      var x = m[nazwa] = m[nazwa] || { nazwa: nazwa, odp: 0, suma: 0, pierwsze: 0, pyt: {} };
-      x.odp++; x.suma += i + 1; if (i === 0) x.pierwsze++; x.pyt[r[1]] = 1;
+function rynek(code) { return M.filter(function (m) { return m.code === code; })[0] || M[0]; }
+function ostatni(m) { var r = RUNS[m.code] || []; return r[r.length - 1]; }
+function poprzedni(m, run) { var r = RUNS[m.code] || []; var i = r.indexOf(run || ostatni(m)); return i > 0 ? r[i - 1] : null; }
+function komorka(run, id, e) { return CELL[run + '|' + id + '|' + e] || null; }
+function jest(run, id) { return ENG.some(function (e) { var c = komorka(run, id, e); return c && c[3] != null; }); }
+
+function miary(m, run) {
+  var o = { n: 0, ment: 0, eng: {}, poz: [], first: 0, cited: 0 };
+  if (!run) return o;
+  ENG.forEach(function (e) { o.eng[e] = 0; });
+  m.prompts.forEach(function (p) {
+    var cyt = false, any = false, zapytane = false;
+    ENG.forEach(function (e) {
+      var c = komorka(run, p.id, e); if (!c || c[6]) return;
+      zapytane = true;
+      if (c[3] != null) { any = true; o.eng[e]++; o.poz.push(c[3]); if (c[3] === 1) o.first++; }
+      if (c[5]) cyt = true;
+    });
+    if (zapytane) o.n++; if (any) o.ment++; if (cyt) o.cited++;
+  });
+  o.avg = o.poz.length ? o.poz.reduce(function (a, b) { return a + b; }, 0) / o.poz.length : null;
+  return o;
+}
+function sklepy(m, run) {
+  var s = {};
+  m.prompts.forEach(function (p) {
+    ENG.forEach(function (e) {
+      var c = komorka(run, p.id, e); if (!c || !c[4]) return;
+      c[4].split('; ').forEach(function (nazwa, i) { var o = s[nazwa] = s[nazwa] || { name: nazwa, p: {}, first: 0 }; o.p[p.id] = 1; if (!i) o.first++; });
     });
   });
-  var lista = Object.keys(m).map(function (k) { m[k].n = Object.keys(m[k].pyt).length; return m[k]; });
-  lista.sort(function (a, b) { return b.n - a.n || b.pierwsze - a.pierwsze || a.suma / a.odp - b.suma / b.odp; });
-  return { pytan: pytaniaMiary(przebieg, silniki).n, lista: lista };
+  return Object.keys(s).map(function (k) { s[k].count = Object.keys(s[k].p).length; return s[k]; })
+    .sort(function (a, b) { return b.count - a.count || b.first - a.first; });
+}
+function domeny(m, run) {
+  var d = {}, det = DET[run] || {};
+  m.prompts.forEach(function (p) {
+    ENG.forEach(function (e) { var z = det[p.id + '|' + e]; (z && z.sources ? z.sources.split(', ') : []).forEach(function (x) { (d[x] = d[x] || {})[p.id] = 1; }); });
+  });
+  return Object.keys(d).map(function (k) { return { name: k, count: Object.keys(d[k]).length, us: m.domains.some(function (x) { return k === x || k.slice(-(x.length + 1)) === '.' + x; }) }; })
+    .sort(function (a, b) { return b.count - a.count || a.name.localeCompare(b.name); });
 }
 
-/* Change chip. For counts more is better; for position less is better, so the arrow shows
-   the direction of the result, not of the number. */
-function delta(teraz, przed, lepiejWiecej, jedn, d, opis) {
-  if (!POP || przed == null || teraz == null) return '<span class="chip flat" title="No previous run to compare with">first run</span>';
+/* ---------- small pieces ---------- */
+/* Change chip for counts (more is better) or positions (less is better). */
+function zmiana(teraz, przed, wiecejLepiej, nazwa) {
+  if (przed == null || teraz == null) return '';
   var r = teraz - przed;
-  if (Math.abs(r) < 1e-9) return '<span class="chip flat" title="Same as the previous run">no change</span>';
-  var dobrze = lepiejWiecej ? r > 0 : r < 0;
-  return '<span class="chip ' + (dobrze ? 'up' : 'down') + '" title="' + esc((dobrze ? 'Better' : 'Worse') + ' than the previous run' + (opis ? ': ' + opis : '')) + '">' +
-    '<span class="ar">' + (dobrze ? '▲' : '▼') + '</span>' + pl(Math.abs(r), d) + (jedn || '') + '</span>';
+  if (Math.abs(r) < 1e-9) return '<span class="chg same" title="Same as the previous run">no change</span>';
+  var dobrze = wiecejLepiej ? r > 0 : r < 0;
+  return '<span class="chg ' + (dobrze ? 'up' : 'down') + '" title="' + esc(nazwa + ' in the previous run: ' + fmt(przed, wiecejLepiej ? 0 : 1)) + '">' + (dobrze ? '▲' : '▼') + ' ' + fmt(Math.abs(r), wiecejLepiej ? 0 : 1) + '</span>';
 }
-function nazwyOr(lista) { return lista.length < 2 ? lista.join('') : lista.slice(0, -1).join(', ') + ' and ' + lista[lista.length - 1]; }
-function modeleOpis(s) { return nazwyOr(s.map(function (x) { return x + ' (' + MODEL[x].split('/').pop() + ')'; })); }
-
-/* ---------- headline ---------- */
-function tematy(s) {
-  var t = {};
-  D.pytania.forEach(function (p) { (t[p.temat] = t[p.temat] || []).push(p.id); });
-  return Object.keys(t).map(function (k) { var m = pytaniaMiary(OST, s, t[k]); return { temat: k, jest: m.jest, n: m.n }; });
+function spark(vals) {
+  if (vals.length < 2) return '';
+  var w = 120, h = 26, max = 25, pts = vals.map(function (v, i) { return [i * w / (vals.length - 1), h - 3 - (h - 6) * v / max]; });
+  return '<svg width="' + w + '" height="' + h + '" aria-hidden="true"><polyline fill="none" stroke="#0B57D0" stroke-width="2" stroke-linejoin="round" points="' +
+    pts.map(function (p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') + '"/><circle cx="' + pts[pts.length - 1][0] + '" cy="' + pts[pts.length - 1][1] + '" r="3" fill="#0B57D0"/></svg>';
 }
-function przyciskiModeli() {
-  return '<div class="seg" id="seg-model" role="group" aria-label="Models"><button data-m="oba" title="A prompt counts when at least one of the models mentions the store">Both models</button>' +
-    SILNIKI.map(function (x) { return '<button data-m="' + esc(x) + '" title="' + esc(x + ': ' + MODEL[x]) + '">' + esc(x) + ' only</button>'; }).join('') + '</div>';
+function legenda() {
+  return '<div class="legend" aria-label="Legend"><span class="lb">Our store in the answer:</span>' +
+    '<span class="e"><i class="p1" style="color:#fff">1</i>named first</span><span class="e"><i class="p2">2</i>2nd or 3rd</span>' +
+    '<span class="e"><i class="p3">4</i>4th or later</span><span class="e"><i class="p0"></i>not named</span>' +
+    '<span class="e"><i style="background:var(--up);color:#fff;border-radius:999px;width:22px">▲</i>better than previous run</span></div>';
 }
-function rysujWerdykt() {
-  var el = document.getElementById('werdykt');
-  if (stan.v === 'metoda') { el.style.display = 'none'; return; }
-  el.style.display = '';
-  var s = wybrane(), vt, vs, okr, prawo = przyciskiModeli();
-  if (stan.v === 'przeglad') {
-    var w = D.rynki.map(function (r) { ustawRynek(r.kod); var q = pytaniaMiary(OST, s); return { r: r, q: q }; });
-    ustawRynek(stan.rynek);
-    var suma = w.reduce(function (a, x) { return a + x.q.jest; }, 0), wsz = w.reduce(function (a, x) { return a + x.q.n; }, 0);
-    var naj = w.slice().sort(function (a, b) { return b.q.proc - a.q.proc; });
-    okr = 'European Imaging Group · ' + D.rynki.length + ' markets · ' + modeleOpis(s);
-    vt = 'Our stores are mentioned in <span class="akc">' + suma + ' of ' + wsz + '</span> customer prompts';
-    vs = 'Highest: <b>' + esc(naj[0].r.sklep) + '</b> (' + naj[0].q.jest + ' of ' + naj[0].q.n + '). Lowest: <b>' + esc(naj[naj.length - 1].r.sklep) + '</b> (' +
-      naj[naj.length - 1].q.jest + ' of ' + naj[naj.length - 1].q.n + '). Each market has its own 25 prompts in the local language, asked to each model.';
-  } else {
-    var m = miary(OST, s), q = pytaniaMiary(OST, s), qp = POP ? pytaniaMiary(POP, s) : null;
-    okr = RYN.nazwa + ' · ' + D.pytania.length + ' customer prompts in the local language · ' + modeleOpis(s);
-    if (!OST) { vt = 'No <span class="akc">run</span> yet'; vs = 'The first run asks every prompt in every model.'; }
-    else if (stan.v === 'pytania') {
-      vt = esc(D.nasz) + ' is mentioned in <span class="akc">' + q.jest + ' of ' + q.n + '</span> prompts';
-      var naModel = s.length > 1 ? s.map(function (x) { return esc(x) + ' in <b>' + pytaniaMiary(OST, [x]).jest + '</b>'; }) : [];
-      var t = tematy(s).filter(function (x) { return x.n; });
-      var sa = t.filter(function (x) { return x.jest; }).sort(function (a, b) { return b.jest / b.n - a.jest / a.n; });
-      var brak = t.filter(function (x) { return !x.jest; }).map(function (x) { return x.temat.toLowerCase(); });
-      vs = naModel.length ? nazwyOr(naModel) + '. ' : '';
-      vs += sa.length ? 'Strongest topic: <b>' + esc(sa[0].temat.toLowerCase()) + '</b> (' + sa[0].jest + ' of ' + sa[0].n + '). ' : '';
-      vs += brak.length ? 'Never mentioned for: <b>' + esc(brak.join(', ')) + '</b>.' : '';
-      if (qp) vs += ' Previous run: ' + qp.jest + ' of ' + qp.n + '.';
-    } else if (stan.v === 'konkurencja') {
-      var sk = sklepyMiary(OST, s).lista, lid = sk[0], nasz = sk.filter(function (x) { return x.nazwa === D.nasz; })[0];
-      vt = lid ? 'Most recommended store: <span class="akc">' + esc(lid.nazwa) + '</span>' : 'The models named no store';
-      vs = lid ? '<b>' + esc(lid.nazwa) + '</b> is named in ' + lid.n + ' of ' + q.n + ' prompts. ' +
-        (lid.nazwa === D.nasz ? '' : (nasz ? esc(D.nasz) + ' is number ' + (sk.indexOf(nasz) + 1) + ' of ' + sk.length + ' stores, named in <b>' + nasz.n + '</b> prompts.' :
-          esc(D.nasz) + ' is not named in any answer.')) : '';
-    } else {
-      var z = zrodla(s);
-      var nasze = {}; z.lista.forEach(function (x) { if (x.nasz) Object.keys(x.pyt).forEach(function (k) { nasze[k] = 1; }); });
-      var ile = Object.keys(nasze).length;
-      vt = 'Our website is cited in <span class="akc">' + ile + ' of ' + q.n + '</span> prompts';
-      var top = z.lista.filter(function (x) { return !x.nasz; }).slice(0, 3);
-      vs = 'Across all answers the models cited <b>' + z.lista.length + '</b> websites. ' + (top.length ? 'Most cited: ' + top.map(function (x) { return '<b>' + esc(x.d) + '</b> (' + x.n + ' prompts)'; }).join(', ') + '. ' : '') +
-        (q.n - z.zeZrodlami ? 'No sources at all in ' + (q.n - z.zeZrodlami) + ' prompts.' : '');
-    }
+/* One answer as a coloured cell. The number is our place among the stores named in the answer. */
+function cell(m, run, p, e) {
+  var c = komorka(run, p.id, e), poprz = poprzedni(m, run), b = poprz ? komorka(poprz, p.id, e) : null, z = '';
+  var opis = e + ': ';
+  if (!c) return '<button class="cell pn" data-m="' + m.code + '" data-id="' + p.id + '" aria-label="' + esc(opis + 'not asked in this run') + '" title="Not asked in this run">n/a</button>';
+  if (c[6]) return '<button class="cell pe" data-m="' + m.code + '" data-id="' + p.id + '" aria-label="' + esc(opis + 'error') + '" title="The model returned an error">error</button>';
+  var v = c[3], a = b && !b[6] ? b[3] : undefined;
+  if (a !== undefined) {
+    if (v != null && a == null) z = '<span class="z up" title="Not named in the previous run">new</span>';
+    else if (v == null && a != null) z = '<span class="z down" title="Named at place ' + a + ' in the previous run">lost</span>';
+    else if (v != null && v !== a) z = '<span class="z ' + (v < a ? 'up' : 'down') + '" title="Place ' + a + ' in the previous run">' + (v < a ? '▲' : '▼') + Math.abs(v - a) + '</span>';
   }
-  el.innerHTML = '<div class="vwrap"><div class="okr">' + esc(okr) + '</div><div class="vt">' + vt + '</div><div class="vs">' + vs + '</div></div>' +
-    '<div class="vprawo">' + prawo + (stan.v === 'pytania' ? '<button class="btn primary" id="csv" title="Download the latest run of this market as a CSV file">' + ic('i-down') + 'Export CSV</button>' : '') + '</div>';
-  el.querySelectorAll('#seg-model button').forEach(function (b) {
-    b.classList.toggle('on', b.getAttribute('data-m') === stan.model);
-    b.onclick = function () { stan.model = b.getAttribute('data-m'); rysuj(); };
-  });
-  var c = document.getElementById('csv'); if (c) c.onclick = eksportCsv;
+  var kl = v == null ? 'p0' : v === 1 ? 'p1' : v <= 3 ? 'p2' : 'p3';
+  var t = v == null ? 'our store is not named' : v === 1 ? 'our store is named first' : 'our store is store number ' + v + ' named';
+  return '<button class="cell ' + kl + '" data-m="' + m.code + '" data-id="' + p.id + '" aria-label="' + esc(opis + t) + '" title="' + esc(opis + t + '. Click to read the answer.') + '">' + (v == null ? '' : v) + z + '</button>';
+}
+function tematy(m) {
+  var t = [];
+  m.prompts.forEach(function (p) { var o = t.filter(function (x) { return x.name === p.topic; })[0]; if (!o) t.push(o = { name: p.topic, prompts: [] }); o.prompts.push(p); });
+  return t;
 }
 
-/* ---------- overview ---------- */
-function rysujPrzeglad() {
-  var s = wybrane(), dane = [];
-  D.rynki.forEach(function (r) {
-    ustawRynek(r.kod);
-    var q = pytaniaMiary(OST, s), qp = POP ? pytaniaMiary(POP, s) : null, m = miary(OST, s);
-    var sk = sklepyMiary(OST, s).lista.filter(function (x) { return x.nazwa !== D.nasz; });
-    var tem = tematy(s);
-    dane.push({ r: r, q: q, qp: qp, m: m, lider: sk[0], tem: tem, ost: OST, pop: POP });
-  });
-  ustawRynek(stan.rynek);
-  document.getElementById('rynki-kafle').innerHTML = dane.map(function (x) {
-    POP = x.pop;
-    return '<button class="rk" data-r="' + esc(x.r.kod) + '" title="Open the prompts of ' + esc(x.r.nazwa) + '">' +
-      '<span class="rkn"><span>' + esc(x.r.nazwa) + '</span><span>' + (x.ost ? esc(dataKrotko(x.ost)) : 'no run') + '</span></span>' +
-      '<span class="rks">' + esc(x.r.sklep) + '</span>' +
-      '<span class="rkv">' + x.q.jest + '<small>of ' + x.q.n + ' prompts</small></span>' +
-      '<span class="pasek-m" aria-hidden="true"><i style="width:' + x.q.proc + '%"></i></span>' +
-      '<span class="rkm"><span>' + delta(x.q.jest, x.qp && x.qp.jest, true, '', 0, 'prompts with a mention') + '</span>' +
-      '<span>Named first in <b>' + x.m.pierwsze + '</b> answers</span>' +
-      '<span>Most named competitor: <b>' + (x.lider ? esc(x.lider.nazwa) + '</b> (' + x.lider.n + ' prompts)' : 'none</b>') + '</span></span>' +
-      '<span class="rkg">Open ' + esc(x.r.kod) + ' prompts →</span></button>';
+/* ---------- views ---------- */
+function rysuj() {
+  document.querySelectorAll('.rlink[data-v]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === stan.v); b.setAttribute('aria-current', b.getAttribute('data-v') === stan.v ? 'page' : 'false'); });
+  document.getElementById('tabs').innerHTML = M.map(function (m) {
+    return '<button data-m="' + m.code + '" class="' + (stan.v === 'rynek' && stan.rynek === m.code ? 'on' : '') + '"><b>' + esc(m.name) + '</b><span>' + esc(m.store) + '</span></button>';
   }).join('');
-  ustawRynek(stan.rynek);
-  document.querySelectorAll('#rynki-kafle .rk').forEach(function (b) { b.onclick = function () { wybierzRynek(b.getAttribute('data-r')); stan.v = 'pytania'; rysuj(); window.scrollTo(0, 0); }; });
-  var tem = []; dane[0].tem.forEach(function (t) { tem.push(t.temat); });
-  var h = '<table><thead><tr><th class="tl">Topic</th>' + dane.map(function (x) { return '<th class="tc">' + esc(x.r.kod) + ' · ' + esc(x.r.sklep) + '</th>'; }).join('') + '</tr></thead><tbody>';
-  tem.forEach(function (t) {
-    h += '<tr><td class="tl"><span class="duzy">' + esc(t) + '</span></td>' + dane.map(function (x) {
-      var o = x.tem.filter(function (y) { return y.temat === t; })[0] || { jest: 0, n: 0 };
-      return '<td class="tc"><span class="' + (o.jest ? 'tem-1' : 'tem-0') + '">' + o.jest + ' of ' + o.n + '</span></td>';
-    }).join('') + '</tr>';
-  });
-  document.getElementById('tab-przeglad').innerHTML = h + '</tbody></table>';
+  document.querySelectorAll('#tabs button').forEach(function (b) { b.onclick = function () { otworzRynek(b.getAttribute('data-m')); }; });
+  var ost = IDX.runs[IDX.runs.length - 1];
+  document.getElementById('stan').textContent = ost ? 'Latest run: ' + kiedy(ost.run) : '';
+  var el = document.getElementById('tresc');
+  if (stan.v === 'grupa') el.innerHTML = widokGrupy();
+  else if (stan.v === 'rynek') el.innerHTML = widokRynku();
+  else el.innerHTML = widokMetody();
+  podepnij();
+}
+function otworzRynek(code) {
+  stan.rynek = code; stan.v = 'rynek'; stan.filtr = 'all'; stan.wiecej = false;
+  try { localStorage.setItem('aiv-market', code); } catch (e) {}
+  rysuj(); window.scrollTo(0, 0);
 }
 
-/* Latest run of the selected market, one row per prompt and model. */
-function eksportCsv() {
-  function pole(v) { v = String(v == null ? '' : v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
-  var w = [['market', 'run', 'prompt_id', 'topic', 'prompt', 'prompt_english', 'model', 'position', 'stores_in_order', 'our_url', 'sources'].join(',')];
-  D.pytania.forEach(function (p) {
-    SILNIKI.forEach(function (x) {
-      var r = wiersz(OST, p.id, x), z = D.szczegoly[p.id + '|' + x] || {};
-      if (!r) return;
-      w.push([RYN.kod, OST, p.id, p.temat, p.pytanie, angielski(p) || p.pytanie, x, r[3] == null ? 'not mentioned' : r[3], r[4], z.adres || '', z.zrodla || ''].map(pole).join(','));
+function widokGrupy() {
+  var w = M.map(function (m) { var run = ostatni(m); return { m: m, run: run, a: miary(m, run), b: miary(m, poprzedni(m)) }; });
+  var ment = w.reduce(function (s, x) { return s + x.a.ment; }, 0), all = w.reduce(function (s, x) { return s + x.a.n; }, 0);
+  var h = '<div class="kicker">European Imaging Group · ' + M.length + ' markets · 25 customer prompts per market, asked to ' + ENG.join(' and ') + '</div>' +
+    '<h1 class="h1">Our stores are recommended in <em class="num">' + ment + ' of ' + all + '</em> prompts</h1>';
+  h += '<div class="rk-row">' + w.map(function (x) {
+    var hist = (RUNS[x.m.code] || []).map(function (r) { return miary(x.m, r).ment; });
+    return '<button class="rk" data-m="' + x.m.code + '" aria-label="' + esc('Open ' + x.m.name) + '">' +
+      '<span class="a"><span>' + esc(x.m.name) + '</span><span>' + esc(kiedy(x.run, true)) + '</span></span>' +
+      '<span class="s" style="display:block">' + esc(x.m.store) + '</span>' +
+      '<span class="v"><b class="num">' + x.a.ment + '</b><small>of ' + x.a.n + ' prompts</small>' + zmiana(x.a.ment, x.b.n ? x.b.ment : null, true, 'Prompts') + '</span>' +
+      spark(hist) +
+      '<span class="m">' + ENG.map(function (e) { return '<span>' + esc(krotki(e)) + ' <b>' + x.a.eng[e] + '</b></span>'; }).join('') + '<span>Named first <b>' + x.a.first + '</b></span></span>' +
+      '<span class="o">Open ' + esc(x.m.name) + ' →</span></button>';
+  }).join('') + '</div>';
+  /* The 25 prompts are the same questions in every language, so one row compares the four markets. */
+  var t = tematy(M[0]);
+  var mx = '<thead><tr><th class="l" colspan="2"></th>' + M.map(function (m, i) {
+    return (i ? '<th class="gap"></th>' : '') + '<th class="rg" colspan="' + ENG.length + '">' + esc(m.name) + '<small>' + esc(m.store) + '</small></th>';
+  }).join('') + '</tr><tr><th class="l">Topic</th><th class="l">Prompt (English version)</th>' + M.map(function (m, i) {
+    return (i ? '<th class="gap"></th>' : '') + ENG.map(function (e) { return '<th>' + esc(krotki(e)) + '</th>'; }).join('');
+  }).join('') + '</tr></thead><tbody>';
+  t.forEach(function (g) {
+    g.prompts.forEach(function (p0, i) {
+      mx += '<tr class="' + (i === 0 ? 'grp' : '') + '">' + (i === 0 ? '<td class="t" rowspan="' + g.prompts.length + '">' + esc(g.name) + '</td>' : '') +
+        '<td class="q">' + esc(p0.label) + '</td>' + M.map(function (m, k) {
+          var p = m.prompts.filter(function (x) { return x.n === p0.n; })[0];
+          return (k ? '<td class="gap"></td>' : '') + ENG.map(function (e) { return '<td class="c">' + (p ? cell(m, ostatni(m), p, e) : '') + '</td>'; }).join('');
+        }).join('') + '</tr>';
+    });
+  });
+  h += '<section class="card overview"><div class="toolbar" style="margin:0"><div><h2>Every prompt in every market</h2><div class="sub">Each cell is one answer from the latest run. Click a cell to read the full answer.</div></div><span class="gap"></span>' + legenda() + '</div>' +
+    '<table class="mx">' + mx + '</tbody></table></section>';
+  return h;
+}
+
+function widokRynku() {
+  var m = rynek(stan.rynek), run = ostatni(m), pop = poprzedni(m), a = miary(m, run), b = pop ? miary(m, pop) : null;
+  if (!run) return '<h1 class="h1">No run yet for ' + esc(m.name) + '</h1>';
+  var hist = (RUNS[m.code] || []).map(function (r) { return miary(m, r); });
+  var h = '<div class="kicker">' + esc(m.name) + ' · ' + esc(m.store) + ' · run of ' + esc(kiedy(run)) + '</div>' +
+    '<h1 class="h1">' + esc(m.store) + ' is recommended in <em class="num">' + a.ment + ' of ' + a.n + '</em> prompts</h1>';
+  var st = ENG.map(function (e) {
+    return '<div class="stat"><div class="k">' + esc(e) + ' recommends us in</div><div class="v"><b class="num">' + a.eng[e] + '</b><small>of ' + a.n + ' prompts</small>' + (b ? zmiana(a.eng[e], b.eng[e], true, 'Prompts') : '') + '</div>' +
+      spark(hist.map(function (x) { return x.eng[e]; })) + '</div>';
+  }).join('');
+  st += '<div class="stat"><div class="k">Average place when named</div><div class="v"><b class="num">' + (a.avg == null ? '–' : fmt(a.avg, 1)) + '</b><small>1 = named first</small>' + (b && b.avg != null && a.avg != null ? zmiana(a.avg, b.avg, false, 'Average place') : '') + '</div></div>';
+  st += '<div class="stat"><div class="k">Named first</div><div class="v"><b class="num">' + a.first + '</b><small>answers</small>' + (b ? zmiana(a.first, b.first, true, 'Answers') : '') + '</div></div>';
+  st += '<div class="stat"><div class="k">Our website cited as a source</div><div class="v"><b class="num">' + a.cited + '</b><small>of ' + a.n + ' prompts</small>' + (b ? zmiana(a.cited, b.cited, true, 'Prompts') : '') + '</div></div>';
+  h += '<div class="staty">' + st + '</div>';
+
+  var lista = m.prompts.filter(function (p) { var j = jest(run, p.id); return stan.filtr === 'all' || (stan.filtr === 'yes' ? j : !j); });
+  var tak = m.prompts.filter(function (p) { return jest(run, p.id); }).length;
+  h += '<div class="grid2"><section class="card">' +
+    '<div class="toolbar"><div class="seg" role="group" aria-label="Filter prompts">' +
+    [['all', 'All prompts', m.prompts.length], ['yes', 'Recommended', tak], ['no', 'Not recommended', m.prompts.length - tak]].map(function (f) {
+      return '<button data-f="' + f[0] + '" class="' + (stan.filtr === f[0] ? 'on' : '') + '">' + f[1] + '<b>' + f[2] + '</b></button>';
+    }).join('') + '</div><span class="gap"></span><button class="btn" id="csv">' + ic('i-down') + 'Export CSV</button></div>' + legenda();
+  if (!lista.length) h += '<div class="nodata">No prompt in this filter.</div>';
+  else {
+    var mx = '<thead><tr><th class="l">Topic</th><th class="l">Prompt' + (m.code !== 'UK' ? ' (English, original below)' : '') + '</th>' + ENG.map(function (e) { return '<th>' + esc(e) + '</th>'; }).join('') + '</tr></thead><tbody>';
+    tematy({ prompts: lista }).forEach(function (g) {
+      g.prompts.forEach(function (p, i) {
+        mx += '<tr class="wiersz ' + (i === 0 ? 'grp' : '') + '" data-m="' + m.code + '" data-id="' + p.id + '">' + (i === 0 ? '<td class="t" rowspan="' + g.prompts.length + '">' + esc(g.name) + '</td>' : '') +
+          '<td class="q">' + esc(p.en) + (m.code !== 'UK' ? '<small>' + esc(p.text) + '</small>' : '') + '</td>' +
+          ENG.map(function (e) { return '<td class="c">' + cell(m, run, p, e) + '</td>'; }).join('') + '</tr>';
+      });
+    });
+    h += '<table class="mx">' + mx + '</tbody></table>';
+  }
+  h += '</section><div class="side">';
+  var sk = sklepy(m, run);
+  if (!sk.some(function (x) { return x.name === m.store; })) sk.push({ name: m.store, count: 0, first: 0 });
+  var nasz = sk.filter(function (x) { return x.name === m.store; })[0], pok = stan.wiecej ? sk : sk.slice(0, 10);
+  /* Our store always stays on the list, even below the top 10. */
+  if (pok.indexOf(nasz) < 0) pok = pok.concat([nasz]);
+  h += '<section class="card"><h2>Who gets recommended</h2><div class="sub">Number of prompts (of ' + a.n + ') in which each store is named</div><div class="lb">' +
+    pok.map(function (x) {
+      var us = x.name === m.store;
+      return '<div class="r ' + (us ? 'us' : '') + '"><span class="n">' + (sk.indexOf(x) + 1) + '</span><span class="nm">' + esc(x.name) + (us ? '<em>our store</em>' : '') + '</span><span class="v">' + x.count + '</span>' +
+        '<span class="br"><i style="width:' + (x.count / a.n * 100) + '%"></i></span></div>';
+    }).join('') + (sk.length > 10 ? '<button class="more" id="wiecej">' + (stan.wiecej ? 'Show top 10' : 'Show all ' + sk.length + ' stores') + '</button>' : '') + '</div></section>';
+  var dm = domeny(m, run).slice(0, 8);
+  h += '<section class="card"><h2>Most cited websites</h2><div class="sub">Number of prompts in which the models used the website as a source</div><div class="lb">' +
+    (dm.length ? dm.map(function (x, i) {
+      return '<div class="r ' + (x.us ? 'us' : '') + '"><span class="n">' + (i + 1) + '</span><span class="nm">' + esc(x.name) + (x.us ? '<em>our website</em>' : '') + '</span><span class="v">' + x.count + '</span>' +
+        '<span class="br"><i style="width:' + (x.count / a.n * 100) + '%"></i></span></div>';
+    }).join('') : '<div class="nodata">No sources in this run.</div>') + '</div></section></div></div>';
+  return h;
+}
+
+function widokMetody() {
+  var ost = IDX.runs[IDX.runs.length - 1] || {};
+  var mod = IDX.engines.map(function (e) { return '<li><b>' + esc(e.label) + '</b>: <code>' + esc(e.model) + '</code>' + (e.note ? '. ' + esc(e.note) + '.' : '') + '</li>'; }).join('');
+  return '<div class="kicker">How it works</div><h1 class="h1">What the panel measures</h1><div class="metoda">' +
+    '<section class="card"><h2>Reading the panel</h2>' +
+    '<h3>Recommended</h3><p>A prompt counts as "recommended" when the answer names our store in its text or links to our website. In the group and market totals a prompt counts when at least one model recommends us.</p>' +
+    '<h3>The number in a cell</h3><p>Our place among the stores the answer names, in the order it names them. 1 means our store is named first. Only stores from the watch list in <code>config/config.json</code> are counted. An empty grey cell means our store is not named.</p>' +
+    '<h3>Named first</h3><p>Number of answers (not prompts) in which our store is the first store named. Every prompt has one answer per model.</p>' +
+    '<h3>Our website cited as a source</h3><p>Prompts where at least one answer lists a page of our website among its sources, the links the model shows as evidence. A store can be cited without being named, and the other way round.</p>' +
+    '<h3>Changes</h3><p>▲ and ▼ compare a run with the previous run of the same market. "New" means recommended now but not before, "lost" the other way round. Answers vary from day to day, so read the trend over several runs.</p></section>' +
+    '<section class="card"><h2>How it is measured</h2>' +
+    '<h3>Models</h3><ul>' + mod + '</ul><p>The models are called through their API with web search on. The consumer apps add their own instructions, so an answer in the app can differ from the one shown here.</p>' +
+    '<h3>Clean context</h3><p>Every prompt is a new conversation with no history, no account and no mention of our stores. The only extra information is the customer\'s approximate location (' + esc(M.map(function (m) { return m.city; }).join(', ')) + '), which the apps also know.</p>' +
+    '<h3>Prompts</h3><p>' + M.length + ' markets × 25 prompts in the local language. Prompt number N is the same question in every market, so the group view compares markets row by row.</p>' +
+    '<h3>Schedule</h3><p>Every day at 07:00 UTC. Latest run: ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '.</p>' +
+    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored. The password never leaves your device.</p>' +
+    '<p style="margin-top:18px"><a class="btn" href="https://github.com/' + REPO + '/actions/workflows/measure.yml" target="_blank" rel="noopener">' + ic('i-play') + 'Run a measurement now (admins, needs GitHub access)</a></p></section></div>';
+}
+
+function podepnij() {
+  document.querySelectorAll('.rk').forEach(function (b) { b.onclick = function () { otworzRynek(b.getAttribute('data-m')); }; });
+  document.querySelectorAll('.cell').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); otworz(b.getAttribute('data-m'), b.getAttribute('data-id')); }; });
+  document.querySelectorAll('tr.wiersz').forEach(function (tr) { tr.onclick = function () { otworz(tr.getAttribute('data-m'), tr.getAttribute('data-id')); }; });
+  document.querySelectorAll('[data-f]').forEach(function (b) { b.onclick = function () { stan.filtr = b.getAttribute('data-f'); rysuj(); }; });
+  var w = document.getElementById('wiecej'); if (w) w.onclick = function () { stan.wiecej = !stan.wiecej; rysuj(); };
+  var c = document.getElementById('csv'); if (c) c.onclick = csv;
+}
+
+/* ---------- CSV: latest run of the market, one row per prompt and model ---------- */
+function csv() {
+  var m = rynek(stan.rynek), run = ostatni(m), det = DET[run] || {};
+  function f(v) { v = String(v == null ? '' : v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  var w = ['market,run,prompt_id,topic,prompt,prompt_english,model,our_place,stores_in_order,our_url,sources'];
+  m.prompts.forEach(function (p) {
+    ENG.forEach(function (e) {
+      var c = komorka(run, p.id, e), z = det[p.id + '|' + e] || {}; if (!c) return;
+      w.push([m.code, run, p.id, p.topic, p.text, p.en, e, c[3] == null ? 'not named' : c[3], c[4], z.url, z.sources].map(f).join(','));
     });
   });
   var a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(['\ufeff' + w.join('\n')], { type: 'text/csv;charset=utf-8' }));
-  a.download = 'ai-visibility-' + RYN.kod + '-' + OST.replace(/[ :]/g, '') + '.csv';
+  a.href = URL.createObjectURL(new Blob(['﻿' + w.join('\n')], { type: 'text/csv;charset=utf-8' }));
+  a.download = 'ai-visibility-' + m.code + '-' + run.replace(/[ :]/g, '') + '.csv';
   a.click();
 }
 
-/* ---------- tiles ---------- */
-function rysujKafle() {
-  var s = wybrane(), m = miary(OST, s), p = POP ? miary(POP, s) : null;
-  var q = pytaniaMiary(OST, s), qp = POP ? pytaniaMiary(POP, s) : null;
-  var k = [
-    ['Prompts with a mention', DEF.mentioned, q.jest + '<small>of ' + q.n + '</small>', delta(q.jest, qp && qp.jest, true, '', 0, 'prompts with a mention'), pl(q.proc) + '% of the prompts'],
-    ['Average position', DEF.position, m.srednia == null ? '-' : pl(m.srednia, 1), delta(m.srednia, p && p.srednia, false, '', 1, 'lower position is better'), 'when mentioned, from ' + m.jest + ' answers'],
-    ['Named first', DEF.first, String(m.pierwsze) + '<small>answers</small>', delta(m.pierwsze, p && p.pierwsze, true, '', 0, 'answers naming us first'), 'in the top 3: ' + m.top3 + ' answers'],
-    ['Our website cited', DEF.cited, q.cyt + '<small>of ' + q.n + '</small>', delta(q.cyt, qp && qp.cyt, true, '', 0, 'prompts citing our website'), 'prompts with ' + esc(RYN.domeny[0]) + ' in the sources']
-  ];
-  document.getElementById('kafle').innerHTML = k.map(function (x) {
-    return '<div class="m"><div class="mk">' + x[0] + tip(x[1]) + '</div><div class="mv">' + x[2] + '</div><div class="mx">' + x[3] + '<span>' + x[4] + '</span></div></div>';
-  }).join('');
-}
-
-/* ---------- trend ---------- */
-function rysujWykres() {
-  var el = document.getElementById('wykres'), s = wybrane(), P = D.przebiegi;
-  /* A line needs two runs. With one run the card would be empty. */
-  document.getElementById('sek-wykres').style.setProperty('display', P.length < 2 ? 'none' : '', P.length < 2 ? 'important' : '');
-  if (P.length < 2) return;
-  var W = Math.max(el.clientWidth, 300), Hh = 200, L = 40, R = 16, T = 10, B = 26;
-  function X(i) { return L + 12 + i * (W - L - R - 24) / (P.length - 1); }
-  function Y(v) { return T + (Hh - T - B) * (1 - v / 100); }
-  var svg = '';
-  [0, 25, 50, 75, 100].forEach(function (v) {
-    svg += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="' + (v ? '#EEF1F4' : '#DADCE0') + '"/>' +
-      '<text class="os" x="' + (L - 8) + '" y="' + (Y(v) + 4) + '" text-anchor="end">' + v + '%</text>';
-  });
-  var co = Math.max(1, Math.ceil(P.length / 12));
-  P.forEach(function (p, i) { if (i % co === 0 || i === P.length - 1) svg += '<text class="os" x="' + X(i) + '" y="' + (Hh - 6) + '" text-anchor="middle">' + dataKrotko(p) + '</text>'; });
-  s.forEach(function (x) {
-    var kol = KOLORY[SILNIKI.indexOf(x) % KOLORY.length];
-    var pk = P.map(function (p, i) { return [X(i), Y(pytaniaMiary(p, [x]).proc)]; });
-    svg += '<polyline fill="none" stroke="' + kol + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" points="' + pk.map(function (q) { return q.join(','); }).join(' ') + '"/>';
-    pk.forEach(function (q) { svg += '<circle cx="' + q[0] + '" cy="' + q[1] + '" r="5" fill="' + kol + '" stroke="#fff" stroke-width="2"/>'; });
-  });
-  svg += '<line id="kursor" y1="' + T + '" y2="' + (Hh - B) + '" stroke="#9AA0A6" stroke-dasharray="3 3" style="display:none"/>';
-  el.innerHTML = '<div class="legend">' + s.map(function (x) {
-    var mm = pytaniaMiary(OST, [x]);
-    return '<span><i style="background:' + KOLORY[SILNIKI.indexOf(x) % KOLORY.length] + '"></i>' + esc(x) + ': ' + mm.jest + ' of ' + mm.n + ' in the latest run</span>';
-  }).join('') + '</div><svg viewBox="0 0 ' + W + ' ' + Hh + '" style="height:' + Hh + 'px" role="img" aria-label="Share of prompts with a mention per run">' + svg + '</svg><div class="dymek"></div>';
-  var sv = el.querySelector('svg'), dy = el.querySelector('.dymek'), ku = el.querySelector('#kursor');
-  sv.addEventListener('mousemove', function (ev) {
-    var r = sv.getBoundingClientRect(), x = (ev.clientX - r.left) * W / r.width, i = 0, best = 1e9;
-    P.forEach(function (p, j) { var d = Math.abs(X(j) - x); if (d < best) { best = d; i = j; } });
-    ku.setAttribute('x1', X(i)); ku.setAttribute('x2', X(i)); ku.style.display = '';
-    dy.innerHTML = '<b>' + esc(dataPl(P[i])) + '</b><br>' + s.map(function (x) { var mm = pytaniaMiary(P[i], [x]); return esc(x) + ': ' + mm.jest + ' of ' + mm.n + ' prompts (' + pl(mm.proc) + '%)'; }).join('<br>');
-    dy.style.display = 'block';
-    dy.style.left = Math.min(X(i) * r.width / W + 12, r.width - dy.offsetWidth) + 'px'; dy.style.top = '34px';
-  });
-  sv.addEventListener('mouseleave', function () { dy.style.display = 'none'; ku.style.display = 'none'; });
-}
-
-/* ---------- prompts ---------- */
-/* Position in a given run and change vs the run right before it (default: latest). */
-function komorkaPoz(id, x, przebieg) {
-  przebieg = przebieg || OST;
-  var ip = D.przebiegi.indexOf(przebieg), poprz = ip > 0 ? D.przebiegi[ip - 1] : '';
-  var r = wiersz(przebieg, id, x);
-  if (!r) return '<span class="poz brak" title="This prompt was not asked in this run">no data</span><span class="zm"></span>';
-  if (r[6]) return '<span class="poz err" title="The model returned an error">error</span><span class="zm"></span>';
-  var p = r[3], przed = poprz ? wiersz(poprz, id, x) : null, zm = '';
-  if (przed && !przed[6]) {
-    var a = przed[3];
-    if (p != null && a == null) zm = '<span class="chip up" title="Not mentioned in the previous run">new</span>';
-    else if (p == null && a != null) zm = '<span class="chip down" title="Mentioned at position ' + a + ' in the previous run">lost</span>';
-    else if (p != null && a != null && p !== a) zm = '<span class="chip ' + (p < a ? 'up' : 'down') + '" title="Position ' + a + ' in the previous run">' +
-      '<span class="ar">' + (p < a ? '▲' : '▼') + '</span>' + Math.abs(p - a) + '</span>';
-  }
-  return (p == null ? '<span class="poz brak" title="The answer does not name our store">not named</span>' :
-    '<span class="poz ' + (p === 1 ? 'p1' : p <= 3 ? 'p2' : 'p3') + '" title="Our store is store number ' + p + ' named in the answer">' + p + '</span>') +
-    '<span class="zm">' + zm + '</span>';
-}
-function sklepyPytania(id, s) {
-  var kolej = [];
-  s.forEach(function (x) { var r = wiersz(OST, id, x); if (r && r[4]) r[4].split('; ').forEach(function (n) { if (kolej.indexOf(n) < 0) kolej.push(n); }); });
-  return kolej;
-}
-function pasujeQ(p, s) {
-  if (!stan.q) return true;
-  return (p.id + ' ' + p.pytanie + ' ' + angielski(p) + ' ' + p.temat + ' ' + sklepyPytania(p.id, s).join(' ')).toLowerCase().indexOf(stan.q.toLowerCase()) >= 0;
-}
-function rysujPytania() {
-  var s = wybrane();
-  var baza = D.pytania.filter(function (p) { return pasujeQ(p, s); });
-  var poTemacie = baza.filter(function (p) { return !stan.temat || p.temat === stan.temat; });
-  var ileJest = poTemacie.filter(function (p) { return jestW(OST, p.id, s); }).length;
-  var lista = poTemacie.filter(function (p) { var j = jestW(OST, p.id, s); return stan.filtr === 'wszystkie' || (stan.filtr === 'jest' ? j : !j); });
-  var tem = []; baza.forEach(function (p) { if (tem.indexOf(p.temat) < 0) tem.push(p.temat); });
-  function chip(k, et, n, typ) { return '<button class="chipf' + ((typ === 't' ? stan.temat === k : stan.filtr === k) ? ' on' : '') + '" data-' + typ + '="' + esc(k) + '">' + esc(et) + (n == null ? '' : '<b>' + n + '</b>') + '</button>'; }
-  document.getElementById('filtry').innerHTML =
-    chip('wszystkie', 'All prompts', poTemacie.length, 'f') + chip('jest', 'We are mentioned', ileJest, 'f') + chip('brak', 'We are not mentioned', poTemacie.length - ileJest, 'f') +
-    '<span class="gap"></span>' + chip('', 'All topics', null, 't') + tem.map(function (t) { return chip(t, t, null, 't'); }).join('');
-  document.querySelectorAll('#filtry [data-f]').forEach(function (b) { b.onclick = function () { stan.filtr = b.getAttribute('data-f'); rysujPytania(); }; });
-  document.querySelectorAll('#filtry [data-t]').forEach(function (b) { b.onclick = function () { stan.temat = b.getAttribute('data-t'); rysujPytania(); }; });
-  document.getElementById('legenda').innerHTML = 'Position of ' + esc(D.nasz) + ' among the stores named in the answer:' +
-    '<span class="el"><span class="poz p1">1</span>named first</span><span class="el"><span class="poz p2">2</span>2nd or 3rd</span>' +
-    '<span class="el"><span class="poz p3">4</span>4th or later</span><span class="el"><span class="poz brak">not named</span></span>' +
-    '<span class="el"><span class="chip up"><span class="ar">▲</span>1</span>better than the previous run</span>';
-  document.getElementById('pyt-sub').textContent = 'click a prompt to read the full answers';
-  if (!lista.length) { document.getElementById('tab-pytania').innerHTML = '<div class="nodata">No prompt matches the filters.</div>'; return; }
-  var h = '<table><thead><tr><th></th><th class="tl">Prompt' + (RYN.kod !== 'UK' ? ' <span class="szary">(local language, English below)</span>' : '') + '</th>' +
-    s.map(function (x) { return '<th class="tc">' + esc(x) + tip(DEF.position) + '</th>'; }).join('') +
-    '<th class="tl ukr">Stores named, in order of first mention</th><th class="tl ukr">Our page cited' + tip(DEF.cited) + '</th></tr></thead><tbody>';
-  lista.forEach(function (p) {
-    var sk = sklepyPytania(p.id, s), adr = '', en = angielski(p);
-    s.some(function (x) { var z = D.szczegoly[p.id + '|' + x]; if (z && z.adres) { adr = z.adres; return true; } });
-    h += '<tr class="klik" tabindex="0" data-id="' + esc(p.id) + '" aria-label="' + esc('Open answers: ' + (en || p.pytanie)) + '"><td class="rank">' + esc(p.id.replace(/^[A-Z]+0?/, '')) + '</td>' +
-      '<td class="name"><span class="duzy">' + esc(p.pytanie) + '</span>' + (en ? '<span class="tlum">' + esc(en) + '</span>' : '') + '<span class="sub2">' + esc(p.temat) + '</span></td>' +
-      s.map(function (x) { return '<td class="tc">' + komorkaPoz(p.id, x) + '</td>'; }).join('') +
-      '<td class="tl ukr" style="white-space:normal">' + (sk.length ? sk.slice(0, 4).map(function (n) { return '<span class="tag' + (n === D.nasz ? ' nasz' : '') + '">' + esc(n) + '</span>'; }).join('') +
-        (sk.length > 4 ? '<span class="tag wiecej" title="' + esc(sk.slice(4).join(', ')) + '">+' + (sk.length - 4) + ' more</span>' : '') : '<span class="szary">no store named</span>') + '</td>' +
-      '<td class="tl ukr">' + (adr ? '<a class="adr" href="' + esc(adr) + '" target="_blank" rel="noopener">' + esc(adr.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '') || RYN.domeny[0]) + '</a>' : '<span class="szary">not cited</span>') + '</td></tr>';
-  });
-  document.getElementById('tab-pytania').innerHTML = h + '</tbody></table>';
-  document.querySelectorAll('#tab-pytania tbody tr').forEach(function (tr) {
-    tr.onclick = function (e) { if (e.target.closest('a, .tip')) return; otworz(tr.getAttribute('data-id')); };
-    tr.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); otworz(tr.getAttribute('data-id')); } };
-  });
-}
-
-/* ---------- competitors ---------- */
-function rysujSklepy() {
-  var s = wybrane(), t = sklepyMiary(OST, s), p = POP ? sklepyMiary(POP, s) : null;
-  var lista = t.lista.slice();
-  if (!lista.some(function (x) { return x.nazwa === D.nasz; })) lista.push({ nazwa: D.nasz, n: 0, odp: 0, suma: 0, pierwsze: 0 });
-  if (stan.q) lista = lista.filter(function (x) { return x.nazwa.toLowerCase().indexOf(stan.q.toLowerCase()) >= 0; });
-  document.getElementById('konk-sub').textContent = 'stores from the watch list of ' + RYN.nazwa + ', latest run compared with the previous one';
-  var h = '<table><thead><tr><th></th><th class="tl">Store</th><th class="tl">Prompts where the store is named' + tip(DEF.mentioned) + '</th><th></th>' +
-    '<th>Change' + tip(DEF.change) + '</th><th>Average position' + tip(DEF.position) + '</th><th>Named first' + tip(DEF.first) + '</th></tr></thead><tbody>';
-  lista.forEach(function (x, i) {
-    var przed = p ? (p.lista.filter(function (y) { return y.nazwa === x.nazwa; })[0] || { n: 0 }) : null;
-    h += '<tr class="' + (x.nazwa === D.nasz ? 'nasz' : '') + '"><td class="rank">' + (x.n ? i + 1 : '') + '</td><td class="tl"><span class="duzy">' + esc(x.nazwa) + '</span>' + (x.nazwa === D.nasz ? ' <span class="tag nasz">our store</span>' : '') + '</td>' +
-      '<td class="tl" style="width:32%"><span class="trk"><i style="width:' + (t.pytan ? x.n / t.pytan * 100 : 0) + '%"></i></span></td>' +
-      '<td><b>' + x.n + '</b> <span class="szary">of ' + t.pytan + '</span></td>' +
-      '<td>' + delta(x.n, przed && przed.n, true, '', 0, 'prompts naming the store') + '</td>' +
-      '<td>' + (x.odp ? pl(x.suma / x.odp, 1) : '-') + '</td><td>' + x.pierwsze + ' <span class="szary">answers</span></td></tr>';
-  });
-  document.getElementById('tab-sklepy').innerHTML = lista.length ? h + '</tbody></table>' : '<div class="nodata">No store from the watch list is named.</div>';
-}
-
-/* ---------- sources ---------- */
-function zrodla(s) {
-  var m = {}, ze = 0;
-  D.pytania.forEach(function (p) {
-    var maZrodla = false;
-    s.forEach(function (x) {
-      var z = D.szczegoly[p.id + '|' + x];
-      if (!z || !z.zrodla) return;
-      maZrodla = true;
-      z.zrodla.split(', ').forEach(function (d) {
-        var e = m[d] = m[d] || { d: d, n: 0, pyt: {}, s: {}, nasz: NASZ_DOM.test(d) };
-        e.pyt[p.id] = 1; e.s[x] = (e.s[x] || 0) + 1;
-      });
-    });
-    if (maZrodla) ze++;
-  });
-  Object.keys(m).forEach(function (k) { m[k].n = Object.keys(m[k].pyt).length; });
-  return { zeZrodlami: ze, lista: Object.keys(m).map(function (k) { return m[k]; }).sort(function (a, b) { return b.n - a.n || a.d.localeCompare(b.d); }) };
-}
-function rysujZrodla() {
-  var s = wybrane(), z = zrodla(s), n = D.pytania.length;
-  var lista = z.lista.filter(function (x) { return !stan.q || x.d.indexOf(stan.q.toLowerCase()) >= 0; });
-  var h = '<table><thead><tr><th></th><th class="tl">Website</th><th class="tl">Prompts where the website is cited</th><th></th>' +
-    s.map(function (x) { return '<th>' + esc(x) + ' answers</th>'; }).join('') + '</tr></thead><tbody>';
-  lista.forEach(function (x, i) {
-    h += '<tr class="' + (x.nasz ? 'nasz' : '') + '"><td class="rank">' + (i + 1) + '</td><td class="tl"><span class="duzy">' + esc(x.d) + '</span>' + (x.nasz ? ' <span class="tag nasz">our website</span>' : '') + '</td>' +
-      '<td class="tl" style="width:30%"><span class="trk"><i style="width:' + (x.n / n * 100) + '%"></i></span></td><td><b>' + x.n + '</b> <span class="szary">of ' + n + '</span></td>' +
-      s.map(function (y) { return '<td>' + (x.s[y] || '<span class="szary">-</span>') + '</td>'; }).join('') + '</tr>';
-  });
-  document.getElementById('tab-zrodla').innerHTML = lista.length ? h + '</tbody></table>' : '<div class="nodata">The models gave no sources.</div>';
-}
-
-/* ---------- how it works ---------- */
-function rysujMetode() {
-  var mod = D.modele.map(function (m) { return '<li><b>' + esc(m.silnik) + '</b>: <code>' + esc(m.model) + '</code>' + (m.note ? '. ' + esc(m.note) + '.' : '') + '</li>'; }).join('');
-  var ost = IDX.runs[IDX.runs.length - 1] || {};
-  document.getElementById('metoda').innerHTML =
-    '<section class="sec"><div class="sh"><h2>What the panel shows</h2></div>' +
-    '<p>Every day the same customer questions ("prompts") are asked to ChatGPT and to Google\'s AI. The panel shows whether the answer recommends our store, in which place, which other stores are named and which websites the models use as sources.</p>' +
-    '<h3>Prompts with a mention</h3><p>' + esc(DEF.mentioned) + '</p>' +
-    '<h3>Position</h3><p>' + esc(DEF.position) + '</p>' +
-    '<h3>Named first</h3><p>' + esc(DEF.first) + '</p>' +
-    '<h3>Our website cited</h3><p>' + esc(DEF.cited) + '</p>' +
-    '<h3>Change</h3><p>' + esc(DEF.change) + ' "New" means mentioned now but not in the previous run, "lost" the other way round.</p></section>' +
-    '<section class="sec"><div class="sh"><h2>How it is measured</h2></div>' +
-    '<h3>Models</h3><ul>' + mod + '</ul><p>The models are called through their API with web search switched on. The consumer apps add their own instructions, so an answer in the app can differ from the one shown here. The trend over many runs is what matters.</p>' +
-    '<h3>Clean context</h3><p>Every prompt is a separate conversation with no history, no account and no mention of our stores. The only extra information is the customer\'s approximate location (' +
-    esc(D.rynki.map(function (r) { return r.miasto; }).join(', ')) + '), which the apps also know.</p>' +
-    '<h3>Prompts</h3><p>' + D.rynki.length + ' markets × 25 prompts in the local language. The prompts and the watch list of stores are kept in <code>config/config.json</code> in the repository.</p>' +
-    '<h3>Schedule</h3><p>Daily at 07:00 UTC. Latest run: ' + esc(dataPl(ost.run)) + (ost.cost ? ', cost ' + pl(ost.cost, 2) + ' USD' : '') + '.</p>' +
-    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored. The password never leaves your device.</p>' +
-    '<a class="btn" href="https://github.com/' + REPO + '/actions/workflows/measure.yml" target="_blank" rel="noopener" title="Needs a GitHub account with access to the repository">' + ic('i-play') + 'Run a measurement now (admins)</a></section>';
-}
-
 /* ---------- answer drawer ---------- */
-function formatuj(t) {
+function formatuj(t, re) {
   var out = [], lista = false;
   esc(t).split(/\n/).forEach(function (l) {
-    l = l.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
-    l = l.replace(/(<a [^>]*>.*?<\/a>)|([^<]+)/g, function (m0, a, txt) { return a ? a : txt.replace(NASZ_WZ, '<mark>$1</mark>'); });
-    var li = /^\s*([-*]|\d+\.)\s+/.test(l);
+    l = l.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(^|\s)\*([^*\s][^*]*)\*/g, '$1<i>$2</i>');
+    l = l.replace(/(<a [^>]*>.*?<\/a>)|([^<]+)/g, function (x, a, txt) { return a ? a : txt.replace(re, '<mark>$1</mark>'); });
+    var li = /^\s*([-*•]|\d+\.)\s+/.test(l);
     if (li && !lista) { out.push('<ul>'); lista = true; }
     if (!li && lista) { out.push('</ul>'); lista = false; }
     if (/^#{1,4}\s/.test(l)) out.push('<h4>' + l.replace(/^#+\s/, '') + '</h4>');
-    else if (li) out.push('<li>' + l.replace(/^\s*([-*]|\d+\.)\s+/, '') + '</li>');
-    else if (l.trim() && !/^-{3,}$/.test(l.trim())) out.push('<p>' + l + '</p>');
+    else if (li) out.push('<li>' + l.replace(/^\s*([-*•]|\d+\.)\s+/, '') + '</li>');
+    else if (l.trim() && !/^[-*_]{3,}$/.test(l.trim())) out.push('<p>' + l + '</p>');
   });
   if (lista) out.push('</ul>');
   return out.join('');
 }
-function czasPl(iso) { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }); }
-var ostatniFokus = null;
-async function otworz(id, przebieg) {
-  var p = PYT[id];
-  przebieg = przebieg || OST;
-  if (!document.getElementById('szuf').classList.contains('on')) ostatniFokus = document.activeElement;
-  var pomiary = D.przebiegi.filter(function (pr) { return wybrane().some(function (x) { return wiersz(pr, id, x); }); }).reverse();
-  document.getElementById('sz-okr').innerHTML = esc(RYN.nazwa + ' · ' + p.temat) + ' · <label for="sz-pomiar">answers from the run of</label> <select id="sz-pomiar" class="wybor">' +
-    pomiary.map(function (pr) { return '<option value="' + esc(pr) + '"' + (pr === przebieg ? ' selected' : '') + '>' + esc(dataPl(pr)) + '</option>'; }).join('') + '</select>';
-  document.getElementById('sz-tyt').textContent = p.pytanie;
-  document.getElementById('sz-tlum').textContent = angielski(p);
-  document.getElementById('sz-pomiar').onchange = function (e) { otworz(id, e.target.value); };
-  document.getElementById('szuf').classList.add('on');
-  document.getElementById('cien').classList.add('on');
+var fokus = null;
+async function otworz(code, id, run) {
+  var m = rynek(code), p = m.prompts.filter(function (x) { return x.id === id; })[0];
+  run = run || ostatni(m);
+  if (!document.getElementById('szuf').classList.contains('on')) fokus = document.activeElement;
+  var runy = (RUNS[m.code] || []).slice().reverse();
+  document.getElementById('sz-k').innerHTML = '<span>' + esc(m.name + ' · ' + m.store + ' · ' + p.topic) + ' · answers from</span><select id="sz-run" aria-label="Run">' +
+    runy.map(function (r) { return '<option value="' + esc(r) + '"' + (r === run ? ' selected' : '') + '>' + esc(kiedy(r)) + '</option>'; }).join('') + '</select>';
+  document.getElementById('sz-h').textContent = p.en;
+  document.getElementById('sz-o').textContent = m.code !== 'UK' ? 'Original prompt: ' + p.text : '';
+  document.getElementById('sz-run').onchange = function (e) { otworz(code, id, e.target.value); };
+  document.getElementById('szuf').classList.add('on'); document.getElementById('cien').classList.add('on');
   document.getElementById('sz-x').focus();
-  var cel = document.getElementById('sz-tresc');
-  var Z = {};
-  if (przebieg === OST) SILNIKI.forEach(function (x) { if (D.szczegoly[id + '|' + x]) Z[x] = D.szczegoly[id + '|' + x]; });
-  else {
-    cel.innerHTML = '<div class="odp"><div class="nodata">Loading the answers from ' + esc(dataPl(przebieg)) + '…</div></div>';
-    try {
-      var det = await pomiarPlik(przebieg);
-      SILNIKI.forEach(function (x) { if (det[id + '|' + x]) Z[x] = szczegol(det[id + '|' + x]); });
-    } catch (err) { cel.innerHTML = '<div class="odp"><div class="nodata">Could not load: ' + esc(err.message) + '</div></div>'; return; }
-    if (document.getElementById('sz-pomiar').value !== przebieg) return;
+  var cel = document.getElementById('sz-b');
+  if (!DET[run]) {
+    cel.innerHTML = '<div class="ans"><div class="nodata">Loading the answers…</div></div>';
+    try { DET[run] = await szczegoly(run); } catch (err) { cel.innerHTML = '<div class="ans"><div class="nodata">Could not load: ' + esc(err.message) + '</div></div>'; return; }
+    if (document.getElementById('sz-run').value !== run) return;
   }
-  cel.innerHTML = wybrane().map(function (x) {
-    var r = wiersz(przebieg, id, x), z = Z[x];
-    var gl = '<div class="oh"><b>' + esc(x) + '</b>';
-    if (!r || !z) return '<div class="odp">' + gl + '</div><div class="nodata">This prompt was not asked in this run.</div></div>';
-    if (r[6]) return '<div class="odp">' + gl + '</div><div class="nodata">The model returned an error: ' + esc(z.blad) + '</div></div>';
-    var skl = r[4] ? r[4].split('; ') : [];
-    return '<div class="odp">' + gl + '<span>' + esc(z.model) + (z.czas ? ' · answered ' + esc(czasPl(z.czas)) : '') + '</span><span style="margin-left:auto;white-space:nowrap">Position ' + komorkaPoz(id, x, przebieg) + '</span></div>' +
-      '<div class="lab">Stores named, in order of first mention</div><div>' +
-      (skl.length ? skl.map(function (n, i) { return '<span class="tag' + (n === D.nasz ? ' nasz' : '') + '">' + (i + 1) + '. ' + esc(n) + '</span>'; }).join('') : '<span class="szary">no store from the watch list</span>') + '</div>' +
-      '<div class="lab">Websites cited as sources</div><div>' + (z.zrodla ? z.zrodla.split(', ').map(function (d) { return '<span class="tag' + (NASZ_DOM.test(d) ? ' nasz' : '') + '">' + esc(d) + '</span>'; }).join('') : '<span class="szary">none</span>') + '</div>' +
-      '<div class="lab">Full answer' + (RYN.kod !== 'UK' ? ' (in the language of the prompt; use your browser\'s translate option if needed)' : '') + '</div>' +
-      '<div class="tresc">' + formatuj(z.odp) + '</div></div>';
+  var det = DET[run];
+  cel.innerHTML = ENG.map(function (e) {
+    var c = komorka(run, id, e), z = det[id + '|' + e];
+    var head = '<div class="h"><div><b>' + esc(e) + '</b>';
+    if (!c || !z) return '<div class="ans">' + head + '</div></div><div class="nodata">This prompt was not asked in this run.</div></div>';
+    if (c[6]) return '<div class="ans">' + head + '</div></div><div class="nodata">The model returned an error: ' + esc(z.error) + '</div></div>';
+    var v = c[3], st = c[4] ? c[4].split('; ') : [], src = z.sources ? z.sources.split(', ') : [];
+    return '<div class="ans">' + head + '<div class="meta">' + esc(z.model) + ' · answered ' + esc(new Date(z.time).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })) + '</div></div>' +
+      '<span class="badge ' + (v == null ? 'p0' : v === 1 ? 'p1' : v <= 3 ? 'p2' : 'p3') + '">' + (v == null ? 'Not named' : v === 1 ? 'Named first' : 'Named ' + v + (v === 2 ? 'nd' : v === 3 ? 'rd' : 'th')) + '</span></div>' +
+      '<div class="lab">Stores named, in order</div><div class="tags">' + (st.length ? st.map(function (s, i) { return '<span class="tag ' + (s === m.store ? 'us' : '') + '">' + (i + 1) + '. ' + esc(s) + '</span>'; }).join('') : '<span class="tag">No store from the watch list</span>') + '</div>' +
+      '<div class="lab">Sources</div><div class="tags">' + (src.length ? src.map(function (s) {
+        var us = m.domains.some(function (x) { return s === x || s.slice(-(x.length + 1)) === '.' + x; });
+        return '<span class="tag ' + (us ? 'us' : '') + '">' + esc(s) + '</span>';
+      }).join('') : '<span class="tag">None</span>') + '</div>' +
+      '<div class="tresc">' + formatuj(z.answer, m.re) + '</div></div>';
   }).join('');
   cel.scrollTop = 0;
 }
 function zamknij() {
   document.getElementById('szuf').classList.remove('on'); document.getElementById('cien').classList.remove('on');
-  if (ostatniFokus && ostatniFokus.focus) ostatniFokus.focus();
+  if (fokus && fokus.focus) fokus.focus();
 }
 document.getElementById('sz-x').onclick = zamknij;
 document.getElementById('cien').onclick = zamknij;
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') zamknij(); });
 
-/* ---------- controls ---------- */
-function rysujRynki() {
-  var el = document.getElementById('seg-rynek');
-  el.innerHTML = D.rynki.map(function (r) {
-    return '<button data-r="' + esc(r.kod) + '" title="' + esc(r.nazwa + ': ' + r.sklep) + '"' + (r.kod === RYN.kod ? ' class="on" aria-pressed="true"' : ' aria-pressed="false"') + '>' +
-      esc(r.kod) + '<small>' + esc(r.sklep) + '</small></button>';
-  }).join('');
-  el.querySelectorAll('button').forEach(function (b) { b.onclick = function () { wybierzRynek(b.getAttribute('data-r')); if (stan.v === 'przeglad' || stan.v === 'metoda') stan.v = 'pytania'; zamknij(); rysuj(); }; });
-  var ost = WSZ.przebiegi[WSZ.przebiegi.length - 1];
-  document.getElementById('stan').lastChild.textContent = ost ? 'Latest run: ' + dataPl(ost) : 'No run yet';
-}
-function rysuj() {
-  rysujRynki();
-  document.body.setAttribute('data-v', stan.v);
-  document.querySelectorAll('.rlink[data-idz]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-idz') === stan.v); });
-  rysujWerdykt();
-  if (stan.v === 'przeglad') rysujPrzeglad();
-  if (stan.v === 'pytania') { rysujKafle(); rysujPytania(); rysujWykres(); }
-  if (stan.v === 'konkurencja') rysujSklepy();
-  if (stan.v === 'zrodla') rysujZrodla();
-  if (stan.v === 'metoda') rysujMetode();
-}
-function start() {
-  SILNIKI = D.modele.map(function (m) { return m.silnik; });
-  MODEL = {}; D.modele.forEach(function (m) { MODEL[m.silnik] = m.model; });
-  WSZ = { pytania: D.pytania, hist: D.hist, przebiegi: D.przebiegi };
-  TLUM = {}; WSZ.pytania.forEach(function (p) { if (p.rynek === 'UK') TLUM[p.id.replace(/^[A-Z]+/, '')] = p.pytanie; });
-  var r = 'PL';
-  try { r = localStorage.getItem('aiv-market') || 'PL'; } catch (e) {}
-  wybierzRynek(r);
+/* ---------- sign-in ---------- */
+async function start(haslo, pamietaj) {
+  var post = document.getElementById('postep');
+  if (haslo) { post.textContent = 'Checking the password…'; KLUCZ = await kluczZHasla(haslo); }
+  post.textContent = 'Decrypting the data…';
+  await wczytaj();
+  if (haslo) {
+    var raw = b64z(new Uint8Array(await crypto.subtle.exportKey('raw', KLUCZ)));
+    try { sessionStorage.setItem('aiv-key', raw); if (pamietaj) localStorage.setItem('aiv-key', raw); } catch (e) {}
+  }
+  post.textContent = '';
+  try { var r = localStorage.getItem('aiv-market'); if (r && M.some(function (m) { return m.code === r; })) stan.rynek = r; } catch (e) {}
+  document.body.classList.remove('zamkniety');
   rysuj();
 }
-document.querySelectorAll('.rlink[data-idz]').forEach(function (b) { b.onclick = function () { stan.v = b.getAttribute('data-idz'); rysuj(); window.scrollTo(0, 0); }; });
-document.getElementById('szukaj').addEventListener('input', function (e) { stan.q = e.target.value.trim(); if (stan.v === 'przeglad' || stan.v === 'metoda') stan.v = 'pytania'; rysuj(); });
-var tm; window.addEventListener('resize', function () { clearTimeout(tm); tm = setTimeout(function () { if (D && stan.v === 'pytania') rysujWykres(); }, 150); });
-
+document.getElementById('brama-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  var bl = document.getElementById('blad'), btn = document.getElementById('otworz-btn');
+  bl.textContent = ''; btn.disabled = true;
+  try { await start(document.getElementById('haslo').value, document.getElementById('pamietaj').checked); }
+  catch (err) {
+    var t = String(err && (err.name + ' ' + err.message));
+    bl.textContent = /NO_DATA/.test(t) ? 'There are no results yet. The first measurement has not finished.' :
+      /OperationError|decrypt/i.test(t) ? 'Wrong password. Check it and try again.' : 'Could not load the data: ' + (err && err.message || err);
+    document.getElementById('postep').textContent = '';
+  }
+  btn.disabled = false;
+});
+document.querySelectorAll('.rlink[data-v]').forEach(function (b) { b.onclick = function () { stan.v = b.getAttribute('data-v'); rysuj(); window.scrollTo(0, 0); }; });
+document.getElementById('wyloguj').onclick = function () { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (e) {} location.reload(); };
 (async function () {
-  try { if (await kluczZPamieci()) await otworzPanel(); }
-  catch (e) { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (x) {} }
-  if (!D) document.getElementById('haslo').focus();
+  var s = null;
+  try { s = sessionStorage.getItem('aiv-key') || localStorage.getItem('aiv-key'); } catch (e) {}
+  if (s) {
+    try { KLUCZ = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt']); await start(); return; }
+    catch (e) { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (x) {} }
+  }
+  document.getElementById('haslo').focus();
 })();
 </script>
 </body>
