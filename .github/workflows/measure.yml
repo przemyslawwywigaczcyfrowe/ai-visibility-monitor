@@ -1,0 +1,48 @@
+name: Measure AI visibility
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 07:00 UTC = 09:00 Warsaw (summer time), 08:00 (winter time)
+  workflow_dispatch:
+    inputs:
+      markets:
+        description: 'Only these markets, e.g. PL,UK (empty = all)'
+        required: false
+        default: ''
+      prompts:
+        description: 'Only these prompt ids, e.g. PL01,DE16 (empty = all)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: measure
+  cancel-in-progress: false
+
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Ask the models
+        env:
+          OPENROUTER_KEY: ${{ secrets.OPENROUTER_KEY }}
+          PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
+          MARKETS: ${{ inputs.markets }}
+          PROMPTS: ${{ inputs.prompts }}
+        run: node scripts/measure.mjs
+      - name: Commit encrypted results
+        run: |
+          git config user.name "ai-visibility-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet && exit 0
+          git commit -m "Measurement $(date -u +'%Y-%m-%d %H:%M') UTC"
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
+          exit 1

@@ -1,0 +1,900 @@
+{
+  "engines": [
+    {
+      "label": "ChatGPT",
+      "model": "openai/gpt-5.6-luna",
+      "web": true,
+      "note": "Default model in free ChatGPT since 2026-08-06"
+    },
+    {
+      "label": "Google AI Mode",
+      "model": "google/gemini-3.8-flash",
+      "web": true,
+      "note": "Default model in AI Mode in Google Search since 2026-09-02"
+    }
+  ],
+  "markets": [
+    {
+      "code": "PL",
+      "name": "Poland",
+      "country": "PL",
+      "city": "Warsaw",
+      "location": "User's approximate location: Warsaw, Masovian Voivodeship, Poland."
+    },
+    {
+      "code": "UK",
+      "name": "United Kingdom",
+      "country": "GB",
+      "city": "London",
+      "location": "User's approximate location: London, England, United Kingdom."
+    },
+    {
+      "code": "NL",
+      "name": "Netherlands",
+      "country": "NL",
+      "city": "Amsterdam",
+      "location": "User's approximate location: Amsterdam, North Holland, Netherlands."
+    },
+    {
+      "code": "DE",
+      "name": "Germany",
+      "country": "DE",
+      "city": "Hamburg",
+      "location": "User's approximate location: Hamburg, Germany."
+    }
+  ],
+  "topics": [
+    "Choosing a store",
+    "Choosing a store",
+    "Choosing a store",
+    "Choosing a store",
+    "Choosing a store",
+    "Used gear",
+    "Used gear",
+    "Used gear",
+    "Cameras",
+    "Cameras",
+    "Cameras",
+    "Cameras",
+    "Cameras",
+    "Cameras",
+    "Cameras",
+    "Lenses",
+    "Lenses",
+    "Video",
+    "Video",
+    "Video",
+    "Audio & lighting",
+    "Drones",
+    "Audio & lighting",
+    "Accessories",
+    "Accessories"
+  ],
+  "prompts": {
+    "PL": [
+      "Jaki sklep fotograficzny i wideo w Polsce jest godny zaufania?",
+      "Gdzie w Polsce mogę kupić aparat z indywidualnym doradztwem i najpierw przetestować go w sklepie?",
+      "Jaki jest najlepszy sklep internetowy, żeby kupić aparat w Polsce?",
+      "Czy lepiej kupić aparat na Allegro, czy w specjalistycznym sklepie fotograficznym?",
+      "Który sklep fotograficzny w Polsce oferuje najlepszą gwarancję i obsługę posprzedażową?",
+      "Gdzie w Polsce mogę bezpiecznie kupić używany aparat?",
+      "Gdzie w Polsce mogę sprzedać lub wymienić sprzęt fotograficzny?",
+      "Czy warto kupić używany obiektyw i na co zwrócić uwagę?",
+      "Jaki jest najlepszy bezlusterkowiec dla początkujących?",
+      "Sony, Canon czy Nikon: który system aparatów wybrać?",
+      "Który pełnoklatkowy bezlusterkowiec jest najlepszy do zdjęć i wideo?",
+      "Jaki aparat cyfrowy kupić?",
+      "Jaki jest najlepszy aparat kompaktowy w podróż?",
+      "Czy warto kupić kompakt premium, taki jak Fujifilm X100 lub Ricoh GR?",
+      "Który aparat natychmiastowy jest lepszy: Polaroid czy Instax?",
+      "Jaki obiektyw kupić jako pierwszy po obiektywie kitowym?",
+      "Czy obiektyw Sigma, Tamron lub Viltrox jest tak dobry jak obiektyw producenta aparatu?",
+      "Jaki jest najlepszy aparat do vlogowania i YouTube?",
+      "Jaki aparat jest najlepszy do filmowania i tworzenia treści?",
+      "Która kamera sportowa jest najlepsza: GoPro, DJI czy Insta360?",
+      "Jakiego sprzętu potrzebuję, żeby założyć podcast?",
+      "Jaki dron jest najlepszy dla początkujących?",
+      "Jakiej lampy błyskowej lub oświetlenia potrzebuję do domowego studia fotograficznego?",
+      "Czy do filmowania aparatem potrzebuję gimbala czy statywu?",
+      "Jakie akcesoria kupić do pierwszego aparatu?"
+    ],
+    "UK": [
+      "What is a reliable photo and video retailer in the UK?",
+      "Where in the UK can I buy a camera with personal advice and try it in the store first?",
+      "What is the best online shop to buy a camera in the UK?",
+      "Should I buy a camera on Amazon or from a specialist photo retailer?",
+      "Which photo retailer in the UK offers the best warranty and after-sales service?",
+      "Where can I safely buy a used camera in the UK?",
+      "Where can I sell or trade in my camera equipment in the UK?",
+      "Is it a good idea to buy a used lens, and what should I check?",
+      "What is the best mirrorless camera for beginners?",
+      "Sony, Canon or Nikon: which camera system should I choose?",
+      "Which full-frame mirrorless camera is best for both photo and video?",
+      "Which digital camera should I buy?",
+      "What is the best compact camera for travel?",
+      "Is a premium compact camera like the Fujifilm X100 or Ricoh GR worth it?",
+      "Which instant camera is best: Polaroid or Instax?",
+      "Which lens should I buy as my first upgrade from the kit lens?",
+      "Is a Sigma, Tamron or Viltrox lens as good as a lens from the camera brand?",
+      "What is the best camera for vlogging and YouTube?",
+      "Which camera is best for filmmaking and content creation?",
+      "Which action camera is best: GoPro, DJI or Insta360?",
+      "What equipment do I need to start a podcast?",
+      "Which drone is best for beginners?",
+      "What flash or lighting do I need for a home photo studio?",
+      "Do I need a gimbal or a tripod for filming with my camera?",
+      "Which accessories should I buy with my first camera?"
+    ],
+    "NL": [
+      "Wat is een betrouwbare winkel voor foto en video in Nederland?",
+      "Waar in Nederland kan ik een camera kopen met persoonlijk advies en hem eerst in de winkel testen?",
+      "Wat is de beste webshop om een camera te kopen in Nederland?",
+      "Kan ik een camera beter bij bol.com kopen of bij een gespecialiseerde fotowinkel?",
+      "Welke fotowinkel in Nederland biedt de beste garantie en service na aankoop?",
+      "Waar kan ik in Nederland veilig een tweedehands camera kopen?",
+      "Waar kan ik in Nederland mijn camera-apparatuur verkopen of inruilen?",
+      "Is het verstandig om een tweedehands objectief te kopen, en waar moet ik op letten?",
+      "Wat is de beste systeemcamera voor beginners?",
+      "Sony, Canon of Nikon: welk camerasysteem moet ik kiezen?",
+      "Welke full-frame systeemcamera is het best voor zowel foto als video?",
+      "Welke digitale camera moet ik kopen?",
+      "Wat is de beste compacte camera voor op reis?",
+      "Is een premium compactcamera zoals de Fujifilm X100 of Ricoh GR het waard?",
+      "Welke instant camera is het best: Polaroid of Instax?",
+      "Welk objectief koop ik als eerste upgrade na de kitlens?",
+      "Is een objectief van Sigma, Tamron of Viltrox net zo goed als een objectief van het cameramerk?",
+      "Wat is de beste camera voor vloggen en YouTube?",
+      "Welke camera is het best voor filmen en contentcreatie?",
+      "Welke actiecamera is het best: GoPro, DJI of Insta360?",
+      "Welke apparatuur heb ik nodig om een podcast te starten?",
+      "Welke drone is het best voor beginners?",
+      "Welke flitser of verlichting heb ik nodig voor een fotostudio thuis?",
+      "Heb ik een gimbal of een statief nodig om te filmen met mijn camera?",
+      "Welke accessoires moet ik kopen bij mijn eerste camera?"
+    ],
+    "DE": [
+      "Was ist ein zuverlässiger Foto- und Videohändler in Deutschland?",
+      "Wo in Deutschland kann ich eine Kamera mit persönlicher Beratung kaufen und sie vorher im Geschäft ausprobieren?",
+      "Was ist der beste Onlineshop, um in Deutschland eine Kamera zu kaufen?",
+      "Sollte ich eine Kamera bei Amazon kaufen oder bei einem Fachhändler für Foto?",
+      "Welcher Fotohändler in Deutschland bietet die beste Garantie und den besten Service nach dem Kauf?",
+      "Wo kann ich in Deutschland sicher eine gebrauchte Kamera kaufen?",
+      "Wo kann ich in Deutschland meine Kameraausrüstung verkaufen oder in Zahlung geben?",
+      "Ist es sinnvoll, ein gebrauchtes Objektiv zu kaufen, und worauf sollte ich achten?",
+      "Welche ist die beste spiegellose Kamera für Einsteiger?",
+      "Sony, Canon oder Nikon: Für welches Kamerasystem sollte ich mich entscheiden?",
+      "Welche spiegellose Vollformatkamera ist am besten für Foto und Video?",
+      "Welche Digitalkamera soll ich kaufen?",
+      "Was ist die beste Kompaktkamera für Reisen?",
+      "Lohnt sich eine Premium-Kompaktkamera wie die Fujifilm X100 oder Ricoh GR?",
+      "Welche Sofortbildkamera ist besser: Polaroid oder Instax?",
+      "Welches Objektiv sollte ich als erstes Upgrade nach dem Kit-Objektiv kaufen?",
+      "Ist ein Objektiv von Sigma, Tamron oder Viltrox so gut wie ein Objektiv der Kameramarke?",
+      "Was ist die beste Kamera für Vlogging und YouTube?",
+      "Welche Kamera ist am besten für Filmemacher und Content Creation?",
+      "Welche Actioncam ist die beste: GoPro, DJI oder Insta360?",
+      "Welche Ausrüstung brauche ich, um einen Podcast zu starten?",
+      "Welche Drohne ist am besten für Anfänger?",
+      "Welchen Blitz oder welche Beleuchtung brauche ich für ein Fotostudio zu Hause?",
+      "Brauche ich einen Gimbal oder ein Stativ zum Filmen mit meiner Kamera?",
+      "Welches Zubehör sollte ich zu meiner ersten Kamera kaufen?"
+    ]
+  },
+  "shops": [
+    {
+      "market": "PL",
+      "name": "Cyfrowe.pl",
+      "pattern": "cyfrowe\\.(pl|com)",
+      "domains": [
+        "cyfrowe.pl"
+      ],
+      "ours": true
+    },
+    {
+      "market": "PL",
+      "name": "Fotoforma",
+      "pattern": "fotoform",
+      "domains": [
+        "fotoforma.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Foto-Plus",
+      "pattern": "foto-?plus",
+      "domains": [
+        "fotoplus.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "e-oko",
+      "pattern": "\\be-oko",
+      "domains": [
+        "e-oko.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Beafoto",
+      "pattern": "beafoto",
+      "domains": [
+        "beafoto.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Fotozakupy",
+      "pattern": "fotozakup",
+      "domains": [
+        "fotozakupy.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Foto-Net",
+      "pattern": "foto-?net\\b",
+      "domains": [
+        "foto-net.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Fotopoker",
+      "pattern": "fotopoker",
+      "domains": [
+        "fotopoker.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "AB Foto",
+      "pattern": "\\bab ?foto\\b|abfoto\\.pl",
+      "domains": [
+        "abfoto.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Notopstryk",
+      "pattern": "notopstryk",
+      "domains": [
+        "notopstryk.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Filmgraf",
+      "pattern": "filmgraf",
+      "domains": [
+        "filmgraf.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Foto-szop",
+      "pattern": "foto-?szop",
+      "domains": [
+        "foto-szop.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Fotojoker",
+      "pattern": "foto ?joker",
+      "domains": [
+        "fotojoker.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Interfoto",
+      "pattern": "\\binter ?foto",
+      "domains": [
+        "interfoto.eu"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "MultiFoto",
+      "pattern": "multi ?foto",
+      "domains": [
+        "multifoto.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Winmar",
+      "pattern": "\\bwinmar",
+      "domains": [
+        "winmar.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Aspot",
+      "pattern": "\\baspot",
+      "domains": [
+        "aspot.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Proclub",
+      "pattern": "\\bproclub",
+      "domains": [
+        "proclub.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Beiks",
+      "pattern": "\\bbeiks",
+      "domains": [
+        "beiks.pl",
+        "beiks.com.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Optyczne.pl",
+      "pattern": "optyczne\\.pl",
+      "domains": [
+        "optyczne.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Media Expert",
+      "pattern": "media ?exper",
+      "domains": [
+        "mediaexpert.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "RTV Euro AGD",
+      "pattern": "rtv ?euro ?agd|euro\\.com\\.pl",
+      "domains": [
+        "euro.com.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "x-kom",
+      "pattern": "\\bx-kom",
+      "domains": [
+        "x-kom.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Komputronik",
+      "pattern": "komputronik",
+      "domains": [
+        "komputronik.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Morele",
+      "pattern": "\\bmorele",
+      "domains": [
+        "morele.net"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Empik",
+      "pattern": "\\bempik",
+      "domains": [
+        "empik.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Allegro",
+      "pattern": "\\ballegr",
+      "domains": [
+        "allegro.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "OLX",
+      "pattern": "\\bolx",
+      "domains": [
+        "olx.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Ceneo",
+      "pattern": "\\bceneo",
+      "domains": [
+        "ceneo.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "PL",
+      "name": "Skąpiec",
+      "pattern": "\\bsk[aą]pc|\\bsk[aą]piec",
+      "domains": [
+        "skapiec.pl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Wex Photo Video",
+      "pattern": "wex ?photo|\\bwex\\b",
+      "domains": [
+        "wexphotovideo.com",
+        "wex.co.uk"
+      ],
+      "ours": true
+    },
+    {
+      "market": "UK",
+      "name": "Park Cameras",
+      "pattern": "park ?cameras",
+      "domains": [
+        "parkcameras.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Clifton Cameras",
+      "pattern": "clifton ?cameras",
+      "domains": [
+        "cliftoncameras.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "London Camera Exchange",
+      "pattern": "london camera exchange|\\blce\\b",
+      "domains": [
+        "lcegroup.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Jessops",
+      "pattern": "jessops",
+      "domains": [
+        "jessops.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Camera World",
+      "pattern": "\\bcameraworld\\b",
+      "domains": [
+        "cameraworld.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "CVP",
+      "pattern": "\\bcvp\\b",
+      "domains": [
+        "cvp.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Harrison Cameras",
+      "pattern": "harrison ?cameras",
+      "domains": [
+        "harrisoncameras.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Ffordes",
+      "pattern": "ffordes",
+      "domains": [
+        "ffordes.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Mifsuds",
+      "pattern": "mifsuds",
+      "domains": [
+        "mifsuds.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Wilkinson Cameras",
+      "pattern": "wilkinson ?cameras",
+      "domains": [
+        "wilkinson.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Castle Cameras",
+      "pattern": "castle ?cameras",
+      "domains": [
+        "castlecameras.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Grays of Westminster",
+      "pattern": "grays of westminster",
+      "domains": [
+        "graysofwestminster.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Currys",
+      "pattern": "\\bcurrys",
+      "domains": [
+        "currys.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "John Lewis",
+      "pattern": "john lewis",
+      "domains": [
+        "johnlewis.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "UK",
+      "name": "Argos",
+      "pattern": "\\bargos\\b",
+      "domains": [
+        "argos.co.uk"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "Cameranu",
+      "pattern": "cameranu",
+      "domains": [
+        "cameranu.nl"
+      ],
+      "ours": true
+    },
+    {
+      "market": "NL",
+      "name": "Kamera Express",
+      "pattern": "kamera[- ]?express",
+      "domains": [
+        "kamera-express.nl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "Camera Occasion",
+      "pattern": "camera ?occasion",
+      "domains": [
+        "cameraoccasion.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "De Fotovakman",
+      "pattern": "fotovakman",
+      "domains": [
+        "fotodevakman.nl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "Foka",
+      "pattern": "\\bfoka\\b",
+      "domains": [
+        "foka.nl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "Fotokonijnenberg",
+      "pattern": "konijnenberg",
+      "domains": [
+        "fotokonijnenberg.nl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "Cameraland",
+      "pattern": "cameraland",
+      "domains": [
+        "cameraland.nl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "Coolblue",
+      "pattern": "coolblue",
+      "domains": [
+        "coolblue.nl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "bol",
+      "pattern": "bol\\.com|\\bbol\\b",
+      "domains": [
+        "bol.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "NL",
+      "name": "Marktplaats",
+      "pattern": "marktplaats",
+      "domains": [
+        "marktplaats.nl"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Calumet",
+      "pattern": "calumet",
+      "domains": [
+        "calumet.de"
+      ],
+      "ours": true
+    },
+    {
+      "market": "DE",
+      "name": "Foto Koch",
+      "pattern": "foto ?koch",
+      "domains": [
+        "fotokoch.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Foto Erhardt",
+      "pattern": "foto[- ]?erhardt",
+      "domains": [
+        "foto-erhardt.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Foto Leistenschneider",
+      "pattern": "leistenschneider",
+      "domains": [
+        "foto-leistenschneider.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Foto Gregor",
+      "pattern": "foto ?gregor",
+      "domains": [
+        "fotogregor.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Foto Brenner",
+      "pattern": "foto ?brenner",
+      "domains": [
+        "fotobrenner.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Foto Video Sauter",
+      "pattern": "sauter",
+      "domains": [
+        "foto-video-sauter.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Ringfoto",
+      "pattern": "ringfoto",
+      "domains": [
+        "ringfoto.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Kamera Express",
+      "pattern": "kamera[- ]?express|photospecialist",
+      "domains": [
+        "kamera-express.de",
+        "photospecialist.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Teltec",
+      "pattern": "teltec",
+      "domains": [
+        "teltec.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Saturn",
+      "pattern": "\\bsaturn\\b",
+      "domains": [
+        "saturn.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Cyberport",
+      "pattern": "cyberport",
+      "domains": [
+        "cyberport.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Otto",
+      "pattern": "\\botto\\b",
+      "domains": [
+        "otto.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "Kleinanzeigen",
+      "pattern": "kleinanzeigen",
+      "domains": [
+        "kleinanzeigen.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "DE",
+      "name": "reBuy",
+      "pattern": "\\brebuy",
+      "domains": [
+        "rebuy.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "*",
+      "name": "MediaMarkt",
+      "pattern": "media ?mark",
+      "domains": [
+        "mediamarkt.pl",
+        "mediamarkt.nl",
+        "mediamarkt.de"
+      ],
+      "ours": false
+    },
+    {
+      "market": "*",
+      "name": "Amazon",
+      "pattern": "\\bamazon",
+      "domains": [
+        "amazon.pl",
+        "amazon.co.uk",
+        "amazon.nl",
+        "amazon.de",
+        "amazon.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "*",
+      "name": "eBay",
+      "pattern": "\\bebay",
+      "domains": [
+        "ebay.pl",
+        "ebay.co.uk",
+        "ebay.nl",
+        "ebay.de",
+        "ebay.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "*",
+      "name": "MPB",
+      "pattern": "\\bmpb\\b",
+      "domains": [
+        "mpb.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "*",
+      "name": "B&H Photo",
+      "pattern": "b ?& ?h photo|bhphotovideo",
+      "domains": [
+        "bhphotovideo.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "*",
+      "name": "Adorama",
+      "pattern": "adorama",
+      "domains": [
+        "adorama.com"
+      ],
+      "ours": false
+    },
+    {
+      "market": "*",
+      "name": "KEH",
+      "pattern": "\\bkeh\\b",
+      "domains": [
+        "keh.com"
+      ],
+      "ours": false
+    }
+  ]
+}
