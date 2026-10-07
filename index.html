@@ -71,6 +71,12 @@ body.zamkniety .appbar, body.zamkniety .filtry, body.zamkniety .rail, body.zamkn
 .projekty button.all { color:var(--ink2); font-weight:600; }
 .projekty button.all.on { color:var(--acc-dark); }
 .appbar .gap { flex:1; }
+.appbar .stan { display:flex; align-items:center; gap:10px; height:36px; padding:0 14px; border-radius:999px; border:1px solid #C4E7CF; background:#E6F4EA;
+  color:#0D652D; font-size:12.5px; cursor:pointer; white-space:nowrap; }
+.appbar .stan b { font-weight:700; }
+.appbar .stan span + span::before, .appbar .stan b + span::before { content:"·"; margin-right:10px; color:#81C995; }
+.appbar .stan:hover { background:#CEEAD6; }
+@media (max-width:1500px) { .appbar .stan span:last-child { display:none; } }
 
 /* ---------- filter bar (run, compare run, engine, topic) ---------- */
 .filtry { position:fixed; top:64px; left:80px; right:0; height:56px; z-index:55; display:flex; align-items:center; gap:10px; padding:0 32px;
@@ -293,6 +299,7 @@ td.d.nn { color:#BDC1C6; font-weight:400; }
   <span class="marka"><b>AI Visibility</b><small>European Imaging Group</small></span>
   <nav class="projekty" id="projekty" aria-label="Store"></nav>
   <span class="gap"></span>
+  <button class="stan" id="stan" title="Open the run log"></button>
 </header>
 
 <div class="filtry" id="filtry"></div>
@@ -519,6 +526,12 @@ function rysuj() {
     };
   });
   document.querySelectorAll('.rlink[data-v]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === S.view); });
+  /* Run status: how many runs there are, when the last one was, when the next one is due. */
+  var ost = IDX.runs[IDX.runs.length - 1], nast = new Date(); nast.setUTCHours(7, 0, 0, 0); if (nast <= new Date()) nast.setUTCDate(nast.getUTCDate() + 1);
+  var st = document.getElementById('stan');
+  st.innerHTML = '<b>' + IDX.runs.length + (IDX.runs.length === 1 ? ' run' : ' runs') + '</b><span>last ' + esc(ost ? kiedy(ost.run) : '-') + '</span><span>next ' +
+    esc(nast.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })) + '</span>';
+  st.onclick = function () { S.view = 'how'; rysuj(); var l = document.getElementById('dziennik'); if (l) l.scrollIntoView({ block: 'start' }); };
   if (!cala) rysujFiltry();
   WYK = {};
   var el = document.getElementById('tresc');
@@ -767,6 +780,12 @@ function widokHow() {
     '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables.</p>' +
     '<h3>Schedule</h3><p>Daily at 07:00 UTC. Latest run: ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. Answers vary from day to day, so read trends over several runs.</p>' +
     '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device.</p>' +
+    '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Cost</th></tr></thead><tbody>' +
+    IDX.runs.slice().reverse().map(function (r) {
+      var min = r.start && r.end ? Math.round((new Date(r.end) - new Date(r.start)) / 60000) : null;
+      return '<tr><td>' + esc(kiedy(r.run)) + '</td><td class="r num">' + (r.ok != null ? r.ok : '-') + (r.calls ? ' of ' + r.calls : '') + '</td><td class="r num">' + (r.calls != null && r.ok != null ? r.calls - r.ok : '-') + '</td>' +
+        '<td class="r num">' + (min != null ? min + ' min' : '-') + '</td><td class="r num">' + (r.cost != null ? fmt(r.cost, 2) + ' USD' : '-') + '</td></tr>';
+    }).join('') + '</tbody></table>' +
     '<p style="margin-top:16px"><a class="btn" href="https://github.com/' + REPO + '/actions/workflows/measure.yml" target="_blank" rel="noopener">' + ic('i-play') + 'Run a measurement now (admins)</a></p></section></div>';
 }
 
