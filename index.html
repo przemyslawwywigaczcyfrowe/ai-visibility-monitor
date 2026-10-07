@@ -38,8 +38,9 @@ body.zamkniety .appbar, body.zamkniety .filtry, body.zamkniety .rail, body.zamkn
 .brama .logo-eig { width:88px; height:88px; border-radius:18px; background:#000 url(assets/eig-logo.png) center/cover; }
 .brama h1 { font-size:28px; font-weight:600; }
 .brama p { font-size:15px; color:var(--ink2); }
-.brama .loga { display:flex; gap:18px; align-items:center; flex-wrap:wrap; padding:4px 0; }
-.brama .loga img { height:22px; }
+/* Four store logos in one row: the same optical height, spread over the form width. */
+.brama .loga { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:nowrap; padding:6px 0; }
+.brama .loga img { height:19px; width:auto; min-width:0; flex:0 1 auto; }
 .brama input[type=password] { height:50px; border-radius:12px; border:1px solid var(--edge); padding:0 16px; font-size:16px; background:var(--paper); outline:none; }
 .brama input[type=password]:focus { border-color:var(--acc); background:#fff; }
 .brama label { display:flex; gap:8px; align-items:center; font-size:14px; color:var(--ink2); cursor:pointer; }
@@ -285,7 +286,7 @@ td.d.nn { color:#BDC1C6; font-weight:400; }
     <span class="logo-eig" role="img" aria-label="European Imaging Group"></span>
     <h1>AI Visibility</h1>
     <p>Daily rank tracking of our stores in ChatGPT and Google AI Mode answers.</p>
-    <div class="loga"><img src="assets/stores/pl-cyfrowe.svg" alt="Cyfrowe.pl"><img src="assets/stores/uk-wex.png" alt="Wex Photo Video" style="height:28px"><img src="assets/stores/nl-cameranu.svg" alt="Cameranu"><img src="assets/stores/de-calumet.svg" alt="Calumet"></div>
+    <div class="loga"><img src="assets/stores/pl-cyfrowe.svg" alt="Cyfrowe.pl"><img src="assets/stores/uk-wex.png" alt="Wex Photo Video" style="height:26px"><img src="assets/stores/nl-cameranu.svg" alt="Cameranu"><img src="assets/stores/de-calumet.svg" alt="Calumet"></div>
     <input type="password" id="haslo" placeholder="Password" autocomplete="current-password" required aria-label="Password">
     <label><input type="checkbox" id="pamietaj"> Remember on this device</label>
     <button class="btn primary" type="submit" id="otworz-btn" style="height:46px;border-radius:10px"><svg class="ic"><use href="#i-lock"/></svg>Open</button>
