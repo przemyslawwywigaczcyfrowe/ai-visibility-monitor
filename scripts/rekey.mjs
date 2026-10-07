@@ -18,10 +18,11 @@ if (!oldB64) {
 }
 if (!oldB64) { console.error('Old key not found.'); process.exit(1); }
 
+/* The password may stay the same: the fresh salt alone gives a new key, so the published key
+   no longer opens anything written from now on. */
 const oldSalt = JSON.parse(readFileSync('data/salt.json', 'utf8'));
 if (pbkdf2Sync(NEW, Buffer.from(oldSalt.salt, 'base64'), oldSalt.iterations, 32, 'sha256').toString('base64') === oldB64) {
-  console.error('PANEL_PASSWORD is still the old password. Change the secret first, then run this again.');
-  process.exit(1);
+  console.log('Same password as before; a new salt makes a new key.');
 }
 const oldKey = await crypto.subtle.importKey('raw', Buffer.from(oldB64, 'base64'), { name: 'AES-GCM' }, false, ['decrypt']);
 const salt = { salt: randomBytes(16).toString('base64'), iterations: ITERATIONS };

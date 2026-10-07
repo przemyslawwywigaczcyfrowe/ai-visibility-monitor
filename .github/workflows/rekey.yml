@@ -1,6 +1,6 @@
 name: Re-encrypt with new password
 
-# Run after changing the PANEL_PASSWORD secret. Moves all results to a key derived from the new password.
+# Moves all results to a new key: new salt, and the new PANEL_PASSWORD if the secret was changed.
 on:
   workflow_dispatch:
 
