@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 56" role="img" aria-label="AI Visibility">
+  <rect width="56" height="56" rx="13" fill="#111111"/>
+  <svg x="4" y="8" width="48" height="38" viewBox="0 0 200 130">
+    <circle cx="58" cy="58" r="30" fill="none" stroke="#9D9D9D" stroke-width="15"/>
+    <circle cx="142" cy="58" r="30" fill="none" stroke="#9D9D9D" stroke-width="15"/>
+    <circle cx="100" cy="58" r="37" fill="none" stroke="#111111" stroke-width="27"/>
+    <circle cx="100" cy="58" r="37" fill="none" stroke="#BED116" stroke-width="17"/>
+    <circle cx="100" cy="58" r="28" fill="#111111"/>
+    <path transform="translate(100 58) scale(1.4)" d="M0-10C1.2-3.6 3.6-1.2 10 0 3.6 1.2 1.2 3.6 0 10-1.2 3.6-3.6 1.2-10 0-3.6-1.2-1.2-3.6 0-10Z" fill="#FFFFFF"/>
+    <circle cx="70" cy="118" r="7" fill="#FFFFFF"/>
+    <circle cx="90" cy="118" r="7" fill="#21076A" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="110" cy="118" r="7" fill="#300043" stroke="#FFFFFF" stroke-width="2"/>
+    <circle cx="130" cy="118" r="7" fill="#EB1D43"/>
+  </svg>
+</svg>
