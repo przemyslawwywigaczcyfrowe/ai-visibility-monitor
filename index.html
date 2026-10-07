@@ -842,11 +842,11 @@ function widokHow() {
     '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables.</p>' +
     '<h3>Schedule</h3><p>Daily at 07:00 UTC. Latest run: ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. Answers vary from day to day, so read trends over several runs.</p>' +
     '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device.</p>' +
-    '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Cost</th></tr></thead><tbody>' +
+    '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Google searches</th><th class="r">Cost</th></tr></thead><tbody>' +
     IDX.runs.slice().reverse().map(function (r) {
       var min = r.start && r.end ? Math.round((new Date(r.end) - new Date(r.start)) / 60000) : null;
       return '<tr><td>' + esc(kiedy(r.run)) + '</td><td class="r num">' + (r.ok != null ? r.ok : '-') + (r.calls ? ' of ' + r.calls : '') + '</td><td class="r num">' + (r.calls != null && r.ok != null ? r.calls - r.ok : '-') + '</td>' +
-        '<td class="r num">' + (min != null ? min + ' min' : '-') + '</td><td class="r num">' + (r.cost != null ? fmt(r.cost, 2) + ' USD' : '-') + '</td></tr>';
+        '<td class="r num">' + (min != null ? min + ' min' : '-') + '</td><td class="r num" title="5,000 free a month across Gemini 3.x, then 14 USD per 1,000">' + (r.googleSearches ? r.googleSearches : '<span class="szary">via OpenRouter</span>') + '</td><td class="r num">' + (r.cost != null ? fmt(r.cost, 2) + ' USD' : '-') + '</td></tr>';
     }).join('') + '</tbody></table>' +
     '<p style="margin-top:16px"><a class="btn" href="https://github.com/' + REPO + '/actions/workflows/measure.yml" target="_blank" rel="noopener">' + ic('i-play') + 'Run a measurement now (admins)</a></p></section></div>';
 }

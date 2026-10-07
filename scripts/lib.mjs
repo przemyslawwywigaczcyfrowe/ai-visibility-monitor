@@ -30,6 +30,40 @@ export function buildRequest(prompt, engine, market, key) {
   };
 }
 
+/* Same prompt sent straight to the Gemini API (engine.provider = "google").
+   Grounding with Google Search: 5,000 free search requests a month on the paid tier, shared by
+   all Gemini 3.x models, then 14 USD per 1,000 (ai.google.dev/gemini-api/docs/pricing, 7 Oct 2026). */
+export function buildGoogleRequest(prompt, engine, market, key) {
+  const body = {
+    systemInstruction: { parts: [{ text: market.location }] },
+    contents: [{ role: 'user', parts: [{ text: prompt }] }]
+  };
+  if (engine.web) body.tools = [{ google_search: {} }];
+  return {
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(engine.googleModel) + ':generateContent',
+    init: { method: 'POST', headers: { 'x-goog-api-key': key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+  };
+}
+
+/* Token prices of the Google model in USD per 1M tokens, from config (engine.price = { in, out }). */
+export function parseGoogleResponse(status, text, engine) {
+  let j;
+  try { j = JSON.parse(text); } catch (e) { return { error: 'HTTP ' + status + ': response is not JSON' }; }
+  if (status !== 200 || j.error) return { error: 'HTTP ' + status + ': ' + String(j.error && j.error.message || '').slice(0, 300) };
+  const c = (j.candidates || [])[0] || {};
+  const answer = ((c.content && c.content.parts) || []).filter(p => p.text && !p.thought).map(p => p.text).join('');
+  if (!answer) return { error: 'empty answer' + (c.finishReason ? ' (' + c.finishReason + ')' : '') };
+  const g = c.groundingMetadata || {};
+  const sources = (g.groundingChunks || []).filter(x => x.web).map(x => sourceUrl({ url: x.web.uri, title: x.web.title }));
+  const u = j.usageMetadata || {}, p = engine.price || { in: 0, out: 0 };
+  const out = (u.candidatesTokenCount || 0) + (u.thoughtsTokenCount || 0);
+  return {
+    answer, sources, model: j.modelVersion || engine.googleModel, tokens: u.totalTokenCount || 0,
+    cost: ((u.promptTokenCount || 0) * p.in + out * p.out) / 1e6,
+    searches: (g.webSearchQueries || []).length
+  };
+}
+
 /* Gemini returns Google redirect links as sources and puts the real domain in the title. */
 function sourceUrl(c) {
   const url = String(c.url || '');

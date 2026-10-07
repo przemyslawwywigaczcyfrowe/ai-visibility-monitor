@@ -35,6 +35,7 @@ jobs:
       - name: Ask the models
         env:
           OPENROUTER_KEY: ${{ secrets.OPENROUTER_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
           MARKETS: ${{ inputs.markets }}
           PROMPTS: ${{ inputs.prompts }}
