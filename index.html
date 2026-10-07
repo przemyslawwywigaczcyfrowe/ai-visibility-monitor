@@ -829,21 +829,35 @@ function widokSources() {
   return h;
 }
 
-/* ---------- usage counting (GoatCounter: no cookies, no personal data) ----------
+/* ---------- usage counting (Google Form + Apps Script, no outside service) ----------
    Counts which views and stores are opened, plus three events: sign-in, prompt opened, CSV export.
-   The owner's own device is excluded (localStorage "skipgc", set when the Usage view is unlocked). */
-var LICZ_KOLEJKA = [], LICZ_OST = '';
+   Each count is one anonymous form answer: path, title, a random per-tab session id (sessionStorage,
+   gone when the tab closes), language, time zone, browser name and screen class. No cookies, no names.
+   The owner's own device is not counted (localStorage "aiv-owner", set when the Usage view opens). */
+var LICZ = null, LICZ_KOLEJKA = [], LICZ_OST = '';
 function wlaczLicznik() {
   fetch('config/config.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (c) {
-    var kod = c.analytics && c.analytics.goatcounter; if (!kod) return;
-    window.goatcounter = { no_onload: true };
-    var s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js';
-    s.setAttribute('data-goatcounter', 'https://' + kod + '.goatcounter.com/count');
-    s.onload = function () { var k = LICZ_KOLEJKA; LICZ_KOLEJKA = null; k.forEach(function (x) { wyslij(x); }); };
-    document.head.appendChild(s);
-  }).catch(function () {});
+    LICZ = c.analytics || null;
+    var k = LICZ_KOLEJKA; LICZ_KOLEJKA = null; k.forEach(wyslij);
+  }).catch(function () { LICZ_KOLEJKA = null; });
 }
-function wyslij(x) { try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count(x); } catch (e) {} }
+function sesja() {
+  try { var s = sessionStorage.getItem('aiv-s'); if (!s) { s = Math.random().toString(36).slice(2, 12); sessionStorage.setItem('aiv-s', s); } return s; } catch (e) { return ''; }
+}
+function przegladarka() {
+  var u = navigator.userAgent;
+  return /Edg\//.test(u) ? 'Edge' : /OPR\//.test(u) ? 'Opera' : /Firefox\//.test(u) ? 'Firefox' : /Chrome\//.test(u) ? 'Chrome' : /Safari\//.test(u) ? 'Safari' : 'Other';
+}
+function wyslij(x) {
+  try {
+    if (!LICZ || !LICZ.formResponse || !LICZ.entries || localStorage.getItem('aiv-owner')) return;
+    var w = innerWidth, e = LICZ.entries, q = new URLSearchParams();
+    var v = { path: x.path, title: x.title, event: x.event ? '1' : '0', session: sesja(), lang: navigator.language || '',
+      tz: (Intl.DateTimeFormat().resolvedOptions().timeZone || ''), browser: przegladarka(), device: w < 768 ? 'Phone' : w < 1100 ? 'Tablet' : 'Computer' };
+    Object.keys(v).forEach(function (k) { if (e[k]) q.append(e[k], v[k]); });
+    if (!(navigator.sendBeacon && navigator.sendBeacon(LICZ.formResponse, q))) fetch(LICZ.formResponse, { method: 'POST', mode: 'no-cors', body: q });
+  } catch (err) {}
+}
 function licz(path, title, event) {
   var x = { path: path, title: title, event: !!event };
   if (LICZ_KOLEJKA) LICZ_KOLEJKA.push(x); else wyslij(x);
@@ -860,31 +874,36 @@ function liczWidok() {
 }
 
 /* ---------- Usage (owner only) ----------
-   data/usage.enc is encrypted with a separate owner password (GitHub secret OWNER_PASSWORD),
-   so panel users with the normal password cannot open it. */
-var USAGE = null, KLUCZ_WL = null;
-function jestWlasciciel() { try { return !!localStorage.getItem('aiv-owner-key'); } catch (e) { return false; } }
-async function kluczWlasciciela(haslo) {
-  var res = await fetch('data/owner-salt.json', { cache: 'no-store' });
-  if (!res.ok) throw new Error('NOT_SET_UP');
-  var sol = await res.json();
-  var baza = await crypto.subtle.importKey('raw', new TextEncoder().encode(haslo), 'PBKDF2', false, ['deriveKey']);
-  return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sol.salt), iterations: sol.iterations }, baza, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
-}
-async function wczytajUsage() {
-  if (!KLUCZ_WL) { var s = localStorage.getItem('aiv-owner-key'); if (!s) return false; KLUCZ_WL = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt']); }
-  USAGE = await odszyfruj('data/usage.enc', KLUCZ_WL);
-  return true;
+   The Apps Script web app (access: cyfrowe.pl only) checks the Google account of the caller and
+   returns the numbers only to the owner. The panel loads them as JSONP, so the request carries the
+   owner's Google sign-in. Nobody else gets data, whatever they know about the panel. */
+var USAGE = null, USAGE_BLAD = '';
+function jestWlasciciel() { try { return !!localStorage.getItem('aiv-owner'); } catch (e) { return false; } }
+function wczytajUsage() {
+  return new Promise(function (ok, nie) {
+    var api = CFG && CFG.analytics && CFG.analytics.usageApi;
+    if (!api) return nie(new Error('NOT_SET_UP'));
+    var cb = 'aivUsage' + Date.now(), s = document.createElement('script'), t = setTimeout(function () { sprzataj(); nie(new Error('NO_ANSWER')); }, 20000);
+    function sprzataj() { clearTimeout(t); delete window[cb]; s.remove(); }
+    window[cb] = function (d) { sprzataj(); if (d && d.error) nie(new Error(d.error)); else ok(d); };
+    s.onerror = function () { sprzataj(); nie(new Error('NO_ANSWER')); };
+    s.src = api + (api.indexOf('?') < 0 ? '?' : '&') + 'callback=' + cb;
+    document.head.appendChild(s);
+  });
 }
 function widokUsage() {
+  var api = CFG && CFG.analytics && CFG.analytics.usageApi;
   if (!USAGE) {
-    setTimeout(async function () {
-      try { if (await wczytajUsage()) rysuj(); } catch (e) { var b = document.getElementById('wl-blad'); if (b) b.textContent = /NO_DATA/.test(e.message) ? 'No usage data yet. The first update runs within 6 hours after counting starts.' : 'Could not open the usage data.'; }
+    if (!USAGE_BLAD) setTimeout(function () {
+      wczytajUsage().then(function (d) { USAGE = d; try { localStorage.setItem('aiv-owner', '1'); } catch (e) {} rysuj(); })
+        .catch(function (e) { USAGE_BLAD = e.message; rysuj(); });
     }, 0);
-    return '<div class="tytul"><h1>Usage</h1><span class="op">Only for the panel owner</span></div><section class="card" style="max-width:480px">' +
-      '<h2>Owner password</h2><p style="font-size:14px;color:var(--ink2);margin:8px 0 14px">This view uses a separate password, not the panel password.</p>' +
-      '<form id="wl-form" style="display:flex;gap:10px"><input type="password" id="wl-haslo" placeholder="Owner password" aria-label="Owner password" style="flex:1;height:40px;border:1px solid var(--edge);border-radius:8px;padding:0 12px;font-size:15px">' +
-      '<button class="btn primary" type="submit">Open</button></form><div id="wl-blad" style="color:var(--down);font-size:13.5px;margin-top:10px;min-height:18px"></div></section>';
+    var tekst = !USAGE_BLAD ? 'Loading the usage numbers…' :
+      USAGE_BLAD === 'NOT_SET_UP' ? 'Usage counting is not set up yet.' :
+      USAGE_BLAD === 'not-owner' ? 'This view is only for the panel owner. Sign in to Google with the owner\'s cyfrowe.pl account in this browser and reload.' :
+      'The numbers did not load. Open the usage service once in a new tab (it may ask you to sign in or allow access), then come back and reload.';
+    return '<div class="tytul"><h1>Usage</h1><span class="op">Only for the panel owner</span></div><section class="card" style="max-width:640px"><p style="font-size:15px;color:var(--ink2)">' + esc(tekst) + '</p>' +
+      (USAGE_BLAD && api ? '<p style="margin-top:14px;display:flex;gap:10px"><a class="btn" href="' + esc(api) + '" target="_blank" rel="noopener">Open the usage service</a><button class="btn primary" id="u-ponow">Try again</button></p>' : '') + '</section>';
   }
   var U = USAGE, dni = U.total.days, dzis = new Date().toISOString().slice(0, 10);
   function suma(od) { return dni.filter(function (x) { return x[0] >= od; }).reduce(function (a, x) { return a + (x[1] || 0); }, 0); }
@@ -895,7 +914,7 @@ function widokUsage() {
   var d7 = dzienTemu(6), d30 = dzienTemu(29);
   var k = [['Visits, last 7 days', suma(d7)], ['Visits, last 30 days', suma(d30)], ['Sign-ins, last 30 days', zdarzenia('signed-in', d30)],
     ['Prompts opened, last 30 days', zdarzenia('open-prompt', d30)], ['CSV exports, last 30 days', zdarzenia('export-csv', d30)], ['Sign-in page views, last 30 days', wOkresie(widoki.filter(function (h) { return h.path === '/sign-in'; })[0] || {}, d30)]];
-  var h = '<div class="tytul"><h1>Usage</h1><span class="op">anonymous counts from GoatCounter · no cookies, no names · updated ' + esc(new Date(U.updated).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })) + ' · your own visits on this device are not counted</span></div>';
+  var h = '<div class="tytul"><h1>Usage</h1><span class="op">anonymous counts · no cookies, no names · ' + esc(new Date(U.updated).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })) + ' · your own visits on this device are not counted</span></div>';
   h += '<div class="kpi">' + k.map(function (x) { return '<div class="t"><div class="k">' + x[0] + '</div><div class="v"><b class="num">' + fmt(x[1]) + '</b></div></div>'; }).join('') + '</div>';
   var L = dni.map(function (x) { return x[0]; }).slice(-60);
   var mapa = {}; dni.forEach(function (x) { mapa[x[0]] = x[1]; });
@@ -910,27 +929,10 @@ function widokUsage() {
     '</tbody></table></section><div style="display:flex;flex-direction:column;gap:16px">' +
     '<section class="card"><div class="ch"><h2>Stores opened <small>visits in the last 30 days</small></h2></div><table class="t"><tbody>' +
     M.map(function (m) { return '<tr><td>' + logo(m.code, 18) + '</td><td class="r num"><b>' + (sklep[m.code] || 0) + '</b></td></tr>'; }).join('') + '</tbody></table></section>' +
-    lista('Countries', U.locations) + lista('Browsers', U.browsers) + lista('Screen sizes', U.sizes) + '</div></div>';
+    lista('Time zones', U.locations) + lista('Browsers', U.browsers) + lista('Devices', U.sizes) + '</div></div>';
   function lista(t, l) { return '<section class="card"><div class="ch"><h2>' + t + ' <small>visits since ' + esc(U.start) + '</small></h2></div>' + ((l || []).length ? '<table class="t"><tbody>' + l.slice(0, 8).map(function (x) { return '<tr><td>' + esc(x[0] || 'unknown') + '</td><td class="r num">' + x[1] + '</td></tr>'; }).join('') + '</tbody></table>' : '<div class="pusto">No data yet.</div>') + '</section>'; }
   return h;
 }
-document.addEventListener('submit', async function (e) {
-  if (e.target.id !== 'wl-form') return;
-  e.preventDefault();
-  var b = document.getElementById('wl-blad'); b.textContent = 'Checking…';
-  try {
-    var k = await kluczWlasciciela(document.getElementById('wl-haslo').value);
-    USAGE = await odszyfruj('data/usage.enc', k);
-    KLUCZ_WL = k;
-    localStorage.setItem('aiv-owner-key', b64z(new Uint8Array(await crypto.subtle.exportKey('raw', k))));
-    localStorage.setItem('skipgc', 't');   /* GoatCounter skips this device */
-    rysuj();
-  } catch (err) {
-    b.textContent = /NOT_SET_UP/.test(err.message) ? 'Usage counting is not set up yet (GoatCounter account and the OWNER_PASSWORD secret are missing).' :
-      /NO_DATA/.test(err.message) ? 'No usage data yet. The first update runs within 6 hours after counting starts.' : 'Wrong owner password.';
-  }
-});
-
 /* ---------- How it works ---------- */
 function widokHow() {
   var ost = IDX.runs[IDX.runs.length - 1] || {};
@@ -947,7 +949,7 @@ function widokHow() {
     '<h3>Clean context</h3><p>Each prompt is a new conversation with web search, no history, no account and no mention of our stores. The only extra information is the customer\'s approximate city: ' + esc(M.map(function (m) { return m.city; }).join(', ')) + '.</p>' +
     '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables.</p>' +
     '<h3>Schedule</h3><p>Daily at 07:00 UTC. Latest run: ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. Answers vary from day to day, so read trends over several runs.</p>' +
-    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device. The panel counts visits to its views anonymously with GoatCounter: no cookies, no names, no IP addresses stored.</p>' +
+    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device. The panel counts visits to its views anonymously in a Google Form of cyfrowe.pl: no cookies, no names, no IP addresses.</p>' +
     '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Google searches</th><th class="r">Cost</th></tr></thead><tbody>' +
     IDX.runs.slice().reverse().map(function (r) {
       var min = r.start && r.end ? Math.round((new Date(r.end) - new Date(r.start)) / 60000) : null;
@@ -958,6 +960,7 @@ function widokHow() {
 }
 
 function podepnij() {
+  var up = document.getElementById('u-ponow'); if (up) up.onclick = function () { USAGE_BLAD = ''; rysuj(); };
   document.querySelectorAll('.rkc').forEach(function (b) { b.onclick = function () { wybierzRynek(b.getAttribute('data-p')); S.view = 'summary'; rysuj(); window.scrollTo(0, 0); }; });
   document.querySelectorAll('[data-metric]').forEach(function (b) { b.onclick = function () { S.metric = b.getAttribute('data-metric'); rysuj(); }; });
   document.querySelectorAll('th[data-sort]').forEach(function (t) { t.onclick = function () { var k = t.getAttribute('data-sort'); S.dir = S.sort === k ? -S.dir : 1; S.sort = k; rysuj(); }; });

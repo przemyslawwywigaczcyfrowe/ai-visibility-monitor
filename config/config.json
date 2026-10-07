@@ -1042,6 +1042,8 @@
     "Which accessories should I buy with my first camera?"
   ],
   "analytics": {
-    "goatcounter": ""
+    "usageApi": "https://script.google.com/a/macros/cyfrowe.pl/s/AKfycbzqk_faa4JbG26ySIy8lMIzjJK_AcAYvQBy8Db3CSUvx94es89hcpzWaBy2m9kBE5qJpg/exec",
+    "formResponse": "",
+    "entries": {}
   }
 }
