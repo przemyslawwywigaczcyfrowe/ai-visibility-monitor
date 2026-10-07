@@ -1,0 +1,40 @@
+name: Update panel usage (owner only)
+
+on:
+  schedule:
+    - cron: '30 */6 * * *'   # every 6 hours
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: usage
+  cancel-in-progress: false
+
+jobs:
+  usage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Pull anonymous stats from GoatCounter
+        env:
+          GOATCOUNTER_CODE: ${{ vars.GOATCOUNTER_CODE }}
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+          OWNER_PASSWORD: ${{ secrets.OWNER_PASSWORD }}
+        run: node scripts/usage.mjs
+      - name: Commit encrypted usage
+        run: |
+          git config user.name "ai-visibility-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/usage.enc data/owner-salt.json 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -m "Usage $(date -u +'%Y-%m-%d %H:%M') UTC"
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
+          exit 1

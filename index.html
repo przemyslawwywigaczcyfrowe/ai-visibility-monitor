@@ -313,6 +313,7 @@ td.d.nn { color:#BDC1C6; font-weight:400; }
   <button class="rlink" data-v="competitors"><span class="pg"><svg class="ic"><use href="#i-store"/></svg></span>Competitors</button>
   <button class="rlink" data-v="sources"><span class="pg"><svg class="ic"><use href="#i-link"/></svg></span>Sources</button>
   <button class="rlink dol" data-v="how"><span class="pg"><svg class="ic"><use href="#i-info"/></svg></span>How it works</button>
+  <button class="rlink tylko-wl" data-v="usage" hidden title="How the panel is used, in numbers (visible only to the owner)"><span class="pg"><svg class="ic"><use href="#i-sum"/></svg></span>Usage</button>
   <button class="rlink" id="wyloguj"><span class="pg"><svg class="ic"><use href="#i-lock"/></svg></span>Sign out</button>
 </nav>
 
@@ -339,8 +340,8 @@ var S = { view: 'all', market: 'PL', engine: 'all', run: null, cmp: null, topic:
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 function ic(id) { return '<svg class="ic"><use href="#' + id + '"/></svg>'; }
 function fmt(n, d) { return Number(n).toLocaleString('en-GB', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
-function dzien(run) { var t = START[run]; return t ? new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : run; }
-function kiedy(run) { var t = START[run]; return t ? new Date(t).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : run; }
+function dzien(run) { if (/^\d{4}-\d\d-\d\d$/.test(run)) return new Date(run + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); var t = START[run]; return t ? new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : run; }
+function kiedy(run) { if (/^\d{4}-\d\d-\d\d$/.test(run)) return new Date(run + 'T12:00:00Z').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); var t = START[run]; return t ? new Date(t).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }) : run; }
 function logo(code, h) { return '<img src="' + LOGO[code] + '" alt="' + esc(rynek(code).store) + '" class="' + (code === 'UK' ? 'wex' : '') + '"' + (h ? ' style="height:' + h + 'px"' : '') + '>'; }
 
 /* ---------- decryption ---------- */
@@ -351,11 +352,11 @@ async function kluczZHasla(h) {
   var baza = await crypto.subtle.importKey('raw', new TextEncoder().encode(h), 'PBKDF2', false, ['deriveKey']);
   return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sol.salt), iterations: sol.iterations }, baza, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
 }
-async function odszyfruj(path) {
+async function odszyfruj(path, klucz) {
   var res = await fetch(path, { cache: 'no-store' });
   if (!res.ok) throw new Error(res.status === 404 ? 'NO_DATA' : 'HTTP ' + res.status);
   var raw = b64(await res.text());
-  var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, KLUCZ, raw.slice(12));
+  var plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, klucz || KLUCZ, raw.slice(12));
   return JSON.parse(await new Response(new Blob([plain]).stream().pipeThrough(new DecompressionStream('gzip'))).text());
 }
 function szczegoly(run) {
@@ -515,15 +516,17 @@ var BUCKETS = [[1, 'Named 1st', 'var(--b1)'], [3, 'Named 2nd-3rd', 'var(--b2)'],
 
 /* ---------- shell ---------- */
 function rysuj() {
-  var cala = S.view === 'all' || S.view === 'how';
+  var cala = S.view === 'all' || S.view === 'how' || S.view === 'usage';
+  document.querySelectorAll('.tylko-wl').forEach(function (b) { b.hidden = !jestWlasciciel(); });
+  liczWidok();
   document.body.classList.toggle('bez-filtrow', cala);
   document.getElementById('projekty').innerHTML = '<button class="all ' + (S.view === 'all' ? 'on' : '') + '" data-p="all">All stores</button>' + M.map(function (m) {
-    return '<button data-p="' + m.code + '" class="' + (S.view !== 'all' && S.view !== 'how' && S.market === m.code ? 'on' : '') + '" title="' + esc(m.name + ': ' + m.store) + '">' + logo(m.code) + '<span class="kod">' + m.code + '</span></button>';
+    return '<button data-p="' + m.code + '" class="' + (S.view !== 'all' && S.view !== 'how' && S.view !== 'usage' && S.market === m.code ? 'on' : '') + '" title="' + esc(m.name + ': ' + m.store) + '">' + logo(m.code) + '<span class="kod">' + m.code + '</span></button>';
   }).join('');
   document.querySelectorAll('#projekty button').forEach(function (b) {
     b.onclick = function () {
       var p = b.getAttribute('data-p'); zamknijCicho();
-      if (p === 'all') { S.view = 'all'; } else { wybierzRynek(p); if (S.view === 'all' || S.view === 'how') S.view = 'summary'; }
+      if (p === 'all') { S.view = 'all'; } else { wybierzRynek(p); if (S.view === 'all' || S.view === 'how' || S.view === 'usage') S.view = 'summary'; }
       rysuj(); window.scrollTo(0, 0);
     };
   });
@@ -537,7 +540,7 @@ function rysuj() {
   if (!cala) rysujFiltry();
   WYK = {};
   var el = document.getElementById('tresc');
-  el.innerHTML = ({ all: widokAll, summary: widokSummary, rankings: widokRankings, history: widokHistory, competitors: widokCompetitors, sources: widokSources, how: widokHow })[S.view]();
+  el.innerHTML = ({ all: widokAll, summary: widokSummary, rankings: widokRankings, history: widokHistory, competitors: widokCompetitors, sources: widokSources, how: widokHow, usage: widokUsage })[S.view]();
   podepnij(); narysujWykresy();
   zapiszAdres();
 }
@@ -549,9 +552,10 @@ function rysuj() {
 var OTW = null, BEZ_ZAPISU = false;
 function adres() {
   var czesci = [S.view];
-  if (S.view !== 'all' && S.view !== 'how') czesci.push(S.market.toLowerCase());
+  var bezRynku = S.view === 'all' || S.view === 'how' || S.view === 'usage';
+  if (!bezRynku) czesci.push(S.market.toLowerCase());
   var m = rynek(S.market), q = new URLSearchParams();
-  if (S.view !== 'all' && S.view !== 'how') {
+  if (!bezRynku) {
     if (S.run && S.run !== ostatni(m)) q.set('run', S.run);
     var domCmp = przed(m, S.run);
     if ((S.cmp || null) !== (domCmp || null)) q.set('cmp', S.cmp || 'none');
@@ -575,7 +579,7 @@ function zapiszAdres() {
 /* Reads the address into the state. Returns the prompt to open, if any. */
 function czytajAdres() {
   var h = (location.hash || '').replace(/^#\/?/, ''), sciezka = h.split('?')[0].split('/'), q = new URLSearchParams(h.split('?')[1] || '');
-  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how'];
+  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how', 'usage'];
   if (!sciezka[0] || widoki.indexOf(sciezka[0]) < 0) return null;
   S.view = sciezka[0];
   var kod = (sciezka[1] || '').toUpperCase();
@@ -825,6 +829,103 @@ function widokSources() {
   return h;
 }
 
+/* ---------- usage counting (GoatCounter: no cookies, no personal data) ----------
+   Counts which views and stores are opened, plus three events: sign-in, prompt opened, CSV export.
+   The owner's own device is excluded (localStorage "skipgc", set when the Usage view is unlocked). */
+var LICZ_KOLEJKA = [], LICZ_OST = '';
+function wlaczLicznik() {
+  fetch('config/config.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (c) {
+    var kod = c.analytics && c.analytics.goatcounter; if (!kod) return;
+    window.goatcounter = { no_onload: true };
+    var s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js';
+    s.setAttribute('data-goatcounter', 'https://' + kod + '.goatcounter.com/count');
+    s.onload = function () { var k = LICZ_KOLEJKA; LICZ_KOLEJKA = null; k.forEach(function (x) { wyslij(x); }); };
+    document.head.appendChild(s);
+  }).catch(function () {});
+}
+function wyslij(x) { try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count(x); } catch (e) {} }
+function licz(path, title, event) {
+  var x = { path: path, title: title, event: !!event };
+  if (LICZ_KOLEJKA) LICZ_KOLEJKA.push(x); else wyslij(x);
+}
+function liczZdarzenie(path, title) { licz(path, title, true); }
+var NAZWY_WIDOKOW = { all: 'All stores', summary: 'Summary', rankings: 'Rankings', history: 'Position history', competitors: 'Competitors', sources: 'Sources', how: 'How it works' };
+function liczWidok() {
+  if (S.view === 'usage') return;
+  var zRynkiem = S.view !== 'all' && S.view !== 'how';
+  var path = '/' + S.view + (zRynkiem ? '/' + S.market.toLowerCase() : '');
+  if (path === LICZ_OST) return;
+  LICZ_OST = path;
+  licz(path, NAZWY_WIDOKOW[S.view] + (zRynkiem ? ' · ' + rynek(S.market).store : ''));
+}
+
+/* ---------- Usage (owner only) ----------
+   data/usage.enc is encrypted with a separate owner password (GitHub secret OWNER_PASSWORD),
+   so panel users with the normal password cannot open it. */
+var USAGE = null, KLUCZ_WL = null;
+function jestWlasciciel() { try { return !!localStorage.getItem('aiv-owner-key'); } catch (e) { return false; } }
+async function kluczWlasciciela(haslo) {
+  var sol = await (await fetch('data/owner-salt.json', { cache: 'no-store' })).json();
+  var baza = await crypto.subtle.importKey('raw', new TextEncoder().encode(haslo), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sol.salt), iterations: sol.iterations }, baza, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
+}
+async function wczytajUsage() {
+  if (!KLUCZ_WL) { var s = localStorage.getItem('aiv-owner-key'); if (!s) return false; KLUCZ_WL = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt']); }
+  USAGE = await odszyfruj('data/usage.enc', KLUCZ_WL);
+  return true;
+}
+function widokUsage() {
+  if (!USAGE) {
+    setTimeout(async function () {
+      try { if (await wczytajUsage()) rysuj(); } catch (e) { var b = document.getElementById('wl-blad'); if (b) b.textContent = /NO_DATA/.test(e.message) ? 'No usage data yet. The first update runs within 6 hours after counting starts.' : 'Could not open the usage data.'; }
+    }, 0);
+    return '<div class="tytul"><h1>Usage</h1><span class="op">Only for the panel owner</span></div><section class="card" style="max-width:480px">' +
+      '<h2>Owner password</h2><p style="font-size:14px;color:var(--ink2);margin:8px 0 14px">This view uses a separate password, not the panel password.</p>' +
+      '<form id="wl-form" style="display:flex;gap:10px"><input type="password" id="wl-haslo" placeholder="Owner password" aria-label="Owner password" style="flex:1;height:40px;border:1px solid var(--edge);border-radius:8px;padding:0 12px;font-size:15px">' +
+      '<button class="btn primary" type="submit">Open</button></form><div id="wl-blad" style="color:var(--down);font-size:13.5px;margin-top:10px;min-height:18px"></div></section>';
+  }
+  var U = USAGE, dni = U.total.days, dzis = new Date().toISOString().slice(0, 10);
+  function suma(od) { return dni.filter(function (x) { return x[0] >= od; }).reduce(function (a, x) { return a + (x[1] || 0); }, 0); }
+  function dzienTemu(n) { return new Date(Date.now() - n * 864e5).toISOString().slice(0, 10); }
+  var widoki = U.hits.filter(function (h) { return !h.event; }), zd = U.hits.filter(function (h) { return h.event; });
+  function wOkresie(h, od) { return (h.days || []).filter(function (x) { return x[0] >= od; }).reduce(function (a, x) { return a + (x[1] || 0); }, 0); }
+  function zdarzenia(pref, od) { return zd.filter(function (h) { return h.path.indexOf(pref) === 0; }).reduce(function (a, h) { return a + wOkresie(h, od); }, 0); }
+  var d7 = dzienTemu(6), d30 = dzienTemu(29);
+  var k = [['Visits, last 7 days', suma(d7)], ['Visits, last 30 days', suma(d30)], ['Sign-ins, last 30 days', zdarzenia('signed-in', d30)],
+    ['Prompts opened, last 30 days', zdarzenia('open-prompt', d30)], ['CSV exports, last 30 days', zdarzenia('export-csv', d30)], ['Sign-in page views, last 30 days', wOkresie(widoki.filter(function (h) { return h.path === '/sign-in'; })[0] || {}, d30)]];
+  var h = '<div class="tytul"><h1>Usage</h1><span class="op">anonymous counts from GoatCounter · no cookies, no names · updated ' + esc(new Date(U.updated).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })) + ' · your own visits on this device are not counted</span></div>';
+  h += '<div class="kpi">' + k.map(function (x) { return '<div class="t"><div class="k">' + x[0] + '</div><div class="v"><b class="num">' + fmt(x[1]) + '</b></div></div>'; }).join('') + '</div>';
+  var L = dni.map(function (x) { return x[0]; }).slice(-60);
+  var mapa = {}; dni.forEach(function (x) { mapa[x[0]] = x[1]; });
+  h += '<section class="card" style="margin-bottom:16px"><div class="ch"><h2>Visits per day <small>last ' + L.length + ' days</small></h2></div>' + wykres('w-usage', L, [{ name: 'Visits', color: '#0B57D0', w: 2.5, values: L.map(function (d) { return mapa[d] || 0; }) }]) + '</section>';
+  /* views grouped as "Summary · Cyfrowe.pl" */
+  var tab = widoki.filter(function (h) { return h.path !== '/sign-in'; }).map(function (h) { return { t: h.title || h.path, p: h.path, w7: wOkresie(h, d7), w30: wOkresie(h, d30), all: h.count || 0 }; })
+    .sort(function (a, b) { return b.w30 - a.w30 || b.all - a.all; });
+  var sklep = {}; M.forEach(function (m) { sklep[m.code] = 0; });
+  widoki.forEach(function (h) { var mm = h.path.match(/^\/[a-z]+\/([a-z]{2})$/); if (mm) sklep[mm[1].toUpperCase()] = (sklep[mm[1].toUpperCase()] || 0) + wOkresie(h, d30); });
+  h += '<div class="g2"><section class="card" style="padding:4px 8px 8px"><table class="t"><thead><tr><th>View</th><th class="r">Last 7 days</th><th class="r">Last 30 days</th><th class="r">Since ' + esc(U.start) + '</th></tr></thead><tbody>' +
+    (tab.length ? tab.map(function (r) { return '<tr><td>' + esc(r.t) + '</td><td class="r num">' + r.w7 + '</td><td class="r num"><b>' + r.w30 + '</b></td><td class="r num">' + r.all + '</td></tr>'; }).join('') : '<tr><td colspan="4" class="pusto">No visits counted yet.</td></tr>') +
+    '</tbody></table></section><div style="display:flex;flex-direction:column;gap:16px">' +
+    '<section class="card"><div class="ch"><h2>Stores opened <small>visits in the last 30 days</small></h2></div><table class="t"><tbody>' +
+    M.map(function (m) { return '<tr><td>' + logo(m.code, 18) + '</td><td class="r num"><b>' + (sklep[m.code] || 0) + '</b></td></tr>'; }).join('') + '</tbody></table></section>' +
+    lista('Countries', U.locations) + lista('Browsers', U.browsers) + lista('Screen sizes', U.sizes) + '</div></div>';
+  function lista(t, l) { return '<section class="card"><div class="ch"><h2>' + t + ' <small>visits since ' + esc(U.start) + '</small></h2></div>' + ((l || []).length ? '<table class="t"><tbody>' + l.slice(0, 8).map(function (x) { return '<tr><td>' + esc(x[0] || 'unknown') + '</td><td class="r num">' + x[1] + '</td></tr>'; }).join('') + '</tbody></table>' : '<div class="pusto">No data yet.</div>') + '</section>'; }
+  return h;
+}
+document.addEventListener('submit', async function (e) {
+  if (e.target.id !== 'wl-form') return;
+  e.preventDefault();
+  var b = document.getElementById('wl-blad'); b.textContent = 'Checking…';
+  try {
+    var k = await kluczWlasciciela(document.getElementById('wl-haslo').value);
+    USAGE = await odszyfruj('data/usage.enc', k);
+    KLUCZ_WL = k;
+    localStorage.setItem('aiv-owner-key', b64z(new Uint8Array(await crypto.subtle.exportKey('raw', k))));
+    localStorage.setItem('skipgc', 't');   /* GoatCounter skips this device */
+    rysuj();
+  } catch (err) { b.textContent = /NO_DATA/.test(err.message) ? 'No usage data yet. The first update runs within 6 hours after counting starts.' : 'Wrong owner password.'; }
+});
+
 /* ---------- How it works ---------- */
 function widokHow() {
   var ost = IDX.runs[IDX.runs.length - 1] || {};
@@ -841,7 +942,7 @@ function widokHow() {
     '<h3>Clean context</h3><p>Each prompt is a new conversation with web search, no history, no account and no mention of our stores. The only extra information is the customer\'s approximate city: ' + esc(M.map(function (m) { return m.city; }).join(', ')) + '.</p>' +
     '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables.</p>' +
     '<h3>Schedule</h3><p>Daily at 07:00 UTC. Latest run: ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. Answers vary from day to day, so read trends over several runs.</p>' +
-    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device.</p>' +
+    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device. The panel counts visits to its views anonymously with GoatCounter: no cookies, no names, no IP addresses stored.</p>' +
     '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Google searches</th><th class="r">Cost</th></tr></thead><tbody>' +
     IDX.runs.slice().reverse().map(function (r) {
       var min = r.start && r.end ? Math.round((new Date(r.end) - new Date(r.start)) / 60000) : null;
@@ -860,6 +961,7 @@ function podepnij() {
 
 /* ---------- CSV ---------- */
 function csv() {
+  liczZdarzenie('export-csv/' + S.market, 'CSV export · ' + rynek(S.market).store);
   var m = rynek(S.market), det = DET[S.run] || {};
   function f(v) { v = String(v == null ? '' : v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
   var w = ['store,run,prompt_id,topic,prompt,prompt_english,engine,position,stores_in_order,our_url,sources'];
@@ -896,7 +998,7 @@ async function otworz(id, run) {
   if (!p) return;
   run = run || S.run;
   if (!document.getElementById('szuf').classList.contains('on')) fokus = document.activeElement;
-  OTW = id; zapiszAdres();
+  OTW = id; zapiszAdres(); liczZdarzenie('open-prompt/' + m.code, 'Prompt opened · ' + m.store);
   var R = runy(m).slice().reverse();
   document.getElementById('sz-k').innerHTML = '<span>' + esc(m.store + ' · ' + p.topic + ' · prompt ' + p.n) + ' · answers from</span><select id="sz-run" class="btn" style="height:32px">' +
     R.map(function (r) { return '<option value="' + esc(r) + '"' + (r === run ? ' selected' : '') + '>' + esc(kiedy(r)) + '</option>'; }).join('') + '</select>';
@@ -956,7 +1058,7 @@ document.getElementById('brama-form').addEventListener('submit', async function 
   e.preventDefault();
   var bl = document.getElementById('blad'), btn = document.getElementById('otworz-btn');
   bl.textContent = ''; btn.disabled = true;
-  try { await start(document.getElementById('haslo').value, document.getElementById('pamietaj').checked); }
+  try { await start(document.getElementById('haslo').value, document.getElementById('pamietaj').checked); liczZdarzenie('signed-in', 'Signed in'); }
   catch (err) {
     var t = String(err && (err.name + ' ' + err.message));
     bl.textContent = /NO_DATA/.test(t) ? 'There are no results yet.' : /OperationError|decrypt/i.test(t) ? 'Wrong password. Check it and try again.' : 'Could not load the data: ' + (err && err.message || err);
@@ -967,7 +1069,9 @@ document.getElementById('brama-form').addEventListener('submit', async function 
 document.querySelectorAll('.rlink[data-v]').forEach(function (b) { b.onclick = function () { S.view = b.getAttribute('data-v'); rysuj(); window.scrollTo(0, 0); }; });
 document.getElementById('wyloguj').onclick = function () { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (e) {} location.reload(); };
 (async function () {
+  wlaczLicznik();
   var s = null; try { s = sessionStorage.getItem('aiv-key') || localStorage.getItem('aiv-key'); } catch (e) {}
+  if (!s) licz('/sign-in', 'Sign-in page');
   if (s) { try { KLUCZ = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt']); await start(); return; } catch (e) { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (x) {} } }
   document.getElementById('haslo').focus();
 })();
