@@ -1043,7 +1043,16 @@
   ],
   "analytics": {
     "usageApi": "https://script.google.com/a/macros/cyfrowe.pl/s/AKfycbzqk_faa4JbG26ySIy8lMIzjJK_AcAYvQBy8Db3CSUvx94es89hcpzWaBy2m9kBE5qJpg/exec",
-    "formResponse": "",
-    "entries": {}
+    "formResponse": "https://docs.google.com/forms/d/e/1FAIpQLSds9QTCWU2o4tcdV9vvsDCInFJ_x-sy8fRJTokCUCXZq2AABQ/formResponse",
+    "entries": {
+      "path": "entry.1369052397",
+      "title": "entry.2093136074",
+      "event": "entry.1441522503",
+      "session": "entry.1629519659",
+      "lang": "entry.1934378215",
+      "tz": "entry.1103988468",
+      "browser": "entry.110362403",
+      "device": "entry.722325955"
+    }
   }
 }
