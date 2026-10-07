@@ -865,7 +865,9 @@ function liczWidok() {
 var USAGE = null, KLUCZ_WL = null;
 function jestWlasciciel() { try { return !!localStorage.getItem('aiv-owner-key'); } catch (e) { return false; } }
 async function kluczWlasciciela(haslo) {
-  var sol = await (await fetch('data/owner-salt.json', { cache: 'no-store' })).json();
+  var res = await fetch('data/owner-salt.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error('NOT_SET_UP');
+  var sol = await res.json();
   var baza = await crypto.subtle.importKey('raw', new TextEncoder().encode(haslo), 'PBKDF2', false, ['deriveKey']);
   return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sol.salt), iterations: sol.iterations }, baza, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
 }
@@ -923,7 +925,10 @@ document.addEventListener('submit', async function (e) {
     localStorage.setItem('aiv-owner-key', b64z(new Uint8Array(await crypto.subtle.exportKey('raw', k))));
     localStorage.setItem('skipgc', 't');   /* GoatCounter skips this device */
     rysuj();
-  } catch (err) { b.textContent = /NO_DATA/.test(err.message) ? 'No usage data yet. The first update runs within 6 hours after counting starts.' : 'Wrong owner password.'; }
+  } catch (err) {
+    b.textContent = /NOT_SET_UP/.test(err.message) ? 'Usage counting is not set up yet (GoatCounter account and the OWNER_PASSWORD secret are missing).' :
+      /NO_DATA/.test(err.message) ? 'No usage data yet. The first update runs within 6 hours after counting starts.' : 'Wrong owner password.';
+  }
 });
 
 /* ---------- How it works ---------- */
