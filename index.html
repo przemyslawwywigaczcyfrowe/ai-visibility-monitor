@@ -521,7 +521,7 @@ function rysuj() {
   }).join('');
   document.querySelectorAll('#projekty button').forEach(function (b) {
     b.onclick = function () {
-      var p = b.getAttribute('data-p');
+      var p = b.getAttribute('data-p'); zamknijCicho();
       if (p === 'all') { S.view = 'all'; } else { wybierzRynek(p); if (S.view === 'all' || S.view === 'how') S.view = 'summary'; }
       rysuj(); window.scrollTo(0, 0);
     };
@@ -538,7 +538,67 @@ function rysuj() {
   var el = document.getElementById('tresc');
   el.innerHTML = ({ all: widokAll, summary: widokSummary, rankings: widokRankings, history: widokHistory, competitors: widokCompetitors, sources: widokSources, how: widokHow })[S.view]();
   podepnij(); narysujWykresy();
+  zapiszAdres();
 }
+
+/* ---------- shareable URLs ----------
+   #/<view>/<store>?run=…&cmp=…&engine=…&topic=…&q=…&metric=…&prompt=…
+   Only values that differ from the defaults go into the address, so links stay short.
+   A new view or store adds a browser history entry; filters only replace the current one. */
+var OTW = null, BEZ_ZAPISU = false;
+function adres() {
+  var czesci = [S.view];
+  if (S.view !== 'all' && S.view !== 'how') czesci.push(S.market.toLowerCase());
+  var m = rynek(S.market), q = new URLSearchParams();
+  if (S.view !== 'all' && S.view !== 'how') {
+    if (S.run && S.run !== ostatni(m)) q.set('run', S.run);
+    var domCmp = przed(m, S.run);
+    if ((S.cmp || null) !== (domCmp || null)) q.set('cmp', S.cmp || 'none');
+    if (S.engine !== 'all') q.set('engine', S.engine);
+    if (S.topic) q.set('topic', S.topic);
+    if (S.q) q.set('q', S.q);
+    if (S.view === 'summary' && S.metric !== 'vis') q.set('metric', S.metric);
+    if (S.view === 'rankings' && (S.sort !== 'n' || S.dir !== 1)) q.set('sort', S.sort + (S.dir < 0 ? '-desc' : ''));
+    if (OTW) q.set('prompt', OTW);
+  }
+  var s = q.toString();
+  return '#/' + czesci.join('/') + (s ? '?' + s : '');
+}
+function zapiszAdres() {
+  if (BEZ_ZAPISU) return;
+  var nowy = adres(), stary = location.hash || '';
+  if (nowy === stary) return;
+  var sciezka = function (h) { return h.split('?')[0]; };
+  history[sciezka(nowy) !== sciezka(stary) ? 'pushState' : 'replaceState'](null, '', nowy);
+}
+/* Reads the address into the state. Returns the prompt to open, if any. */
+function czytajAdres() {
+  var h = (location.hash || '').replace(/^#\/?/, ''), sciezka = h.split('?')[0].split('/'), q = new URLSearchParams(h.split('?')[1] || '');
+  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how'];
+  if (!sciezka[0] || widoki.indexOf(sciezka[0]) < 0) return null;
+  S.view = sciezka[0];
+  var kod = (sciezka[1] || '').toUpperCase();
+  if (kod && M.some(function (m) { return m.code === kod; })) { S.market = kod; }
+  var m = rynek(S.market), R = runy(m);
+  S.run = q.get('run') && R.indexOf(q.get('run')) >= 0 ? q.get('run') : ostatni(m);
+  var c = q.get('cmp');
+  S.cmp = c === 'none' ? null : c && R.indexOf(c) >= 0 ? c : przed(m, S.run);
+  S.engine = q.get('engine') && ENG.indexOf(q.get('engine')) >= 0 ? q.get('engine') : 'all';
+  S.topic = q.get('topic') || '';
+  S.q = q.get('q') || '';
+  S.metric = ['vis', 'avg', 'sov'].indexOf(q.get('metric')) >= 0 ? q.get('metric') : 'vis';
+  var so = (q.get('sort') || 'n').split('-'); S.sort = ['n', 'pos', 'chg'].indexOf(so[0]) >= 0 ? so[0] : 'n'; S.dir = so[1] === 'desc' ? -1 : 1;
+  var p = q.get('prompt');
+  return p && m.prompts.some(function (x) { return x.id === p; }) ? p : null;
+}
+async function wejdzZAdresu() {
+  var p = czytajAdres();
+  await szczegoly(S.run);
+  BEZ_ZAPISU = true; rysuj(); BEZ_ZAPISU = false;
+  if (p) otworz(p); else if (OTW) zamknijCicho();
+}
+window.addEventListener('popstate', function () { if (D_GOTOWE) wejdzZAdresu(); });
+var D_GOTOWE = false;
 function wybierzRynek(code) {
   S.market = code; S.topic = ''; S.q = '';
   var m = rynek(code); S.run = ostatni(m); S.cmp = przed(m, S.run);
@@ -832,8 +892,10 @@ function formatuj(t, re) {
 var fokus = null;
 async function otworz(id, run) {
   var m = rynek(S.market), p = m.prompts.filter(function (x) { return x.id === id; })[0];
+  if (!p) return;
   run = run || S.run;
   if (!document.getElementById('szuf').classList.contains('on')) fokus = document.activeElement;
+  OTW = id; zapiszAdres();
   var R = runy(m).slice().reverse();
   document.getElementById('sz-k').innerHTML = '<span>' + esc(m.store + ' · ' + p.topic + ' · prompt ' + p.n) + ' · answers from</span><select id="sz-run" class="btn" style="height:32px">' +
     R.map(function (r) { return '<option value="' + esc(r) + '"' + (r === run ? ' selected' : '') + '>' + esc(kiedy(r)) + '</option>'; }).join('') + '</select>';
@@ -863,7 +925,11 @@ async function otworz(id, run) {
   }).join('') + '</div>';
   cel.innerHTML = h; cel.scrollTop = 0; narysujWykresy();
 }
-function zamknij() { document.getElementById('szuf').classList.remove('on'); document.getElementById('cien').classList.remove('on'); if (fokus && fokus.focus) fokus.focus(); }
+function zamknijCicho() { OTW = null; document.getElementById('szuf').classList.remove('on'); document.getElementById('cien').classList.remove('on'); }
+function zamknij() {
+  if (!OTW && !document.getElementById('szuf').classList.contains('on')) return;
+  zamknijCicho(); zapiszAdres(); if (fokus && fokus.focus) fokus.focus();
+}
 document.getElementById('sz-x').onclick = zamknij;
 document.getElementById('cien').onclick = zamknij;
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') zamknij(); });
@@ -880,7 +946,10 @@ async function start(haslo, pamietaj) {
   var r = 'PL'; try { r = localStorage.getItem('aiv-market') || 'PL'; } catch (e) {}
   wybierzRynek(M.some(function (m) { return m.code === r; }) ? r : M[0].code);
   document.body.classList.remove('zamkniety');
-  rysuj();
+  D_GOTOWE = true;
+  /* A shared link opens exactly the view it points to; without a link the panel opens on All stores. */
+  if (location.hash.length > 2) { await wejdzZAdresu(); }
+  else rysuj();
 }
 document.getElementById('brama-form').addEventListener('submit', async function (e) {
   e.preventDefault();
