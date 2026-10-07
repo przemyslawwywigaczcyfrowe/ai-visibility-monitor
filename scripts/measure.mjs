@@ -31,6 +31,14 @@ if (existsSync('data/index.enc')) {
   catch (e) { console.error('Cannot decrypt data/index.enc. Is PANEL_PASSWORD the same as before?'); process.exit(1); }
 }
 
+/* GitHub can start a scheduled run hours late. If someone already ran the measurement by hand
+   today (Warsaw date), the scheduled run skips the day instead of paying for a second one. */
+const today = new Date().toLocaleString('sv-SE', { timeZone: 'Europe/Warsaw' }).slice(0, 10);
+if (process.env.EVENT === 'schedule' && index.runs.some(r => r.run.slice(0, 10) === today)) {
+  console.log(`A run for ${today} already exists, scheduled run skipped.`);
+  process.exit(0);
+}
+
 /* ---------- prompts ---------- */
 const prompts = [];
 for (const m of cfg.markets) {
