@@ -1078,6 +1078,19 @@ document.querySelectorAll('.rlink[data-v]').forEach(function (b) { b.onclick = f
 document.getElementById('wyloguj').onclick = function () { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (e) {} location.reload(); };
 (async function () {
   wlaczLicznik();
+  /* PUBLIC ACCESS (temporary). While data/public-key.json exists (workflow "Public access",
+     mode "on"), the panel opens without the sign-in screen and "Sign out" is hidden.
+     The password flow below stays in place: mode "off" removes the file and the sign-in screen
+     comes back by itself. */
+  try {
+    var pub = await fetch('data/public-key.json', { cache: 'no-store' });
+    if (pub.ok) {
+      KLUCZ = await crypto.subtle.importKey('raw', b64((await pub.json()).key), { name: 'AES-GCM' }, true, ['decrypt']);
+      document.getElementById('wyloguj').hidden = true;
+      await start();
+      return;
+    }
+  } catch (e) { KLUCZ = null; }
   var s = null; try { s = sessionStorage.getItem('aiv-key') || localStorage.getItem('aiv-key'); } catch (e) {}
   if (!s) licz('/sign-in', 'Sign-in page');
   if (s) { try { KLUCZ = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt']); await start(); return; } catch (e) { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (x) {} } }
