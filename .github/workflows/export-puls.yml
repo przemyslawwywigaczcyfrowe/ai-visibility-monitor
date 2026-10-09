@@ -1,0 +1,27 @@
+name: Export to Puls sklepu
+
+# Writes summary numbers of all runs (Poland) to the Google Sheet read by the "Puls sklepu" panel
+# of cyfrowe.pl. The daily measurement does the same at its end; this one is for a manual run,
+# e.g. right after adding the GOOGLE_SA_KEY secret.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Export summary numbers
+        env:
+          PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
+          GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
+        run: node scripts/export-puls.mjs

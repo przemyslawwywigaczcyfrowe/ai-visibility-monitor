@@ -50,3 +50,10 @@ jobs:
           git commit -m "Measurement $(date -u +'%Y-%m-%d %H:%M') UTC"
           for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
           exit 1
+      - name: Export summary numbers to Puls sklepu (cyfrowe.pl)
+        # Only counts and prompt ids, no answers. A failure here must not fail the measurement.
+        continue-on-error: true
+        env:
+          PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
+          GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
+        run: node scripts/export-puls.mjs
