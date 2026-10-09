@@ -103,8 +103,21 @@ async function api(tok, method, path, body) {
   if (!r.ok) throw new Error('Sheets ' + method + ' ' + path + ': HTTP ' + r.status + ' ' + t.slice(0, 300));
   return t ? JSON.parse(t) : {};
 }
+/* The secret may hold the whole service account JSON, or only its private key (PEM, or the bare
+   base64 body without the BEGIN/END lines). The account e-mail is not secret, so it has a default. */
+const SA_EMAIL = process.env.GOOGLE_SA_EMAIL || 'wyszukiwarka-top3@search-400909.iam.gserviceaccount.com';
+function serviceAccount(raw) {
+  const s = String(raw || '').trim();
+  if (s.startsWith('{')) return JSON.parse(s);
+  let pem = s.replace(/\\n/g, '\n');
+  if (!/BEGIN [A-Z ]*PRIVATE KEY/.test(pem)) {
+    const body = pem.replace(/\s+/g, '');
+    pem = '-----BEGIN PRIVATE KEY-----\n' + body.match(/.{1,64}/g).join('\n') + '\n-----END PRIVATE KEY-----\n';
+  }
+  return { client_email: SA_EMAIL, private_key: pem };
+}
 async function write(rows) {
-  const sa = JSON.parse(process.env.GOOGLE_SA_KEY || readFileSync(process.env.GOOGLE_SA_KEY_FILE, 'utf8'));
+  const sa = serviceAccount(process.env.GOOGLE_SA_KEY || readFileSync(process.env.GOOGLE_SA_KEY_FILE, 'utf8'));
   const tok = await token(sa);
   const meta = await api(tok, 'GET', '?fields=sheets.properties.title');
   if (!meta.sheets.some(s => s.properties.title === TAB)) {
