@@ -79,7 +79,21 @@ function summarise(index) {
     const prev = i ? runs[i - 1] : null;
     const silniki = { wszystkie: kpi(run, engines) };
     engines.forEach(e => { silniki[e] = kpi(run, [e]); });
-    return { pomiar: run, poprzedni: prev, rynek: MARKET, sklep: m.store, silniki, sklepy: sklepy(run, engines), ruchy: ruchy(run, prev, engines) };
+    /* Every prompt with our place per engine (null = not named, undefined = no answer), the leader
+       of the answer and whether our site was cited. For the 25-tile map in Puls. */
+    const pytania = prompts.map(p => {
+      const poz = {}, lid = {};
+      let cyt = false;
+      engines.forEach(e => {
+        const c = kom(run, p.id, e);
+        if (!c || c[6]) return;
+        poz[e] = c[3] == null ? null : c[3];
+        lid[e] = c[4] ? String(c[4]).split('; ')[0] : '';
+        if (c[5]) cyt = true;
+      });
+      return { id: p.id, pytanie: p.text, temat: p.topic || '', pozycje: poz, lider: lid, cytowane: cyt };
+    });
+    return { pomiar: run, poprzedni: prev, rynek: MARKET, sklep: m.store, silniki, sklepy: sklepy(run, engines), ruchy: ruchy(run, prev, engines), pytania };
   });
 }
 
