@@ -313,6 +313,52 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
 .metoda ul { margin:4px 0 0 20px; }
 .metoda code { font-size:12.5px; background:var(--paper); border-radius:6px; padding:2px 6px; color:var(--ink); }
 
+/* checklist */
+.cpas { display:flex; gap:2px; flex:1; min-width:60px; border-radius:7px; overflow:hidden; background:var(--track); }
+.cpas i { display:block; height:100%; background:var(--acc); }
+.cpas i.na { background:#C4C7C5; margin-left:auto; }
+.cpas i[style^="width:0%"] { display:none; }
+.cpr { display:grid !important; grid-template-columns:118px 1fr 44px; align-items:center; gap:12px !important; }
+.cpr b { text-align:right; }
+.csek { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:8px; margin-bottom:16px; }
+.csk { display:grid; grid-template-columns:1fr auto; gap:6px 10px; align-items:start; text-align:left; background:#fff; border:0; border-radius:20px; padding:14px 16px; cursor:pointer; font:inherit; color:var(--ink); }
+.csk:hover { box-shadow:inset 0 0 0 2px var(--acc); }
+.csk-t { font-size:13px; line-height:1.3; color:var(--muted); min-height:34px; }
+.csk-t b { color:var(--ink); font-weight:600; margin-right:2px; }
+.csk-n { font-size:13px; font-weight:500; }
+.csk .cpas { grid-column:1 / -1; }
+.cfil { position:sticky; top:0; z-index:30; display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; padding:10px 0 14px; background:var(--paper); }
+.cfil .gap { flex:1; }
+.cfil input[type=search] { height:40px; width:260px; border:0; border-radius:20px; padding:0 18px; font-size:14px; outline:none; background:var(--tonal); }
+.cfil input[type=search]:focus { background:#fff; box-shadow:inset 0 0 0 2px var(--acc); }
+.csekcja { margin-bottom:16px; scroll-margin-top:72px; padding-bottom:8px; }
+.csekcja .ch { margin-bottom:8px; }
+.csek-p { display:flex; align-items:center; gap:12px; width:260px; }
+.csek-p b { font-size:16px; font-weight:500; min-width:44px; text-align:right; }
+.cit { display:grid; grid-template-columns:40px 44px minmax(0,1fr) 150px 64px; gap:12px; align-items:start; padding:14px 0; border-top:1px solid var(--edge); }
+.cbox { width:32px; height:32px; border-radius:16px; border:2px solid #747775; background:#fff; display:grid; place-items:center; cursor:pointer; color:#fff; margin-top:-4px; }
+.cbox:hover { border-color:var(--acc); background:#EEF4FE; }
+.cbox .ic { width:20px; height:20px; }
+.cit.done .cbox { background:var(--acc); border-color:var(--acc); }
+.cit.na .cbox { border-style:dashed; border-color:#C4C7C5; background:var(--paper); }
+.cid { font-size:13px; color:var(--muted); padding-top:1px; }
+.ctx b { display:block; font-size:15px; font-weight:500; line-height:1.4; }
+.ctx > span { display:block; font-size:14px; color:var(--muted); line-height:1.5; margin-top:2px; max-width:980px; }
+.cit.done .ctx b, .cit.na .ctx b { color:var(--muted); }
+.cit.na .ctx b { text-decoration:line-through; text-decoration-color:#A8ABAE; }
+.ctg { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.ctg .tag.pr1 { background:#FFE8C2; color:#6B3B00; }
+.ctg .tag.audyt { background:#fff; box-shadow:inset 0 0 0 1px var(--edge); color:var(--muted); }
+.cst { font-size:13px; color:var(--ink); padding-top:2px; }
+.cst span { display:block; font-weight:500; }
+.cst small { display:block; color:var(--muted); font-size:12px; }
+.cna { height:32px; border:0; border-radius:16px; background:var(--tonal); color:var(--muted); font-size:12px; font-weight:500; cursor:pointer; margin-top:-4px; }
+.cna:hover { background:var(--tonal-h); color:var(--ink); }
+.nierob ul { columns:2; column-gap:40px; list-style:none; }
+.nierob li { break-inside:avoid; font-size:14px; line-height:1.5; padding:10px 0 10px 28px; position:relative; border-top:1px solid var(--edge); }
+.nierob li::before { content:"✕"; position:absolute; left:4px; top:10px; color:var(--down); font-weight:700; }
+@media (max-width:900px) { .cit { grid-template-columns:36px minmax(0,1fr); } .cid, .cst { display:none; } .cna { grid-column:2; justify-self:start; } .csek-p { width:100%; } .nierob ul { columns:1; } }
+
 @media (max-width:1500px) { .kpi.k6 { grid-template-columns:repeat(3, minmax(0,1fr)); } .naglowek .hr { flex-basis:100%; } .appbar .stan .dalej { display:none; } }
 @media (max-width:1280px) { .g2, .g3 { grid-template-columns:minmax(0,1fr); } .rk4 { grid-template-columns:repeat(2, minmax(0,1fr)); } .metoda { grid-template-columns:minmax(0,1fr); }
   .projekty button .kod { display:none; } .hero-r { flex-basis:100%; } }
@@ -339,6 +385,8 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
 <symbol id="i-lock" viewBox="0 0 24 24"><path d="M18 8h-1V6A5 5 0 007 6v2H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V10a2 2 0 00-2-2zm-6 9a2 2 0 110-4 2 2 0 010 4zm3.1-9H8.9V6a3.1 3.1 0 016.2 0v2z"/></symbol>
 <symbol id="i-close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
 <symbol id="i-down" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M22 5.18L10.59 16.6l-4.24-4.24 1.41-1.41 2.83 2.83 10-10L22 5.18zM12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8c1.57 0 3.04.46 4.28 1.25l1.45-1.45A10.02 10.02 0 0012 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.73 0 3.36-.44 4.78-1.22l-1.5-1.5c-1 .46-2.11.72-3.28.72zm7-5h-3v2h3v3h2v-3h3v-2h-3v-3h-2v3z"/></symbol>
+<symbol id="i-tick" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
 <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
 </defs></svg>
 
@@ -364,6 +412,7 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
   <button class="rlink" data-v="history"><span class="pg"><svg class="ic"><use href="#i-hist"/></svg></span>Position history</button>
   <button class="rlink" data-v="competitors"><span class="pg"><svg class="ic"><use href="#i-store"/></svg></span>Competitors</button>
   <button class="rlink" data-v="sources"><span class="pg"><svg class="ic"><use href="#i-link"/></svg></span>Sources</button>
+  <button class="rlink" data-v="checklist"><span class="pg"><svg class="ic"><use href="#i-check"/></svg></span>Checklist</button>
   <button class="rlink dol" data-v="how"><span class="pg"><svg class="ic"><use href="#i-info"/></svg></span>How it works</button>
   <button class="rlink tylko-wl" data-v="usage" hidden title="How the panel is used, in numbers (visible only to the owner)"><span class="pg"><svg class="ic"><use href="#i-sum"/></svg></span>Usage</button>
   <button class="rlink" id="wyloguj"><span class="pg"><svg class="ic"><use href="#i-lock"/></svg></span>Sign out</button>
@@ -410,7 +459,7 @@ function b64z(u) { var s = ''; for (var i = 0; i < u.length; i++) s += String.fr
 async function kluczZHasla(h) {
   var sol = await (await fetch('data/salt.json', { cache: 'no-store' })).json();
   var baza = await crypto.subtle.importKey('raw', new TextEncoder().encode(h), 'PBKDF2', false, ['deriveKey']);
-  return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sol.salt), iterations: sol.iterations }, baza, { name: 'AES-GCM', length: 256 }, true, ['decrypt']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sol.salt), iterations: sol.iterations }, baza, { name: 'AES-GCM', length: 256 }, true, ['decrypt', 'encrypt']);
 }
 async function odszyfruj(path, klucz) {
   var res = await fetch(path, { cache: 'no-store' });
@@ -428,6 +477,8 @@ function szczegoly(run) {
 async function wczytaj() {
   var w = await Promise.all([odszyfruj('data/index.enc'), fetch('config/config.json', { cache: 'no-store' }).then(function (r) { return r.json(); })]);
   IDX = w[0]; CFG = w[1];
+  try { CHL = await (await fetch('config/checklist.json', { cache: 'no-store' })).json(); } catch (e) { CHL = null; }
+  await wczytajStanChecklisty();
   IDX.runs.forEach(function (r) { PLIKI[r.run] = r.file; START[r.run] = r.start; });
   ENG = IDX.engines.map(function (e) { return e.label; });
   IDX.hist.forEach(function (h) {
@@ -576,17 +627,18 @@ var BUCKETS = [[1, 'Named 1st', 'var(--b1)'], [3, 'Named 2nd-3rd', 'var(--b2)'],
 
 /* ---------- shell ---------- */
 function rysuj() {
-  var cala = S.view === 'all' || S.view === 'how' || S.view === 'usage';
+  var cala = S.view === 'all' || S.view === 'how' || S.view === 'usage' || S.view === 'checklist';
+  var grupa = S.view === 'all' || (S.view === 'checklist' && S.chkAll);
   document.querySelectorAll('.tylko-wl').forEach(function (b) { b.hidden = !jestWlasciciel(); });
   liczWidok();
   document.body.classList.toggle('bez-filtrow', cala);
-  document.getElementById('projekty').innerHTML = '<button class="all ' + (S.view === 'all' ? 'on' : '') + '" data-p="all">All stores</button>' + M.map(function (m) {
-    return '<button data-p="' + m.code + '" class="' + (S.view !== 'all' && S.view !== 'how' && S.view !== 'usage' && S.market === m.code ? 'on' : '') + '" title="' + esc(m.name + ': ' + m.store) + '">' + logo(m.code) + '<span class="kod">' + m.code + '</span></button>';
+  document.getElementById('projekty').innerHTML = '<button class="all ' + (grupa ? 'on' : '') + '" data-p="all">All stores</button>' + M.map(function (m) {
+    return '<button data-p="' + m.code + '" class="' + (!grupa && S.view !== 'how' && S.view !== 'usage' && S.market === m.code ? 'on' : '') + '" title="' + esc(m.name + ': ' + m.store) + '">' + logo(m.code) + '<span class="kod">' + m.code + '</span></button>';
   }).join('');
   document.querySelectorAll('#projekty button').forEach(function (b) {
     b.onclick = function () {
       var p = b.getAttribute('data-p'); zamknijCicho();
-      if (p === 'all') { S.view = 'all'; } else { wybierzRynek(p); if (S.view === 'all' || S.view === 'how' || S.view === 'usage') S.view = 'summary'; }
+      if (p === 'all') { if (S.view === 'checklist') S.chkAll = true; else S.view = 'all'; } else { wybierzRynek(p); S.chkAll = false; if (S.view === 'all' || S.view === 'how' || S.view === 'usage') S.view = 'summary'; }
       rysuj(); window.scrollTo(0, 0);
     };
   });
@@ -602,7 +654,7 @@ function rysuj() {
   if (!cala) rysujFiltry();
   WYK = {};
   var el = document.getElementById('tresc');
-  el.innerHTML = ({ all: widokAll, summary: widokSummary, rankings: widokRankings, history: widokHistory, competitors: widokCompetitors, sources: widokSources, how: widokHow, usage: widokUsage })[S.view]();
+  el.innerHTML = ({ all: widokAll, summary: widokSummary, rankings: widokRankings, history: widokHistory, competitors: widokCompetitors, sources: widokSources, how: widokHow, usage: widokUsage, checklist: widokChecklist })[S.view]();
   podepnij(); narysujWykresy();
   zapiszAdres();
 }
@@ -613,6 +665,7 @@ function rysuj() {
    A new view or store adds a browser history entry; filters only replace the current one. */
 var OTW = null, BEZ_ZAPISU = false;
 function adres() {
+  if (S.view === 'checklist') return adresChecklisty();
   var czesci = [S.view];
   var bezRynku = S.view === 'all' || S.view === 'how' || S.view === 'usage';
   if (!bezRynku) czesci.push(S.market.toLowerCase());
@@ -641,9 +694,10 @@ function zapiszAdres() {
 /* Reads the address into the state. Returns the prompt to open, if any. */
 function czytajAdres() {
   var h = (location.hash || '').replace(/^#\/?/, ''), sciezka = h.split('?')[0].split('/'), q = new URLSearchParams(h.split('?')[1] || '');
-  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how', 'usage'];
+  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how', 'usage', 'checklist'];
   if (!sciezka[0] || widoki.indexOf(sciezka[0]) < 0) return null;
   S.view = sciezka[0];
+  if (S.view === 'checklist') { S.chkAll = sciezka[1] === 'all'; czytajFiltryChecklisty(q); }
   var kod = (sciezka[1] || '').toUpperCase();
   if (kod && M.some(function (m) { return m.code === kod; })) { S.market = kod; }
   var m = rynek(S.market), R = runy(m);
@@ -979,10 +1033,10 @@ function licz(path, title, event) {
   if (LICZ_KOLEJKA) LICZ_KOLEJKA.push(x); else wyslij(x);
 }
 function liczZdarzenie(path, title) { licz(path, title, true); }
-var NAZWY_WIDOKOW = { all: 'All stores', summary: 'Summary', rankings: 'Rankings', history: 'Position history', competitors: 'Competitors', sources: 'Sources', how: 'How it works' };
+var NAZWY_WIDOKOW = { all: 'All stores', summary: 'Summary', rankings: 'Rankings', history: 'Position history', competitors: 'Competitors', sources: 'Sources', how: 'How it works', checklist: 'Checklist' };
 function liczWidok() {
   if (S.view === 'usage') return;
-  var zRynkiem = S.view !== 'all' && S.view !== 'how';
+  var zRynkiem = S.view !== 'all' && S.view !== 'how' && !(S.view === 'checklist' && S.chkAll);
   var path = '/' + S.view + (zRynkiem ? '/' + S.market.toLowerCase() : '');
   if (path === LICZ_OST) return;
   LICZ_OST = path;
@@ -1049,6 +1103,168 @@ function widokUsage() {
   function lista(t, l) { return '<section class="card"><div class="ch"><h2>' + t + ' <small>visits since ' + esc(U.start) + '</small></h2></div>' + ((l || []).length ? '<table class="t"><tbody>' + l.slice(0, 8).map(function (x) { return '<tr><td>' + esc(x[0] || 'unknown') + '</td><td class="r num">' + x[1] + '</td></tr>'; }).join('') + '</tbody></table>' : '<div class="pusto">No data yet.</div>') + '</section>'; }
   return h;
 }
+/* ---------- Checklist (AI readiness, by Przemysław Wywigacz) ----------
+   122 items from config/checklist.json. Each store ticks its own items: done or not applicable.
+   Progress = done / (all - not applicable). Who ticked what is shared through the encrypted form, see below. */
+var CHL = null, CHK = {}, CF = { st: 'all', pr: '', ef: '', q: '' };
+/* Shared state: data/checklist.enc, written by the "Checklist sync" workflow every ~10 minutes from the
+   encrypted form answers. Own changes not synced yet are kept in this browser (aiv-chk-pending)
+   and shown on top, so a tick is visible at once. */
+var CHK_SYNC = { items: {}, log: [], updated: null }, CHK_CZAS = 0;
+function czekajace() { try { return JSON.parse(localStorage.getItem('aiv-chk-pending') || '[]'); } catch (e) { return []; } }
+function polaczStan() {
+  var syn = CHK_SYNC.items || {}, out = {};
+  Object.keys(syn).forEach(function (m) { out[m] = {}; Object.keys(syn[m]).forEach(function (id) { out[m][id] = syn[m][id]; }); });
+  /* a pending change is dropped once the synced state has the same or a newer change of that item, or after 2 days */
+  var zost = czekajace().filter(function (e) {
+    var x = (syn[e.m] || {})[e.id], wSync = (CHK_SYNC.log || []).some(function (l) { return l.m === e.m && l.id === e.id && l.at >= e.at; });
+    return !wSync && !(x && x.at >= e.at) && Date.now() - Date.parse(e.at) < 2 * 864e5;
+  });
+  try { localStorage.setItem('aiv-chk-pending', JSON.stringify(zost)); } catch (e) {}
+  zost.sort(function (a, b) { return a.at < b.at ? -1 : 1; }).forEach(function (e) {
+    out[e.m] = out[e.m] || {};
+    if (e.s) out[e.m][e.id] = { s: e.s, by: e.by, at: e.at, pending: true }; else delete out[e.m][e.id];
+  });
+  CHK = out;
+}
+async function wczytajStanChecklisty() {
+  try { CHK_SYNC = await odszyfruj('data/checklist.enc'); } catch (e) { if (!/NO_DATA/.test(e.message)) console.warn('checklist', e); }
+  CHK_CZAS = Date.now(); polaczStan();
+}
+/* one change: encrypted with the panel key, sent as an anonymous form answer */
+async function wyslijZmiane(e) {
+  var c = CFG && CFG.checklist; if (!c) throw new Error('NOT_SET_UP');
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  var ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, KLUCZ, new TextEncoder().encode(JSON.stringify(e))));
+  var all = new Uint8Array(12 + ct.length); all.set(iv); all.set(ct, 12);
+  var q = new URLSearchParams(); q.append(c.entry, b64z(all));
+  if (!(navigator.sendBeacon && navigator.sendBeacon(c.formResponse, q))) await fetch(c.formResponse, { method: 'POST', mode: 'no-cors', body: q });
+}
+function adresChecklisty() {
+  var q = new URLSearchParams();
+  if (CF.st !== 'all') q.set('status', CF.st); if (CF.pr) q.set('priority', CF.pr); if (CF.ef) q.set('effort', CF.ef); if (CF.q) q.set('q', CF.q);
+  var t = q.toString();
+  return '#/checklist/' + (S.chkAll ? 'all' : S.market.toLowerCase()) + (t ? '?' + t : '');
+}
+function czytajFiltryChecklisty(q) {
+  CF.st = ['open', 'done', 'na'].indexOf(q.get('status')) >= 0 ? q.get('status') : 'all';
+  CF.pr = ['P1', 'P2', 'P3'].indexOf(q.get('priority')) >= 0 ? q.get('priority') : '';
+  CF.ef = ['S', 'M', 'L'].indexOf(q.get('effort')) >= 0 ? q.get('effort') : '';
+  CF.q = q.get('q') || '';
+}
+function stan(code, id) { return (CHK[code] || {})[id] || null; }
+function postep(code, lista) {
+  var o = { n: 0, done: 0, na: 0 };
+  (lista || CHL.items).forEach(function (i) { var x = stan(code, i.id); o.n++; if (x && x.s === 'done') o.done++; else if (x && x.s === 'na') o.na++; });
+  o.base = o.n - o.na; o.pct = o.base ? o.done / o.base * 100 : 0; o.open = o.base - o.done;
+  return o;
+}
+function pasekPostepu(p, h) {
+  return '<div class="cpas" style="height:' + (h || 10) + 'px" title="' + p.done + ' done, ' + p.open + ' open' + (p.na ? ', ' + p.na + ' not applicable' : '') + '"><i style="width:' + (p.n ? p.done / p.n * 100 : 0) + '%"></i><i class="na" style="width:' + (p.n ? p.na / p.n * 100 : 0) + '%"></i></div>';
+}
+function kiedyKrotko(t) { return new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
+var AUDYT = { yes: 'done', partly: 'partly done', no: 'not done', '?': 'not checked', na: 'not applicable' };
+function widokChecklist() {
+  if (!CHL) return '<div class="pusto">The checklist did not load.</div>';
+  /* fresh shared state when the view is opened again after 2 minutes */
+  if (Date.now() - CHK_CZAS > 12e4) { CHK_CZAS = Date.now(); wczytajStanChecklisty().then(function () { if (S.view === 'checklist') { var y = window.scrollY; rysuj(); window.scrollTo(0, y); } }); }
+  return S.chkAll ? checklistaGrupy() : checklistaSklepu();
+}
+function checklistaSklepu() {
+  var m = rynek(S.market), code = m.code, all = postep(code);
+  var p = {}; ['P1', 'P2', 'P3'].forEach(function (k) { p[k] = postep(code, CHL.items.filter(function (i) { return i.p === k; })); });
+  var szybkie = CHL.items.filter(function (i) { return i.p === 'P1' && i.e === 'S' && !stan(code, i.id); }).length;
+  var ost = null; Object.keys(CHK[code] || {}).forEach(function (id) { var x = CHK[code][id]; if (!ost || x.at > ost.at) ost = x; });
+  var h = hero({
+    ocena: all.done ? null : ['', 'Not started'],
+    okres: 'AI readiness checklist ' + CHL.version + ' · ' + CHL.items.length + ' items · by ' + CHL.author,
+    werdykt: esc(m.store) + ' has done <span class="kw">' + all.done + ' of ' + all.base + ' items</span>',
+    zd: 'Critical items (P1): <b>' + p.P1.done + ' of ' + p.P1.base + '</b> done. Critical items that take only a few days and are still open: <b>' + szybkie + '</b>.' +
+      (ost ? ' Last change ' + esc(kiedyKrotko(ost.at)) + ' by <b>' + esc(ost.by) + '</b>.' : ''),
+    akcje: '<button class="btn primary duzy" data-cf="st=open&pr=P1&ef=S">' + ic('i-check') + 'Open quick critical items</button><button class="btn bialy duzy" data-skok="nie-rob">What not to do</button>',
+    prawa: '<div class="kw-l">Done</div><div class="kw-v num">' + fmt(all.pct) + '%</div><div style="margin-top:14px">' + pasekPostepu(all, 14) + '</div>' +
+      '<div class="kw-p"><span>' + all.done + ' done</span><span>' + all.open + ' open</span>' + (all.na ? '<span>' + all.na + ' not applicable</span>' : '') + '</div>' +
+      '<div class="kw-w">' + ['P1', 'P2', 'P3'].map(function (k) { return '<div class="cpr"><span>' + k + ' ' + CHL.legend.p[k].toLowerCase() + '</span>' + pasekPostepu(p[k], 8) + '<b class="num">' + fmt(p[k].pct) + '%</b></div>'; }).join('') + '</div>'
+  });
+  /* sections at a glance, click jumps to the section */
+  h += '<div class="csek">' + CHL.sections.map(function (sk) {
+    var l = CHL.items.filter(function (i) { return i.id.split('.')[0] == sk.n; }), pp = postep(code, l);
+    return '<button class="csk" data-skok="sek-' + sk.n + '"><span class="csk-t"><b>' + sk.n + '</b> ' + esc(sk.t) + '</span><span class="csk-n num">' + pp.done + '/' + pp.base + '</span>' + pasekPostepu(pp, 6) + '</button>';
+  }).join('') + '</div>';
+  /* filters */
+  function seg(key, opts) { return '<div class="tabsm">' + opts.map(function (o) { return '<button data-cfk="' + key + '" data-cfv="' + o[0] + '" class="' + (CF[key] === o[0] ? 'on' : '') + '">' + o[1] + '</button>'; }).join('') + '</div>'; }
+  h += '<div class="cfil">' + seg('st', [['all', 'All'], ['open', 'Open'], ['done', 'Done'], ['na', 'Not applicable']]) +
+    seg('pr', [['', 'Any priority'], ['P1', 'P1'], ['P2', 'P2'], ['P3', 'P3']]) + seg('ef', [['', 'Any effort'], ['S', 'S'], ['M', 'M'], ['L', 'L']]) +
+    '<span class="gap"></span><input type="search" id="cf-q" placeholder="Find an item" value="' + esc(CF.q) + '" aria-label="Find an item"></div>';
+  var q = CF.q.toLowerCase(), pokazane = 0;
+  CHL.sections.forEach(function (sk) {
+    var l = CHL.items.filter(function (i) { return i.id.split('.')[0] == sk.n; }), pp = postep(code, l);
+    var w = l.filter(function (i) {
+      var x = stan(code, i.id), st = x ? x.s : 'open';
+      return (CF.st === 'all' || CF.st === st) && (!CF.pr || i.p === CF.pr) && (!CF.ef || i.e === CF.ef) && (!q || (i.id + ' ' + i.t + ' ' + i.d).toLowerCase().indexOf(q) >= 0);
+    });
+    if (!w.length) return;
+    pokazane += w.length;
+    h += '<section class="card csekcja" id="sek-' + sk.n + '"><div class="ch"><h2>' + sk.n + '. ' + esc(sk.t) + '<small>' + pp.done + ' of ' + pp.base + ' done' + (pp.na ? ', ' + pp.na + ' not applicable' : '') + '</small></h2><span class="gap"></span><div class="csek-p">' + pasekPostepu(pp, 8) + '<b class="num">' + fmt(pp.pct) + '%</b></div></div>' +
+      w.map(function (i) {
+        var x = stan(code, i.id), st = x ? x.s : 'open';
+        return '<div class="cit ' + st + '" data-id="' + i.id + '"><button class="cbox" data-tick="' + i.id + '" aria-pressed="' + (st === 'done') + '" aria-label="Mark ' + i.id + ' as done">' + (st === 'done' ? ic('i-tick') : '') + '</button>' +
+          '<span class="cid num">' + i.id + '</span><div class="ctx"><b>' + esc(i.t) + '</b>' + (i.d ? '<span>' + esc(i.d) + '</span>' : '') +
+          '<div class="ctg"><span class="tag pr' + i.p.slice(1) + '" title="' + CHL.legend.p[i.p] + '">' + i.p + ' ' + CHL.legend.p[i.p].toLowerCase() + '</span><span class="tag" title="Effort: ' + CHL.legend.e[i.e] + '">Effort ' + i.e + '</span><span class="tag" title="' + CHL.legend.w[i.w] + '">' + { O: 'Official', B: 'Study', P: 'Practice' }[i.w] + '</span>' +
+          (code === 'PL' && i.a ? '<span class="tag audyt">EIG audit 6 Oct: ' + AUDYT[i.a] + '</span>' : '') + '</div></div>' +
+          '<div class="cst">' + (x ? '<span>' + (st === 'done' ? 'Done' : 'Not applicable') + ' · ' + esc(kiedyKrotko(x.at)) + '</span><small>' + esc(x.by) + (x.pending ? ' · others see it within ~15 min' : '') + '</small>' : '') + '</div>' +
+          '<button class="cna" data-na="' + i.id + '" title="' + (st === 'na' ? 'Count this item again' : 'This item does not apply to our store') + '">' + (st === 'na' ? 'Applies' : 'N/A') + '</button></div>';
+      }).join('') + '</section>';
+  });
+  if (!pokazane) h += '<section class="card"><div class="pusto">No item matches the filters.</div></section>';
+  h += '<section class="card nierob" id="nie-rob"><div class="ch"><h2>What not to do<small>common mistakes, not counted in progress</small></h2></div><ul>' + CHL.donts.map(function (d) { return '<li>' + esc(d) + '</li>'; }).join('') + '</ul></section>';
+  return h;
+}
+function checklistaGrupy() {
+  var w = M.map(function (m) { return { m: m, p: postep(m.code), p1: postep(m.code, CHL.items.filter(function (i) { return i.p === 'P1'; })) }; });
+  var done = w.reduce(function (a, x) { return a + x.p.done; }, 0), base = w.reduce(function (a, x) { return a + x.p.base; }, 0);
+  var h = hero({
+    okres: 'AI readiness checklist ' + CHL.version + ' · ' + CHL.items.length + ' items per store · by ' + CHL.author,
+    werdykt: 'Our stores have done <span class="kw">' + done + ' of ' + base + ' items</span>',
+    zd: 'Each store ticks its own items. Critical items (P1) done: ' + w.map(function (x) { return '<b>' + esc(x.m.store) + '</b> ' + x.p1.done + ' of ' + x.p1.base; }).join(', ') + '.',
+    prawa: '<div class="kw-l">Done, ' + M.length + ' stores</div><div class="kw-v num">' + fmt(base ? done / base * 100 : 0) + '%</div>' +
+      '<div class="kw-w">' + w.map(function (x) { return '<div class="cpr" style="grid-template-columns:120px 1fr 44px"><span>' + logo(x.m.code, { PL: 20, UK: 19, NL: 14.5, DE: 16.7 }[x.m.code]) + '</span>' + pasekPostepu(x.p, 8) + '<b class="num">' + fmt(x.p.pct) + '%</b></div>'; }).join('') + '</div>'
+  });
+  h += '<div class="rk4">' + w.map(function (x) {
+    return '<button class="card rkc" data-chk="' + x.m.code + '"><div class="lg">' + logo(x.m.code) + '<span>' + esc(x.m.name) + '</span></div><div class="kk">Done</div><div class="vv"><b class="num">' + fmt(x.p.pct) + '%</b><small>' + x.p.done + ' of ' + x.p.base + ' items</small></div>' +
+      '<div style="margin:14px 0 16px">' + pasekPostepu(x.p, 10) + '</div><div class="mm"><span>Critical (P1)</span><b>' + x.p1.done + ' of ' + x.p1.base + '</b></div><div class="mm"><span>Not applicable</span><b>' + x.p.na + '</b></div></button>';
+  }).join('') + '</div>';
+  h += '<section class="card"><div class="ch"><h2>Progress by section<small>share of items done in each store, not applicable items left out</small></h2></div><div class="tw"><table class="t"><thead><tr><th>Section</th><th class="r">Items</th>' + M.map(function (m) { return '<th>' + esc(m.store) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    CHL.sections.map(function (sk) {
+      var l = CHL.items.filter(function (i) { return i.id.split('.')[0] == sk.n; });
+      return '<tr><td><b style="font-weight:500">' + sk.n + '. ' + esc(sk.t) + '</b></td><td class="r szary">' + l.length + '</td>' + M.map(function (m) { var pp = postep(m.code, l); return '<td><div class="bar-in">' + pasekPostepu(pp, 8) + '<span class="num" style="min-width:40px;text-align:right;font-weight:500">' + fmt(pp.pct) + '%</span></div></td>'; }).join('') + '</tr>';
+    }).join('') + '</tbody></table></div></section>';
+  return h;
+}
+function podepnijChecklist() {
+  var kto = function () {
+    var n = ''; try { n = localStorage.getItem('aiv-name') || ''; } catch (e) {}
+    if (!n) { n = (prompt('Your name, shown next to the items you tick:') || '').trim(); if (!n) return null; try { localStorage.setItem('aiv-name', n); } catch (e) {} }
+    return n;
+  };
+  function ustaw(id, s) {
+    var code = S.market, by = kto(); if (!by) return;
+    var e = { m: code, id: id, s: s || null, by: by, at: new Date().toISOString() };
+    wyslijZmiane(e).then(function () {
+      var l = czekajace(); l.push(e); try { localStorage.setItem('aiv-chk-pending', JSON.stringify(l)); } catch (x) {}
+      polaczStan(); var y = window.scrollY; rysuj(); window.scrollTo(0, y);
+    }).catch(function (err) { alert('The change was not saved: ' + (err && err.message || err) + '. Check the connection and try again.'); });
+    liczZdarzenie('checklist/' + code, 'Checklist item changed · ' + rynek(code).store);
+  }
+  document.querySelectorAll('[data-tick]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-tick'), x = stan(S.market, id); ustaw(id, x && x.s === 'done' ? null : 'done'); }; });
+  document.querySelectorAll('[data-na]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-na'), x = stan(S.market, id); ustaw(id, x && x.s === 'na' ? null : 'na'); }; });
+  document.querySelectorAll('[data-cfk]').forEach(function (b) { b.onclick = function () { CF[b.getAttribute('data-cfk')] = b.getAttribute('data-cfv'); rysuj(); }; });
+  document.querySelectorAll('[data-cf]').forEach(function (b) { b.onclick = function () { var q = new URLSearchParams(b.getAttribute('data-cf')); CF.st = q.get('st') || 'all'; CF.pr = q.get('pr') || ''; CF.ef = q.get('ef') || ''; CF.q = ''; rysuj(); var c = document.querySelector('.cfil'); if (c) c.scrollIntoView({ block: 'start' }); }; });
+  document.querySelectorAll('[data-skok]').forEach(function (b) { b.onclick = function () { var e = document.getElementById(b.getAttribute('data-skok')); if (e) e.scrollIntoView({ behavior: 'smooth', block: 'start' }); }; });
+  document.querySelectorAll('[data-chk]').forEach(function (b) { b.onclick = function () { wybierzRynek(b.getAttribute('data-chk')); S.chkAll = false; rysuj(); window.scrollTo(0, 0); }; });
+  var q = document.getElementById('cf-q'); if (q) q.oninput = function () { CF.q = q.value; clearTimeout(q.t); q.t = setTimeout(function () { rysuj(); var n = document.getElementById('cf-q'); n.focus(); n.setSelectionRange(n.value.length, n.value.length); }, 250); };
+}
+
 /* ---------- How it works ---------- */
 function widokHow() {
   var ost = IDX.runs[IDX.runs.length - 1] || {};
@@ -1065,7 +1281,7 @@ function widokHow() {
     '<h3>Clean context</h3><p>Each prompt is a new conversation with web search, no history, no account and no mention of our stores. The only extra information is the customer\'s approximate city: ' + esc(M.map(function (m) { return m.city; }).join(', ')) + '.</p>' +
     '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables.</p>' +
     '<h3>Schedule</h3><p>Daily at 07:00 UTC. Latest run: ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. Answers vary from day to day, so read trends over several runs.</p>' +
-    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device. The panel counts visits to its views anonymously in a Google Form of cyfrowe.pl: no cookies, no names, no IP addresses.</p>' +
+    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device. The panel counts visits to its views anonymously in a Google Form of cyfrowe.pl: no cookies, no names, no IP addresses. Checklist ticks are sent encrypted with the panel key through the same kind of form and are visible to everyone with the password, together with the name the person typed.</p>' +
     '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Google searches</th><th class="r">Cost</th></tr></thead><tbody>' +
     IDX.runs.slice().reverse().map(function (r) {
       var min = r.start && r.end ? Math.round((new Date(r.end) - new Date(r.start)) / 60000) : null;
@@ -1076,6 +1292,7 @@ function widokHow() {
 }
 
 function podepnij() {
+  podepnijChecklist();
   var up = document.getElementById('u-ponow'); if (up) up.onclick = function () { USAGE_BLAD = ''; rysuj(); };
   document.querySelectorAll('.rkc').forEach(function (b) { b.onclick = function () { wybierzRynek(b.getAttribute('data-p')); S.view = 'summary'; rysuj(); window.scrollTo(0, 0); }; });
   document.querySelectorAll('[data-go]').forEach(function (b) { b.onclick = function () { S.view = b.getAttribute('data-go'); rysuj(); window.scrollTo(0, 0); }; });
@@ -1203,7 +1420,7 @@ document.getElementById('wyloguj').onclick = function () { try { sessionStorage.
   try {
     var pub = await fetch('data/public-key.json', { cache: 'no-store' });
     if (pub.ok) {
-      KLUCZ = await crypto.subtle.importKey('raw', b64((await pub.json()).key), { name: 'AES-GCM' }, true, ['decrypt']);
+      KLUCZ = await crypto.subtle.importKey('raw', b64((await pub.json()).key), { name: 'AES-GCM' }, true, ['decrypt', 'encrypt']);
       document.getElementById('wyloguj').hidden = true;
       await start();
       return;
@@ -1211,7 +1428,7 @@ document.getElementById('wyloguj').onclick = function () { try { sessionStorage.
   } catch (e) { KLUCZ = null; }
   var s = null; try { s = sessionStorage.getItem('aiv-key') || localStorage.getItem('aiv-key'); } catch (e) {}
   if (!s) licz('/sign-in', 'Sign-in page');
-  if (s) { try { KLUCZ = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt']); await start(); return; } catch (e) { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (x) {} } }
+  if (s) { try { KLUCZ = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt', 'encrypt']); await start(); return; } catch (e) { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (x) {} } }
   document.getElementById('haslo').focus();
 })();
 </script>

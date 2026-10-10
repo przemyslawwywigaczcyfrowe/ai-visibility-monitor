@@ -1,0 +1,41 @@
+name: Checklist sync
+
+# Every 10 minutes: reads the checklist changes sent from the panel (Google Form, encrypted)
+# and writes the shared state to data/checklist.enc. GitHub may start scheduled runs a few minutes late.
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: checklist
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read and apply new changes
+        env:
+          PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
+          GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
+        run: node scripts/checklist-sync.mjs
+      - name: Commit the encrypted state
+        run: |
+          git config user.name "ai-visibility-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/checklist.enc 2>/dev/null || exit 0
+          git diff --cached --quiet && exit 0
+          git commit -m "Checklist sync $(date -u +'%Y-%m-%d %H:%M') UTC"
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
+          exit 1

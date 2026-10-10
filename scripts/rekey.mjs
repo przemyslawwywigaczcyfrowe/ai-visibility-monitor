@@ -2,7 +2,7 @@
 // Needed after public access was on: the published key (still in git history) opens the old
 // encryption, so the data must move to a key derived from a new password.
 // The old key is taken from git history (data/public-key.json) or from env OLD_KEY (base64).
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { randomBytes, pbkdf2Sync } from 'node:crypto';
 import { encryptJson, decryptJson, deriveKey, ITERATIONS } from './lib.mjs';
@@ -28,7 +28,7 @@ const oldKey = await crypto.subtle.importKey('raw', Buffer.from(oldB64, 'base64'
 const salt = { salt: randomBytes(16).toString('base64'), iterations: ITERATIONS };
 const newKey = await deriveKey(NEW, salt.salt, salt.iterations);
 
-const files = ['data/index.enc'].concat(readdirSync('data/runs').filter(f => f.endsWith('.enc')).map(f => 'data/runs/' + f));
+const files = ['data/index.enc'].concat(existsSync('data/checklist.enc') ? ['data/checklist.enc'] : []).concat(readdirSync('data/runs').filter(f => f.endsWith('.enc')).map(f => 'data/runs/' + f));
 const plain = {};
 for (const f of files) plain[f] = await decryptJson(oldKey, readFileSync(f, 'utf8'));   // all or nothing: decrypt everything first
 for (const f of files) writeFileSync(f, await encryptJson(newKey, plain[f]) + '\n');
