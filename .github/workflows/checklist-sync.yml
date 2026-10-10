@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['config/checklist-verified.json']
 
 permissions:
   contents: write

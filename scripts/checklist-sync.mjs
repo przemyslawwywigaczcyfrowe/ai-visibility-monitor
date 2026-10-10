@@ -68,7 +68,6 @@ const od = stan.upTo + 2;   // row 1 is the header
 const r = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET}/values/B${od}:B?majorDimension=COLUMNS`, { headers: { Authorization: 'Bearer ' + tok } });
 if (!r.ok) throw new Error('Sheets: HTTP ' + r.status + ' ' + (await r.text()).slice(0, 300));
 const wiersze = ((await r.json()).values || [[]])[0] || [];
-if (!wiersze.length) { console.log('No new changes.'); process.exit(0); }
 
 let dobre = 0, zle = 0;
 for (const d of wiersze) {
@@ -84,8 +83,22 @@ for (const d of wiersze) {
   }
   stan.log.push({ m: e.m, id: e.id, s: e.s, by: e.by.trim(), at: e.at });
 }
+/* Items checked automatically from the public website (config/checklist-verified.json), with evidence.
+   Each check is applied once; a later manual change by a person wins. */
+let auto = 0;
+stan.applied = stan.applied || {};
+const ZW = existsSync('config/checklist-verified.json') ? JSON.parse(readFileSync('config/checklist-verified.json', 'utf8')) : { checks: [] };
+for (const e of ZW.checks || []) {
+  const k = e.m + '|' + e.id + '|' + e.at;
+  if (stan.applied[k] || !poprawny(e) || e.s !== 'done') continue;
+  stan.applied[k] = 1; auto++;
+  const sk = stan.items[e.m] = stan.items[e.m] || {}, teraz = sk[e.id];
+  if (!teraz || Date.parse(e.at) >= Date.parse(teraz.at)) sk[e.id] = { s: 'done', by: e.by, at: e.at, ev: String(e.evidence || '').slice(0, 600) };
+  stan.log.push({ m: e.m, id: e.id, s: 'done', by: e.by, at: e.at });
+}
+if (!wiersze.length && !auto) { console.log('No new changes.'); process.exit(0); }
 stan.log = stan.log.sort((a, b) => a.at < b.at ? -1 : 1).slice(-300);
 stan.upTo += wiersze.length;
 stan.updated = new Date().toISOString();
 writeFileSync(FILE, await encryptJson(key, stan) + '\n');
-console.log(`Read ${wiersze.length} rows: ${dobre} changes applied, ${zle} skipped (not made with the panel password).`);
+console.log(`Read ${wiersze.length} rows: ${dobre} changes applied, ${zle} skipped (not made with the panel password). Automatic checks applied: ${auto}.`);

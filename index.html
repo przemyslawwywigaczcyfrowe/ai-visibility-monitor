@@ -349,6 +349,7 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
 .cti[aria-expanded="true"] .cmore::after { transform:rotate(90deg); }
 .cex { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:14px; }
 .cex div { background:var(--paper); border-radius:16px; padding:14px 16px; }
+.cex .cdow { grid-column:1 / -1; background:var(--up-soft); }
 .cex h4 { font-size:13px; font-weight:600; margin-bottom:4px; }
 .cex p { font-size:14px; line-height:1.55; color:var(--ink); }
 @media (max-width:1100px) { .cex { grid-template-columns:minmax(0,1fr); } }
@@ -1118,8 +1119,8 @@ function widokUsage() {
    Progress = done / (all - not applicable). Who ticked what is shared through the encrypted form, see below. */
 var OTWARTE = {}, OST_OTW = null, SKOK = null;
 /* The longer explanation of an item, opened by a click on its title. */
-function szczegolyPozycji(i) {
-  return '<div class="cex">' + [['what', 'What is it about?'], ['why', 'Why does it matter?'], ['how', 'How to do it and check it?']].map(function (k) {
+function szczegolyPozycji(i, x) {
+  return '<div class="cex">' + (x && x.ev ? '<div class="cdow"><h4>Checked on the website on ' + esc(kiedyKrotko(x.at)) + '</h4><p>' + esc(x.ev) + '</p></div>' : '') + [['what', 'What is it about?'], ['why', 'Why does it matter?'], ['how', 'How to do it and check it?']].map(function (k) {
     return i.x[k[0]] ? '<div><h4>' + k[1] + '</h4><p>' + esc(i.x[k[0]]) + '</p></div>' : '';
   }).join('') + '</div>';
 }
@@ -1231,7 +1232,7 @@ function checklistaSklepu() {
         return '<div class="cit ' + st + '" data-id="' + i.id + '"><button class="cbox" data-tick="' + i.id + '" aria-pressed="' + (st === 'done') + '" aria-label="Mark ' + i.id + ' as done">' + (st === 'done' ? ic('i-tick') : '') + '</button>' +
           '<span class="cid num">' + i.id + '</span><div class="ctx"><button class="cti" data-otworz="' + i.id + '" aria-expanded="' + !!OTWARTE[i.id] + '"><b>' + esc(i.t) + '</b>' + (i.d ? '<span>' + esc(i.d) + '</span>' : '') + (i.x ? '<i class="cmore">' + (OTWARTE[i.id] ? 'Hide details' : 'What, why and how') + '</i>' : '') + '</button>' +
           '<div class="ctg"><span class="tag pr' + i.p.slice(1) + '" title="' + CHL.legend.p[i.p] + '">' + i.p + ' ' + CHL.legend.p[i.p].toLowerCase() + '</span><span class="tag" title="Effort: ' + CHL.legend.e[i.e] + '">Effort ' + i.e + '</span><span class="tag" title="' + CHL.legend.w[i.w] + '">' + { O: 'Official', B: 'Study', P: 'Practice' }[i.w] + '</span>' +
-          (code === 'PL' && i.a ? '<span class="tag audyt">EIG audit 6 Oct: ' + AUDYT[i.a] + '</span>' : '') + '</div>' + (OTWARTE[i.id] && i.x ? szczegolyPozycji(i) : '') + '</div>' +
+          (code === 'PL' && i.a ? '<span class="tag audyt">EIG audit 6 Oct: ' + AUDYT[i.a] + '</span>' : '') + '</div>' + (OTWARTE[i.id] && i.x ? szczegolyPozycji(i, x) : '') + '</div>' +
           '<div class="cst">' + (x ? '<span>' + (st === 'done' ? 'Done' : 'Not applicable') + ' · ' + esc(kiedyKrotko(x.at)) + '</span><small>' + esc(x.by) + (x.pending ? ' · others see it within ~15 min' : '') + '</small>' : '') + '</div>' +
           '<button class="cna" data-na="' + i.id + '" title="' + (st === 'na' ? 'Count this item again' : 'This item does not apply to our store') + '">' + (st === 'na' ? 'Applies' : 'N/A') + '</button></div>';
       }).join('') + '</section>';

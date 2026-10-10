@@ -1,0 +1,93 @@
+{
+  "note": "Items checked automatically from the public website. Only items proven beyond doubt are listed. A person can untick them in the panel.",
+  "checks": [
+    {
+      "m": "UK",
+      "id": "3.1",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "https://www.wexphotovideo.com/robots.txt (200) has no own groups for Googlebot, Bingbot, OAI-SearchBot, Claude-SearchBot, PerplexityBot or Applebot, so they use the * group, which does not disallow \"/\" nor product or category paths (only paths like /api/, /login/, /basket-page/, /checkout/, /search/). Only EtaoSpider is blocked with Disallow: /."
+    },
+    {
+      "m": "UK",
+      "id": "3.4",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "Applying the * group of robots.txt, none of the Disallow prefixes matches the sampled product URLs (/canon-eos-r6-mark-ii-digital-camera-body-3074788/, /canon-rf-24-70mm-f2-8-l-is-usm-lens-1713195/), the category /compact-system-cameras/ or the article /blog/buying-guides/accessories/best-camera-bag-for-filmmakers/, so all are allowed."
+    },
+    {
+      "m": "UK",
+      "id": "3.6",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "robots.txt lists Sitemap: https://www.wexphotovideo.com/sitemap.xml, which answers 200 as a sitemap index. Child sitemap-products-cameras-0.xml (200, 460 URLs, 322 distinct lastmod values) and sitemap-products-lenses-0.xml (200, 2503 URLs, 1577 distinct values) have lastmod on every URL, newest 2026-10-09. The index has separate sitemaps for products, categories, blog and other pages."
+    },
+    {
+      "m": "UK",
+      "id": "3.7",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "/robots.txt returned HTTP 200 with Content-Type text/plain and content starting \"User-agent: *\" for the full official user agents of Googlebot, bingbot, OAI-SearchBot, PerplexityBot and ClaudeBot; no challenge page."
+    },
+    {
+      "m": "NL",
+      "id": "3.1",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "https://www.cameranu.nl/robots.txt (200) has no groups for Googlebot, Bingbot, OAI-SearchBot, Claude-SearchBot, PerplexityBot or Applebot, and its * group never disallows '/'; only Baiduspider, CazoodleBot, Fasterfox and Jyxobot get 'Disallow: /'. The msnbot group (which Bing may honour) only sets Crawl-Delay: 20."
+    },
+    {
+      "m": "NL",
+      "id": "3.7",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "https://www.cameranu.nl/robots.txt returned HTTP 200, text/plain, with the normal robots content (no challenge) for the official Googlebot, bingbot, OAI-SearchBot, PerplexityBot and ClaudeBot UA strings."
+    },
+    {
+      "m": "DE",
+      "id": "3.1",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "https://www.calumet.de/robots.txt has only a 'User-agent: *' group with 'Allow: /' and no named-bot groups; its disallows (/account/, /checkout/, /widgets/, /navigation/, /_proxy/, /search?, /wishlist, foreign-language /xx/blog/ etc.) do not block / or /product/ or /category/ for any of the six bots."
+    },
+    {
+      "m": "DE",
+      "id": "3.4",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "Applying the * group of robots.txt, the sampled URLs /product/sony-alpha-7-iv, /product/sony-fe-24-70mm-f2-8-g-master-ii, /category/spiegellose-systemkameras-dslm and /magazin/sony-alpha-7r-vi-im-praxistest match no Disallow rule, so all are allowed."
+    },
+    {
+      "m": "DE",
+      "id": "3.5",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "The home page links cart /checkout/cart, login /account/login and search form action /search (results at /search?search=...); robots.txt * group disallows /checkout/, /account/ and /search? (plus /*/checkout/, /*/account/), and there are no named-bot groups that would override it."
+    },
+    {
+      "m": "DE",
+      "id": "5.1",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "Raw HTML of both product pages contains the visible price (1.999,00 / 2.199,00), stock text in product-detail-delivery-information ('Auf Lager In 1-3 Werktagen bei dir' / 'Versand aus einer Filiale In 1-3 Werktagen bei dir'), a 'Spezifikationen' section with a product-specification list, the full description text, and Product JSON-LD with offers.price and offers.availability (InStock)."
+    },
+    {
+      "m": "DE",
+      "id": "6.1",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T10:54:09.888Z",
+      "evidence": "Product JSON-LD on both product pages has name, description, image, brand (Brand Sony), sku (SONA7IV / SONSEL247028GM2), gtin with 13 digits (4548736133754 / 4548736134102) and mpn (ILCE7M4B.CEC / SEL2470GM2.SYX)."
+    }
+  ]
+}
