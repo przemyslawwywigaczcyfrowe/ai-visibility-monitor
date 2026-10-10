@@ -1524,6 +1524,8 @@ function widokAccess() {
     if (d.t === 'invite') { if (!p) { p = { email: d.email, name: d.name, status: 'invited', invitedBy: JA, invitedAt: d.at, lokalne: true }; lud.push(p); } else if (!p.invitedAt || p.invitedAt < d.at) { p.lokalne = true; if (p.status !== 'active') p.status = 'invited'; p.invitedAt = d.at; p.invitedBy = JA; } }
     if (d.t === 'remove' && p && (!p.removedAt || p.removedAt < d.at)) { p.status = 'removed'; p.lokalne = true; }
   });
+  /* the signed-in person has a login even before the sync records it */
+  lud.forEach(function (p) { if (p.email === JA && p.status === 'invited') { p.status = 'active'; p.since = p.since || new Date().toISOString(); } });
   var akt = lud.filter(function (p) { return p.status === 'active'; }), zapr = lud.filter(function (p) { return p.status === 'invited'; });
   var tydz = new Date(Date.now() - 7 * 864e5).toISOString();
   function wizyty(p, dni) { var od = new Date(Date.now() - dni * 864e5).toISOString().slice(0, 10); return Object.keys(p.visitDays || {}).filter(function (d) { return d >= od; }).reduce(function (a, d) { return a + p.visitDays[d]; }, 0); }
