@@ -1317,7 +1317,7 @@ function widokHow() {
 function podepnij() {
   podepnijChecklist();
   var up = document.getElementById('u-ponow'); if (up) up.onclick = function () { USAGE_BLAD = ''; rysuj(); };
-  document.querySelectorAll('.rkc').forEach(function (b) { b.onclick = function () { wybierzRynek(b.getAttribute('data-p')); S.view = 'summary'; rysuj(); window.scrollTo(0, 0); }; });
+  document.querySelectorAll('.rkc[data-p]').forEach(function (b) { b.onclick = function () { wybierzRynek(b.getAttribute('data-p')); S.view = 'summary'; rysuj(); window.scrollTo(0, 0); }; });
   document.querySelectorAll('[data-go]').forEach(function (b) { b.onclick = function () { S.view = b.getAttribute('data-go'); rysuj(); window.scrollTo(0, 0); }; });
   document.querySelectorAll('[data-metric]').forEach(function (b) { b.onclick = function () { S.metric = b.getAttribute('data-metric'); rysuj(); }; });
   document.querySelectorAll('th[data-sort]').forEach(function (t) { t.onclick = function () { var k = t.getAttribute('data-sort'); S.dir = S.sort === k ? -S.dir : 1; S.sort = k; rysuj(); }; });
