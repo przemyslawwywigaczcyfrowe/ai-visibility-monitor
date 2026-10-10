@@ -342,8 +342,18 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
 .cit.done .cbox { background:var(--acc); border-color:var(--acc); }
 .cit.na .cbox { border-style:dashed; border-color:#C4C7C5; background:var(--paper); }
 .cid { font-size:13px; color:var(--muted); padding-top:1px; }
+.cti { display:block; width:100%; text-align:left; border:0; background:none; padding:0; font:inherit; color:inherit; cursor:pointer; }
+.cti:hover b { color:var(--acc); }
+.cmore { display:flex; width:max-content; align-items:center; gap:2px; margin-top:6px; font-style:normal; font-size:13px; font-weight:500; color:var(--acc); }
+.cmore::after { content:"›"; font-size:18px; line-height:1; margin-left:4px; transition:transform .15s; }
+.cti[aria-expanded="true"] .cmore::after { transform:rotate(90deg); }
+.cex { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:14px; }
+.cex div { background:var(--paper); border-radius:16px; padding:14px 16px; }
+.cex h4 { font-size:13px; font-weight:600; margin-bottom:4px; }
+.cex p { font-size:14px; line-height:1.55; color:var(--ink); }
+@media (max-width:1100px) { .cex { grid-template-columns:minmax(0,1fr); } }
 .ctx b { display:block; font-size:15px; font-weight:500; line-height:1.4; }
-.ctx > span { display:block; font-size:14px; color:var(--muted); line-height:1.5; margin-top:2px; max-width:980px; }
+.ctx > span, .cti > span { display:block; font-size:14px; color:var(--muted); line-height:1.5; margin-top:2px; max-width:980px; }
 .cit.done .ctx b, .cit.na .ctx b { color:var(--muted); }
 .cit.na .ctx b { text-decoration:line-through; text-decoration-color:#A8ABAE; }
 .ctg { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
@@ -1106,6 +1116,13 @@ function widokUsage() {
 /* ---------- Checklist (AI readiness, by Przemysław Wywigacz) ----------
    122 items from config/checklist.json. Each store ticks its own items: done or not applicable.
    Progress = done / (all - not applicable). Who ticked what is shared through the encrypted form, see below. */
+var OTWARTE = {}, OST_OTW = null, SKOK = null;
+/* The longer explanation of an item, opened by a click on its title. */
+function szczegolyPozycji(i) {
+  return '<div class="cex">' + [['what', 'What is it about?'], ['why', 'Why does it matter?'], ['how', 'How to do it and check it?']].map(function (k) {
+    return i.x[k[0]] ? '<div><h4>' + k[1] + '</h4><p>' + esc(i.x[k[0]]) + '</p></div>' : '';
+  }).join('') + '</div>';
+}
 var CHL = null, CHK = {}, CF = { st: 'all', pr: '', ef: '', q: '' };
 /* Shared state: data/checklist.enc, written by the "Checklist sync" workflow every ~10 minutes from the
    encrypted form answers. Own changes not synced yet are kept in this browser (aiv-chk-pending)
@@ -1142,7 +1159,7 @@ async function wyslijZmiane(e) {
 }
 function adresChecklisty() {
   var q = new URLSearchParams();
-  if (CF.st !== 'all') q.set('status', CF.st); if (CF.pr) q.set('priority', CF.pr); if (CF.ef) q.set('effort', CF.ef); if (CF.q) q.set('q', CF.q);
+  if (CF.st !== 'all') q.set('status', CF.st); if (CF.pr) q.set('priority', CF.pr); if (CF.ef) q.set('effort', CF.ef); if (CF.q) q.set('q', CF.q); if (OST_OTW && OTWARTE[OST_OTW]) q.set('item', OST_OTW);
   var t = q.toString();
   return '#/checklist/' + (S.chkAll ? 'all' : S.market.toLowerCase()) + (t ? '?' + t : '');
 }
@@ -1151,6 +1168,9 @@ function czytajFiltryChecklisty(q) {
   CF.pr = ['P1', 'P2', 'P3'].indexOf(q.get('priority')) >= 0 ? q.get('priority') : '';
   CF.ef = ['S', 'M', 'L'].indexOf(q.get('effort')) >= 0 ? q.get('effort') : '';
   CF.q = q.get('q') || '';
+  /* a shared link with ?item=3.2 opens that item's details and scrolls to it */
+  var it = q.get('item');
+  if (it && CHL && CHL.items.some(function (i) { return i.id === it; })) { OTWARTE[it] = 1; OST_OTW = it; SKOK = it; }
 }
 function stan(code, id) { return (CHK[code] || {})[id] || null; }
 function postep(code, lista) {
@@ -1209,9 +1229,9 @@ function checklistaSklepu() {
       w.map(function (i) {
         var x = stan(code, i.id), st = x ? x.s : 'open';
         return '<div class="cit ' + st + '" data-id="' + i.id + '"><button class="cbox" data-tick="' + i.id + '" aria-pressed="' + (st === 'done') + '" aria-label="Mark ' + i.id + ' as done">' + (st === 'done' ? ic('i-tick') : '') + '</button>' +
-          '<span class="cid num">' + i.id + '</span><div class="ctx"><b>' + esc(i.t) + '</b>' + (i.d ? '<span>' + esc(i.d) + '</span>' : '') +
+          '<span class="cid num">' + i.id + '</span><div class="ctx"><button class="cti" data-otworz="' + i.id + '" aria-expanded="' + !!OTWARTE[i.id] + '"><b>' + esc(i.t) + '</b>' + (i.d ? '<span>' + esc(i.d) + '</span>' : '') + (i.x ? '<i class="cmore">' + (OTWARTE[i.id] ? 'Hide details' : 'What, why and how') + '</i>' : '') + '</button>' +
           '<div class="ctg"><span class="tag pr' + i.p.slice(1) + '" title="' + CHL.legend.p[i.p] + '">' + i.p + ' ' + CHL.legend.p[i.p].toLowerCase() + '</span><span class="tag" title="Effort: ' + CHL.legend.e[i.e] + '">Effort ' + i.e + '</span><span class="tag" title="' + CHL.legend.w[i.w] + '">' + { O: 'Official', B: 'Study', P: 'Practice' }[i.w] + '</span>' +
-          (code === 'PL' && i.a ? '<span class="tag audyt">EIG audit 6 Oct: ' + AUDYT[i.a] + '</span>' : '') + '</div></div>' +
+          (code === 'PL' && i.a ? '<span class="tag audyt">EIG audit 6 Oct: ' + AUDYT[i.a] + '</span>' : '') + '</div>' + (OTWARTE[i.id] && i.x ? szczegolyPozycji(i) : '') + '</div>' +
           '<div class="cst">' + (x ? '<span>' + (st === 'done' ? 'Done' : 'Not applicable') + ' · ' + esc(kiedyKrotko(x.at)) + '</span><small>' + esc(x.by) + (x.pending ? ' · others see it within ~15 min' : '') + '</small>' : '') + '</div>' +
           '<button class="cna" data-na="' + i.id + '" title="' + (st === 'na' ? 'Count this item again' : 'This item does not apply to our store') + '">' + (st === 'na' ? 'Applies' : 'N/A') + '</button></div>';
       }).join('') + '</section>';
@@ -1256,6 +1276,8 @@ function podepnijChecklist() {
     }).catch(function (err) { alert('The change was not saved: ' + (err && err.message || err) + '. Check the connection and try again.'); });
     liczZdarzenie('checklist/' + code, 'Checklist item changed · ' + rynek(code).store);
   }
+  if (SKOK) { var sk = document.querySelector('.cit[data-id="' + SKOK + '"]'); SKOK = null; if (sk) setTimeout(function () { sk.scrollIntoView({ block: 'start' }); window.scrollBy(0, -72); }, 50); }
+  document.querySelectorAll('[data-otworz]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-otworz'); if (OTWARTE[id]) delete OTWARTE[id]; else { OTWARTE[id] = 1; OST_OTW = id; } var y = window.scrollY; rysuj(); window.scrollTo(0, y); }; });
   document.querySelectorAll('[data-tick]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-tick'), x = stan(S.market, id); ustaw(id, x && x.s === 'done' ? null : 'done'); }; });
   document.querySelectorAll('[data-na]').forEach(function (b) { b.onclick = function () { var id = b.getAttribute('data-na'), x = stan(S.market, id); ustaw(id, x && x.s === 'na' ? null : 'na'); }; });
   document.querySelectorAll('[data-cfk]').forEach(function (b) { b.onclick = function () { CF[b.getAttribute('data-cfk')] = b.getAttribute('data-cfv'); rysuj(); }; });

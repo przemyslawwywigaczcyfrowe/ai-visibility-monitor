@@ -2,160 +2,1785 @@
   "version": "v3, October 2026",
   "author": "Przemysław Wywigacz",
   "legend": {
-    "p": { "P1": "Critical", "P2": "Important", "P3": "Optional" },
-    "e": { "S": "up to a few days", "M": "1-4 weeks", "L": "over a month or needs a dev team" },
-    "w": { "O": "Official platform documentation", "B": "Study or data analysis", "P": "Industry practice without hard causal proof" }
+    "p": {
+      "P1": "Critical",
+      "P2": "Important",
+      "P3": "Optional"
+    },
+    "e": {
+      "S": "up to a few days",
+      "M": "1-4 weeks",
+      "L": "over a month or needs a dev team"
+    },
+    "w": {
+      "O": "Official platform documentation",
+      "B": "Study or data analysis",
+      "P": "Industry practice without hard causal proof"
+    }
   },
   "sections": [
-    { "n": 1, "t": "Organisation and ownership" },
-    { "n": 2, "t": "Baseline measurement and analytics" },
-    { "n": 3, "t": "Bot access: robots.txt" },
-    { "n": 4, "t": "Bot access: Cloudflare, CDN, WAF" },
-    { "n": 5, "t": "Rendering and technical basics" },
-    { "n": 6, "t": "Structured data (schema.org, JSON-LD)" },
-    { "n": 7, "t": "Product feeds and data" },
-    { "n": 8, "t": "Content and product data" },
-    { "n": 9, "t": "Images and video" },
-    { "n": 10, "t": "Reputation and consensus" },
-    { "n": 11, "t": "Agentic commerce (preparation, not launch)" },
-    { "n": 12, "t": "Own AI layer in the store (optional)" },
-    { "n": 13, "t": "Law and risks" }
+    {
+      "n": 1,
+      "t": "Organisation and ownership"
+    },
+    {
+      "n": 2,
+      "t": "Baseline measurement and analytics"
+    },
+    {
+      "n": 3,
+      "t": "Bot access: robots.txt"
+    },
+    {
+      "n": 4,
+      "t": "Bot access: Cloudflare, CDN, WAF"
+    },
+    {
+      "n": 5,
+      "t": "Rendering and technical basics"
+    },
+    {
+      "n": 6,
+      "t": "Structured data (schema.org, JSON-LD)"
+    },
+    {
+      "n": 7,
+      "t": "Product feeds and data"
+    },
+    {
+      "n": 8,
+      "t": "Content and product data"
+    },
+    {
+      "n": 9,
+      "t": "Images and video"
+    },
+    {
+      "n": 10,
+      "t": "Reputation and consensus"
+    },
+    {
+      "n": 11,
+      "t": "Agentic commerce (preparation, not launch)"
+    },
+    {
+      "n": 12,
+      "t": "Own AI layer in the store (optional)"
+    },
+    {
+      "n": 13,
+      "t": "Law and risks"
+    }
   ],
   "items": [
-    { "id": "1.1", "p": "P1", "e": "S", "w": "P", "a": "?", "t": "One named person owns AI readiness", "d": "Role, scope and time budget written down." },
-    { "id": "1.2", "p": "P1", "e": "S", "w": "P", "a": "partly", "t": "Written bot policy, in line with EIG group rules", "d": "Who decides which bots get in, why, and the date of the decision. Settings in Cloudflare alone are not a policy." },
-    { "id": "1.3", "p": "P2", "e": "S", "w": "P", "a": "?", "t": "Review rhythm", "d": "Quarterly review of this checklist, monthly review of bot categories in Cloudflare (Cloudflare reclassifies bots without notice)." },
-    { "id": "1.4", "p": "P2", "e": "S", "w": "P", "a": null, "t": "Shared agreements with the EIG group", "d": "One list of AI sources in GA4 (2.2), one set of KPIs (2.6), a comparable visibility tool (2.10), one set of prompts." },
-
-    { "id": "2.1", "p": "P1", "e": "S", "w": "P", "a": "partly", "t": "Test prompt set, checked over time", "d": "50-100 prompts in the local language in 5 groups: brand, budget, compatibility, comparisons, local. Note whether the store is named, linked, with the right price and stock, and which competitors and sources are cited. This panel covers part of it." },
-    { "id": "2.2", "p": "P1", "e": "S", "w": "O", "a": "partly", "t": "AI channel in GA4 with one agreed source list", "d": "Native \"AI Assistant\" channel plus an own channel group above Referral (chatgpt.com, perplexity.ai, claude.ai, gemini.google.com, copilot.microsoft.com and others) and utm_source=chatgpt.com. Traffic from AI Overviews and AI Mode lands in Organic Search." },
-    { "id": "2.3", "p": "P1", "e": "S", "w": "P", "a": "yes", "t": "Bot traffic filtered in GA4 before comparisons and A/B tests", "d": "Check unusual sources and events per session, also in the A/B testing tool." },
-    { "id": "2.4", "p": "P1", "e": "S", "w": "O", "a": null, "t": "Search Console: Generative AI report", "d": "Also check the site is included in \"Search generative AI features\"." },
-    { "id": "2.5", "p": "P1", "e": "S", "w": "O", "a": "yes", "t": "Bing Webmaster Tools: AI Performance report", "d": "Citations in Copilot." },
-    { "id": "2.6", "p": "P1", "e": "S", "w": "P", "a": "yes", "t": "AI KPIs in the monthly report", "d": "AI share of sessions, AI share of orders, revenue per visit from AI." },
-    { "id": "2.7", "p": "P1", "e": "M", "w": "P", "a": "yes", "t": "Bot log dashboard: reads vs visits per provider", "d": "How many times a bot reads pages per visit it sends back, plus status codes, most read URLs and IP verification." },
-    { "id": "2.8", "p": "P2", "e": "M", "w": "P", "a": "partly", "t": "Organic CTR and AI Overview keywords next to AI traffic", "d": "To see whether AI replaces or adds to SEO. Set a cut-off date after URL changes and compare from there." },
-    { "id": "2.9", "p": "P2", "e": "M", "w": "P", "a": null, "t": "Server-side attribution of AI orders", "d": "Session source saved with the order in the shop system." },
-    { "id": "2.10", "p": "P3", "e": "S", "w": "P", "a": "no", "t": "AI visibility tool comparable across the group", "d": "Same prompts, competitors and markets before buying another tool." },
-
-    { "id": "3.1", "p": "P1", "e": "S", "w": "O", "a": "yes", "t": "Search bots allowed", "d": "Googlebot, Bingbot, OAI-SearchBot, Claude-SearchBot, PerplexityBot, Applebot." },
-    { "id": "3.2", "p": "P1", "e": "S", "w": "O", "a": "partly", "t": "User-request bots not blocked in robots.txt or on the WAF", "d": "ChatGPT-User, Perplexity-User, Claude-User." },
-    { "id": "3.3", "p": "P1", "e": "S", "w": "P", "a": "yes", "t": "Written decision on training bots", "d": "GPTBot, ClaudeBot, Google-Extended, Applebot-Extended, CCBot, Meta-ExternalAgent, with date and reason. Being in training data usually helps a store, but it is a business decision." },
-    { "id": "3.4", "p": "P1", "e": "S", "w": "O", "a": "yes", "t": "No broad User-agent: * rules that block products, categories or guides", "d": "" },
-    { "id": "3.5", "p": "P2", "e": "S", "w": "O", "a": "partly", "t": "Paths without value blocked for all bots", "d": "Cart, checkout steps, account, internal search with parameters. Repeat the lines in groups of named bots: a bot with its own group ignores User-agent: *." },
-    { "id": "3.6", "p": "P1", "e": "S", "w": "O", "a": "partly", "t": "Sitemaps listed in robots.txt, with a real lastmod", "d": "Separate for products, categories, guides and stores." },
-    { "id": "3.7", "p": "P1", "e": "S", "w": "O", "a": "yes", "t": "robots.txt returns 200 to bots", "d": "No 5xx, no challenge page. Test with curl and bot user agents." },
-    { "id": "3.8", "p": "P3", "e": "S", "w": "O", "a": "yes", "t": "Crawl-delay only where needed", "d": "Anthropic respects it, Google ignores it." },
-    { "id": "3.9", "p": "P3", "e": "S", "w": "B", "a": "yes", "t": "llms.txt: keep, do not expand", "d": "Plain text without HTML tags, working links. Google ignores the file; 97% of llms.txt files got no request in May 2026 (Ahrefs)." },
-
-    { "id": "4.1", "p": "P1", "e": "S", "w": "O", "a": "?", "t": "AI Crawl Control reviewed", "d": "Which AI bots are allowed, blocked or charged. Defaults may block bots without anyone deciding." },
-    { "id": "4.2", "p": "P1", "e": "S", "w": "O", "a": "?", "t": "Verified bots get through", "d": "Bot Fight Mode does not challenge verified AI search bots. A challenge to a crawler is a block. Check firewall events filtered by verified bot category." },
-    { "id": "4.3", "p": "P1", "e": "S", "w": "O", "a": "partly", "t": "Side effects of managed rules checked", "d": "Exception for PerplexityBot and Perplexity-User verified by IP. At Cyfrowe managed rules reject about 90% of Perplexity requests." },
-    { "id": "4.4", "p": "P2", "e": "S", "w": "O", "a": "?", "t": "Monthly check of bot categories", "d": "Cloudflare changes classification (Search, Training, Agent since 15 Sep 2026); a new category can block a bot overnight." },
-    { "id": "4.5", "p": "P2", "e": "S", "w": "O", "a": "?", "t": "Exceptions by published IP ranges plus user agent, refreshed automatically", "d": "OpenAI and Perplexity publish JSON lists. A user agent alone is easy to fake." },
-    { "id": "4.6", "p": "P2", "e": "M", "w": "O", "a": "?", "t": "Signed agents (Web Bot Auth) and agent browsers reach product pages and checkout", "d": "Test: add to cart and check out with an agent, then check WAF events." },
-    { "id": "4.7", "p": "P2", "e": "M", "w": "P", "a": "?", "t": "Checkout limits and CAPTCHA tuned for legitimate agents", "d": "Fraud protection stays in place." },
-    { "id": "4.8", "p": "P3", "e": "M", "w": "P", "a": "?", "t": "Bots without a declared user agent handled by behaviour rules", "d": "For example Grok: bursts from data centre IPs, outdated browser strings. robots.txt does not work on them." },
-
-    { "id": "5.1", "p": "P1", "e": "S", "w": "B", "a": "yes", "t": "Price, stock, specs, description and JSON-LD in server HTML", "d": "Not only after JavaScript or through a tag manager. Most AI crawlers do not run JS. Test with curl or View source." },
-    { "id": "5.2", "p": "P1", "e": "S", "w": "P", "a": "yes", "t": "Cookie walls and pop-ups do not hide content from bots", "d": "" },
-    { "id": "5.3", "p": "P1", "e": "M", "w": "O", "a": "partly", "t": "Canonicals and filter pages", "d": "Canonical on products and categories; filter combinations without value as noindex, follow or canonical to the category; valuable combinations as static categories with a description." },
-    { "id": "5.4", "p": "P1", "e": "M", "w": "P", "a": "partly", "t": "Discontinued products stay online with a link to the successor", "d": "No 404. Add a \"Successor and similar models\" block and isSimilarTo in schema." },
-    { "id": "5.5", "p": "P2", "e": "M", "w": "O", "a": null, "t": "Core Web Vitals in the green", "d": "LCP under 2.5 s, INP under 200 ms, CLS under 0.1." },
-    { "id": "5.6", "p": "P2", "e": "M", "w": "P", "a": "?", "t": "Fast answers to bots, also on uncached pages", "d": "TTFB under about 600 ms, no 5xx at peak times." },
-    { "id": "5.7", "p": "P2", "e": "S", "w": "O", "a": "?", "t": "IndexNow for faster price and stock updates in Bing and Copilot", "d": "" },
-    { "id": "5.8", "p": "P2", "e": "S", "w": "O", "a": null, "t": "Structure and internal links", "d": "Category hierarchy, breadcrumbs in HTML, links product - category - accessories - guides, one H1, 404 monitoring." },
-    { "id": "5.9", "p": "P2", "e": "S", "w": "O", "a": null, "t": "HTTPS and security", "d": "" },
-    { "id": "5.10", "p": "P3", "e": "S", "w": "O", "a": "na", "t": "hreflang only where there are language versions", "d": "" },
-
-    { "id": "6.1", "p": "P1", "e": "S", "w": "O", "a": "partly", "t": "Product: name, description, images, brand, sku, gtin13, mpn", "d": "" },
-    { "id": "6.2", "p": "P1", "e": "S", "w": "O", "a": "partly", "t": "Offer: price, currency, availability, itemCondition, url, seller", "d": "priceValidUntil on promotions." },
-    { "id": "6.3", "p": "P1", "e": "S", "w": "O", "a": "no", "t": "OfferShippingDetails and MerchantReturnPolicy", "d": "Delivery cost and time, store pickup, return window, matching Merchant Center." },
-    { "id": "6.4", "p": "P2", "e": "M", "w": "O", "a": "no", "t": "Variants as ProductGroup", "d": "hasVariant, variesBy, productGroupID. A kit (body plus lens) is a separate product with its own GTIN; body vs kit is a frequent cause of wrong AI answers." },
-    { "id": "6.5", "p": "P1", "e": "M", "w": "P", "a": null, "t": "Specs as additionalProperty with consistent names", "d": "Mount, sensor, resolution, focal length, aperture, stabilisation, video, weight with unit, weather sealing, filter thread; drones: weight vs the 250 g limit." },
-    { "id": "6.6", "p": "P2", "e": "S", "w": "P", "a": "no", "t": "Compatibility and relations", "d": "isAccessoryOrSparePartFor, isRelatedTo, isSimilarTo for lenses, batteries, filters, flashes, adapters. Needs the compatibility data from 8.4." },
-    { "id": "6.7", "p": "P2", "e": "S", "w": "O", "a": "partly", "t": "Used and ex-demo gear linked to the new model", "d": "UsedCondition or RefurbishedCondition, the new model's GTIN and a link to its page." },
-    { "id": "6.8", "p": "P2", "e": "S", "w": "O", "a": "yes", "t": "AggregateRating and Review only from reviews shown on the page", "d": "author as Person." },
-    { "id": "6.9", "p": "P2", "e": "M", "w": "O", "a": "no", "t": "Warranty in schema, in line with the EU warranty label", "d": "Dates to confirm with a lawyer." },
-    { "id": "6.10", "p": "P2", "e": "M", "w": "O", "a": "no", "t": "Product FAQ or Q&A in HTML", "d": "The value is in the text; FAQ rich results for shops ended in 2023." },
-    { "id": "6.11", "p": "P3", "e": "S", "w": "O", "a": "?", "t": "Energy label data for products that need it", "d": "hasEnergyConsumptionDetails." },
-    { "id": "6.12", "p": "P2", "e": "S", "w": "O", "a": null, "t": "VideoObject and ImageObject for videos and galleries", "d": "" },
-    { "id": "6.13", "p": "P1", "e": "S", "w": "O", "a": "no", "t": "Store / LocalBusiness for every physical store", "d": "Address, geo, opening hours including holidays, phone, matching Google Business Profile. No EIG store has it today." },
-    { "id": "6.14", "p": "P1", "e": "S", "w": "O", "a": "yes", "t": "Organization on the home page", "d": "name, logo, url, sameAs, contactPoint, award, company register data." },
-    { "id": "6.15", "p": "P1", "e": "S", "w": "O", "a": "yes", "t": "BreadcrumbList on categories, brands and products", "d": "" },
-    { "id": "6.16", "p": "P2", "e": "S", "w": "O", "a": "yes", "t": "ItemList on categories and buying guides", "d": "" },
-    { "id": "6.17", "p": "P1", "e": "S", "w": "O", "a": "yes", "t": "Article / BlogPosting with author, datePublished, dateModified", "d": "" },
-    { "id": "6.18", "p": "P2", "e": "S", "w": "P", "a": "yes", "t": "Author and expert pages with Person", "d": "jobTitle, knowsAbout, worksFor, sameAs." },
-    { "id": "6.19", "p": "P3", "e": "S", "w": "O", "a": "?", "t": "Event for workshops", "d": "If the store runs them." },
-    { "id": "6.20", "p": "P1", "e": "S", "w": "O", "a": "?", "t": "Schema validated and monitored", "d": "Rich Results Test, Schema Markup Validator, Search Console reports; test a sample after every template change." },
-
-    { "id": "7.1", "p": "P1", "e": "M", "w": "O", "a": "?", "t": "One source of truth: page, JSON-LD and feed agree", "d": "Same price and stock everywhere, matching what Add to cart allows. Test on 50-100 product pages." },
-    { "id": "7.2", "p": "P1", "e": "M", "w": "O", "a": "partly", "t": "Complete Google Merchant Center feed", "d": "GTIN, MPN, brand, condition, price, stock, shipping, returns; titles Brand + Model + Type + feature + variant; product_highlight, product_detail; images without watermarks." },
-    { "id": "7.3", "p": "P1", "e": "S", "w": "P", "a": "no", "t": "Feed, page and schema refreshed at least daily", "d": "Stock and prices close to real time, with ongoing monitoring." },
-    { "id": "7.4", "p": "P2", "e": "S", "w": "O", "a": "yes", "t": "Variants grouped (item_group_id), used gear with the new model's EAN", "d": "" },
-    { "id": "7.5", "p": "P2", "e": "S", "w": "O", "a": "?", "t": "Tracking parameters in feed URLs per channel", "d": "For example utm_medium=feed with a separate utm_source for Google, Microsoft and OpenAI." },
-    { "id": "7.6", "p": "P2", "e": "S", "w": "O", "a": null, "t": "AI-written titles and descriptions only in structured_title and structured_description", "d": "" },
-    { "id": "7.7", "p": "P1", "e": "M", "w": "O", "a": "?", "t": "Merchant Center conversational attributes: pilot on 200-500 SKUs with a control group", "d": "question_and_answer, related_product, document_link, item_group_title, variant_option, popularity_rank. Check availability for your country first." },
-    { "id": "7.8", "p": "P2", "e": "S", "w": "O", "a": "?", "t": "Microsoft Merchant Center (import from Google)", "d": "Copilot uses the Bing shopping index." },
-    { "id": "7.9", "p": "P2", "e": "M", "w": "O", "a": "?", "t": "ChatGPT merchant programme", "d": "Apply at chatgpt.com/merchants, feed template to the OpenAI specification. Shopping in ChatGPT works in the US for now." },
-    { "id": "7.10", "p": "P2", "e": "S", "w": "P", "a": null, "t": "Price comparison sites at Merchant Center quality", "d": "" },
-    { "id": "7.11", "p": "P3", "e": "S", "w": "O", "a": null, "t": "Perplexity Merchant Program and marketplaces: monitor", "d": "Only if it applies." },
-
-    { "id": "8.1", "p": "P1", "e": "L", "w": "B", "a": null, "t": "Numbers instead of adjectives", "d": "\"740 g with battery\", \"IBIS up to 6.5 EV (CIPA)\"." },
-    { "id": "8.2", "p": "P2", "e": "M", "w": "B", "a": null, "t": "Quotes and sources", "d": "Signed opinions of advisers and photographers, links to official specs and standards." },
-    { "id": "8.3", "p": "P1", "e": "M", "w": "P", "a": null, "t": "Unified product attributes in the shop system", "d": "Mount, sensor and key specs for 100% of cameras and lenses." },
-    { "id": "8.4", "p": "P1", "e": "L", "w": "P", "a": null, "t": "Compatibility database in the PIM", "d": "Exported to the page, schema (6.6) and related_product (7.7)." },
-    { "id": "8.5", "p": "P1", "e": "M", "w": "P", "a": null, "t": "Bank of customer questions", "d": "From customer service, stores, internal search, reviews, Search Console, forums." },
-    { "id": "8.6", "p": "P2", "e": "M", "w": "P", "a": null, "t": "Question headings with a 40-60 word answer below", "d": "" },
-    { "id": "8.7", "p": "P1", "e": "L", "w": "O", "a": "?", "t": "Product descriptions answer: for whom, for what, why this one, when an alternative is better", "d": "Top 500 SKUs; the rest gets complete specs and a correct template." },
-    { "id": "8.8", "p": "P1", "e": "M", "w": "P", "a": "?", "t": "Buying guide text in HTML on the top 20 categories", "d": "What to look for and which choice suits which user." },
-    { "id": "8.9", "p": "P1", "e": "M", "w": "P", "a": null, "t": "Buying-choice pages by budget and use", "d": "Prices pulled live from the catalogue." },
-    { "id": "8.10", "p": "P1", "e": "M", "w": "P", "a": null, "t": "Comparison tables and compatibility pages generated from the PIM", "d": "" },
-    { "id": "8.11", "p": "P2", "e": "M", "w": "P", "a": "no", "t": "Q&A under products with advisers' answers", "d": "In HTML, exported to question_and_answer." },
-    { "id": "8.12", "p": "P2", "e": "S", "w": "P", "a": "yes", "t": "Articles link to the products and categories they discuss", "d": "" },
-    { "id": "8.13", "p": "P1", "e": "S", "w": "P", "a": "?", "t": "Service pages with clear terms", "d": "Trade-in, used gear, repair, rental, finance: each a separate indexable page." },
-    { "id": "8.14", "p": "P1", "e": "S", "w": "O", "a": "?", "t": "Policies on permanent indexable pages in plain language", "d": "Delivery, returns, warranty, trade-in, linked from the footer." },
-    { "id": "8.15", "p": "P2", "e": "M", "w": "O", "a": "yes", "t": "Authors and E-E-A-T", "d": "" },
-    { "id": "8.16", "p": "P2", "e": "M", "w": "P", "a": null, "t": "Data nobody else has", "d": "Sample photos, in-store tests, popularity rankings." },
-    { "id": "8.17", "p": "P2", "e": "S", "w": "P", "a": null, "t": "Freshness", "d": "Quarterly review and after launches, update date plus dateModified." },
-    { "id": "8.18", "p": "P2", "e": "S", "w": "O", "a": null, "t": "Title and meta description for real queries, without the price", "d": "" },
-    { "id": "8.19", "p": "P3", "e": "M", "w": "P", "a": null, "t": "Glossary of 100-200 terms", "d": "" },
-
-    { "id": "9.1", "p": "P2", "e": "M", "w": "O", "a": null, "t": "Images: many angles, descriptive alt, readable file names, WebP or AVIF", "d": "" },
-    { "id": "9.2", "p": "P3", "e": "S", "w": "O", "a": null, "t": "IPTC metadata on own photos", "d": "Creator, Credit, Copyright." },
-    { "id": "9.3", "p": "P2", "e": "M", "w": "O", "a": null, "t": "Video with transcript and captions, VideoObject, YouTube channel", "d": "" },
-    { "id": "9.4", "p": "P3", "e": "M", "w": "P", "a": null, "t": "Customer photo gallery (with consent)", "d": "" },
-
-    { "id": "10.1", "p": "P1", "e": "S", "w": "P", "a": null, "t": "Brand Facts Document", "d": "One document with the official facts about the company, the source for all profiles." },
-    { "id": "10.2", "p": "P2", "e": "S", "w": "P", "a": "?", "t": "Same company data everywhere", "d": "Name, addresses, phones, hours, services on the site, Google Business Profile, Bing Places, Apple Business Connect, comparison and review sites, social. Compare 5 sources per store." },
-    { "id": "10.3", "p": "P1", "e": "S", "w": "O", "a": null, "t": "Google Business Profile for every physical store", "d": "" },
-    { "id": "10.4", "p": "P2", "e": "S", "w": "P", "a": "?", "t": "Reviews on independent platforms with steady volume", "d": "KPI: reviews in the last 90 days per platform." },
-    { "id": "10.5", "p": "P2", "e": "S", "w": "P", "a": null, "t": "Real delivery time matches the promised one", "d": "" },
-    { "id": "10.6", "p": "P3", "e": "S", "w": "P", "a": "?", "t": "Awards shown with the reason they were given", "d": "Plus award in Organization." },
-    { "id": "10.7", "p": "P2", "e": "M", "w": "P", "a": "?", "t": "Experts active in communities", "d": "Photo forums, Reddit, YouTube: real help, no ads." },
-    { "id": "10.8", "p": "P3", "e": "M", "w": "P", "a": "?", "t": "PR based on own data", "d": "" },
-    { "id": "10.9", "p": "P3", "e": "S", "w": "P", "a": "?", "t": "Wikidata and Wikipedia only from independent sources", "d": "sameAs in Organization." },
-
-    { "id": "11.1", "p": "P1", "e": "S", "w": "O", "a": null, "t": "Waiting lists joined, availability in your country tracked", "d": "Google UCP and Business Agent, chatgpt.com/merchants, Copilot Checkout, Perplexity." },
-    { "id": "11.2", "p": "P2", "e": "S", "w": "O", "a": null, "t": "Meeting with the payment provider about agent payments", "d": "Agent tokens, local methods for agents, timeline, fraud liability." },
-    { "id": "11.3", "p": "P2", "e": "M", "w": "P", "a": "?", "t": "Agent-friendly checkout", "d": "Guest checkout, clear field labels and error messages. Test the checkout with an agent on a test environment." },
-    { "id": "11.4", "p": "P3", "e": "S", "w": "P", "a": "?", "t": "Local payment methods available to agents", "d": "" },
-    { "id": "11.5", "p": "P2", "e": "L", "w": "O", "a": "?", "t": "Product data API with clear access rules", "d": "Price, stock per store, specs, delivery time; authentication, limits and SLO monitoring." },
-    { "id": "11.6", "p": "P2", "e": "M", "w": "O", "a": null, "t": "Data ready for UCP checkout", "d": "Healthy Merchant Center account, return and delivery policies, OAuth 2.0." },
-    { "id": "11.7", "p": "P3", "e": "L", "w": "O", "a": null, "t": "UCP or ACP prototype on a test environment", "d": "Go or no-go once your market opens." },
-    { "id": "11.8", "p": "P3", "e": "M", "w": "P", "a": null, "t": "Store MCP server (2027)", "d": "" },
-
-    { "id": "12.1", "p": "P3", "e": "L", "w": "P", "a": null, "t": "Hybrid site search (text plus vectors) with an A/B test", "d": "" },
-    { "id": "12.2", "p": "P2", "e": "S", "w": "P", "a": null, "t": "Internal search logs as a source of questions for 8.5", "d": "" },
-    { "id": "12.3", "p": "P3", "e": "L", "w": "O", "a": null, "t": "AI assistant on the site, labelled as AI", "d": "AI Act, article 50." },
-
-    { "id": "13.1", "p": "P1", "e": "S", "w": "P", "a": null, "t": "Wrong prices and stock in AI answers kept in check", "d": "Frequent updates (7.3) and checks in the test prompts." },
-    { "id": "13.2", "p": "P1", "e": "S", "w": "P", "a": null, "t": "Omnibus: lowest price of the last 30 days on discounts, consistent with feeds", "d": "To confirm with a lawyer." },
-    { "id": "13.3", "p": "P2", "e": "S", "w": "O", "a": null, "t": "EU warranty label: date and scope agreed with a lawyer", "d": "Prepare the data for 6.9." },
-    { "id": "13.4", "p": "P2", "e": "S", "w": "O", "a": null, "t": "GDPR: logs with IPs, Consent Mode, no personal data in feeds and Q&A", "d": "" },
-    { "id": "13.5", "p": "P2", "e": "S", "w": "O", "a": null, "t": "AI Act and review of AI-assisted content", "d": "" },
-    { "id": "13.6", "p": "P2", "e": "S", "w": "P", "a": null, "t": "Image and data licences in feeds", "d": "Plus the conscious decision on training bots (3.3)." },
-    { "id": "13.7", "p": "P2", "e": "S", "w": "O", "a": null, "t": "No dependence on a single protocol", "d": "" }
+    {
+      "id": "1.1",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "?",
+      "t": "One named person owns AI readiness",
+      "d": "Role, scope and time budget written down.",
+      "x": {
+        "what": "One person in the store is named as the owner of AI readiness. Their role, what they cover and how many hours a month they can spend on it are written down. This person keeps the checklist moving and knows who to ask in IT, marketing and content.",
+        "why": "AI visibility touches many teams: robots.txt, Cloudflare, schema, feeds, content and reviews. Without an owner, gaps such as a blocked AI bot stay open for months because each team assumes someone else handles it.",
+        "how": "Ask management to name the person and agree a time budget, for example a set number of hours per month. Write the role, scope and budget in one short document and share it with IT, marketing and content. Done when the document exists and the team knows who to contact."
+      }
+    },
+    {
+      "id": "1.2",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "partly",
+      "t": "Written bot policy, in line with EIG group rules",
+      "d": "Who decides which bots get in, why, and the date of the decision. Settings in Cloudflare alone are not a policy.",
+      "x": {
+        "what": "A bot policy is a short document that says which automated readers (bots) from search engines and AI companies may read the store's pages, which are blocked, who made the decision, why, and on which date. It follows the shared rules of the EIG group. Settings in Cloudflare or robots.txt are the result of a policy, they do not replace it.",
+        "why": "If a bot is blocked by accident, the AI tool behind it cannot read prices and stock, so it recommends other stores. A written policy lets anyone check whether the current settings match what the business decided.",
+        "how": "List every AI bot from section 3 with the decision allow or block, the reason, the owner and the date. Check it matches the EIG group rules. Compare the list with robots.txt and Cloudflare settings and fix differences. Done when the document is signed off and the settings match it."
+      }
+    },
+    {
+      "id": "1.3",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": "?",
+      "t": "Review rhythm",
+      "d": "Quarterly review of this checklist, monthly review of bot categories in Cloudflare (Cloudflare reclassifies bots without notice).",
+      "x": {
+        "what": "The store sets a fixed calendar for reviews. Once a quarter the owner goes through this whole checklist and updates statuses. Once a month someone checks the bot categories in Cloudflare, the security and delivery service in front of the website.",
+        "why": "AI platforms and Cloudflare change rules often. Cloudflare can move a bot to a new category without notice, and that change can start blocking an AI search bot overnight, which removes the store from its answers.",
+        "how": "Put two recurring meetings in the calendar: monthly for Cloudflare bot categories, quarterly for the full checklist. Name who attends and where results are written. Done when both meetings exist and the first review has notes with date and findings."
+      }
+    },
+    {
+      "id": "1.4",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Shared agreements with the EIG group",
+      "d": "One list of AI sources in GA4 (2.2), one set of KPIs (2.6), a comparable visibility tool (2.10), one set of prompts.",
+      "x": {
+        "what": "The four EIG stores agree to measure AI the same way. That means one list of AI sources in Google Analytics 4 (item 2.2), one set of monthly AI numbers (item 2.6), a visibility tool that gives comparable results (item 2.10) and one shared set of test questions for AI tools.",
+        "why": "If each store counts AI traffic differently, the group cannot tell which store's approach works better. Shared definitions turn four separate experiments into one comparison the group can learn from.",
+        "how": "Agree the source list, KPIs, tool setup and prompt groups in a group meeting and store them in one shared document. Each store applies the same list in its GA4 and reports the same KPIs. Done when all four stores report AI numbers built on the same definitions."
+      }
+    },
+    {
+      "id": "2.1",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "partly",
+      "t": "Test prompt set, checked over time",
+      "d": "50-100 prompts in the local language in 5 groups: brand, budget, compatibility, comparisons, local. Note whether the store is named, linked, with the right price and stock, and which competitors and sources are cited. This panel covers part of it.",
+      "x": {
+        "what": "The store keeps a fixed list of 50-100 questions in the local language that real customers might ask an AI assistant. They fall into 5 groups: brand, budget, compatibility, comparisons and local, for example \"which lens fits this camera\". The same questions are asked again on a regular schedule, so changes over time become visible.",
+        "why": "This is the only direct way to see what ChatGPT, Gemini, AI Mode, Perplexity, Copilot and Claude say about the store. It shows whether the store is named, linked and shown with the right price and stock, and which competitors and sources the AI trusts instead.",
+        "how": "Write the questions, split into the 5 groups, and run them once a month in each AI tool. For every answer note: store named, link present, price and stock correct, competitors and sources cited. Keep results in one sheet with dates. Done when at least two monthly rounds are saved and comparable."
+      }
+    },
+    {
+      "id": "2.2",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "partly",
+      "t": "AI channel in GA4 with one agreed source list",
+      "d": "Native \"AI Assistant\" channel plus an own channel group above Referral (chatgpt.com, perplexity.ai, claude.ai, gemini.google.com, copilot.microsoft.com and others) and utm_source=chatgpt.com. Traffic from AI Overviews and AI Mode lands in Organic Search.",
+      "x": {
+        "what": "Google Analytics 4 (GA4) has a channel for visits from AI assistants. The store uses the built-in \"AI Assistant\" channel and also its own channel group placed above Referral, listing sites such as chatgpt.com, perplexity.ai, claude.ai, gemini.google.com and copilot.microsoft.com, plus visits tagged utm_source=chatgpt.com. The list is the same across the group.",
+        "why": "Without this channel, AI visits are mixed into Referral and nobody can see whether AI brings customers. Traffic from Google AI Overviews and AI Mode still lands in Organic Search, so the team needs to know this channel shows only part of the AI effect.",
+        "how": "In GA4 go to Admin, Data display, Channel groups and create a group with an AI channel above Referral using the agreed source list. Add the utm_source=chatgpt.com rule. Open a chatgpt.com link to the store and check the visit appears in the AI channel. Done when the channel shows data and matches the group list."
+      }
+    },
+    {
+      "id": "2.3",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "yes",
+      "t": "Bot traffic filtered in GA4 before comparisons and A/B tests",
+      "d": "Check unusual sources and events per session, also in the A/B testing tool.",
+      "x": {
+        "what": "Some visits in analytics come from bots and automated browsers, not people. Before comparing months or reading A/B test results, the store removes this fake traffic from GA4 and from the A/B testing tool. Typical signs are unusual sources and far too many events in one session.",
+        "why": "Bot traffic inflates sessions and changes conversion rates, so AI KPIs and test results can look better or worse than they are. A wrong conclusion here can lead the team to change the shop for the wrong reason.",
+        "how": "In GA4 look for sources with very high events per session, odd countries or zero engagement, and build filters or segments that exclude them. Apply the same check in the A/B testing tool. Done when the monthly report and every A/B test readout state that bot traffic was filtered and how."
+      }
+    },
+    {
+      "id": "2.4",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "Search Console: Generative AI report",
+      "d": "Also check the site is included in \"Search generative AI features\".",
+      "x": {
+        "what": "Google Search Console, Google's free tool for site owners, has a report on how the site appears in Google's generative AI features, such as AI Overviews and AI Mode. The store also checks that the site is included in \"Search generative AI features\", so Google may use its pages there.",
+        "why": "Google AI Overviews and AI Mode are among the AI answers customers see most. This report is Google's own data on how often the store is shown there, which no outside tool can give.",
+        "how": "Log in to Search Console for the store's domain, open the Generative AI report and check that data appears. Check the setting that includes the site in \"Search generative AI features\". Add the main numbers to the monthly report. Done when the report is checked monthly and the setting is confirmed."
+      }
+    },
+    {
+      "id": "2.5",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "Bing Webmaster Tools: AI Performance report",
+      "d": "Citations in Copilot.",
+      "x": {
+        "what": "Bing Webmaster Tools is Microsoft's free tool for site owners. Its AI Performance report shows how often the store's pages are cited in Copilot answers, Microsoft's AI assistant built on Bing.",
+        "why": "Copilot uses Bing's index, so it is the official way to see whether Microsoft's AI cites the store and which pages it uses. It also helps spot pages that Copilot ignores.",
+        "how": "Verify the store's domain in Bing Webmaster Tools if that is not done yet, for example by importing it from Search Console. Open the AI Performance report and note citations and top pages. Add these numbers to the monthly report. Done when the report has data and is reviewed each month."
+      }
+    },
+    {
+      "id": "2.6",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "yes",
+      "t": "AI KPIs in the monthly report",
+      "d": "AI share of sessions, AI share of orders, revenue per visit from AI.",
+      "x": {
+        "what": "The monthly report includes three AI numbers: the AI share of all sessions, the AI share of all orders, and revenue per visit from AI. They come from the AI channel in GA4 (item 2.2).",
+        "why": "These numbers show whether AI brings customers who buy, which is what decides how much time and money AI work deserves. Revenue per visit shows whether AI visitors are worth more or less than other traffic.",
+        "how": "Build the three numbers from the GA4 AI channel, with bot traffic filtered (item 2.3). Add them to the regular monthly report with the same definitions every month and across the group. Done when the report shows all three numbers for at least two months in a row."
+      }
+    },
+    {
+      "id": "2.7",
+      "p": "P1",
+      "e": "M",
+      "w": "P",
+      "a": "yes",
+      "t": "Bot log dashboard: reads vs visits per provider",
+      "d": "How many times a bot reads pages per visit it sends back, plus status codes, most read URLs and IP verification.",
+      "x": {
+        "what": "Server logs record every page request, including those from AI bots. A dashboard built from the logs shows, per AI company, how many pages its bots read for each visit it sends back to the store. It also shows response codes, the most read pages and whether the bot's IP address really belongs to that company.",
+        "why": "It shows which AI companies take a lot of content and send few customers back, and which ones send real visits. It also catches errors, for example a bot getting error pages instead of products, which keeps the store out of that AI's answers.",
+        "how": "Ask IT or the hosting team for access to server or Cloudflare logs. Group requests by bot name and verified IP, count reads, and compare with AI visits from GA4. Show status codes and top pages. Done when the dashboard updates on its own and someone checks it monthly."
+      }
+    },
+    {
+      "id": "2.8",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": "partly",
+      "t": "Organic CTR and AI Overview keywords next to AI traffic",
+      "d": "To see whether AI replaces or adds to SEO. Set a cut-off date after URL changes and compare from there.",
+      "x": {
+        "what": "The store puts three things side by side: click-through rate from Google search, the keywords where Google shows an AI Overview, and AI traffic. This helps answer whether AI answers take clicks away from normal search or bring new visits on top.",
+        "why": "If AI Overviews reduce clicks, the store needs to be cited inside them to keep its traffic. Seeing both trends together helps decide where to put effort: classic SEO, AI visibility or both.",
+        "how": "Take click-through rate per query from Search Console and AI Overview keywords from the SEO tool, and add AI traffic from GA4. If page addresses (URLs) changed recently, set a cut-off date after the change and compare only from that date. Done when the comparison runs monthly from a clear starting point."
+      }
+    },
+    {
+      "id": "2.9",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Server-side attribution of AI orders",
+      "d": "Session source saved with the order in the shop system.",
+      "x": {
+        "what": "When an order is placed, the shop system saves the source of the visit, for example chatgpt.com, next to the order in its own database. This is called server-side attribution: the shop records it itself and does not depend only on GA4.",
+        "why": "GA4 misses part of the orders, for example when customers block tracking. Saving the source with the order gives a more complete count of sales from AI, which makes the AI KPIs more reliable.",
+        "how": "Ask the development team to store the first visit source and the UTM parameters, the tags in a link that name its source, with each order. Place a test order from a chatgpt.com link and check the source is saved. Done when AI orders can be counted from the order database and compared with GA4."
+      }
+    },
+    {
+      "id": "2.10",
+      "p": "P3",
+      "e": "S",
+      "w": "P",
+      "a": "no",
+      "t": "AI visibility tool comparable across the group",
+      "d": "Same prompts, competitors and markets before buying another tool.",
+      "x": {
+        "what": "AI visibility tools ask AI assistants many questions and report how often a store is mentioned. The group stores use different tools today. The goal is a setup that gives comparable results across the group: the same prompts, the same competitors and the same markets.",
+        "why": "If each store measures with a different tool and different questions, the numbers cannot be compared, and the group cannot see which actions work. Buying another tool before agreeing the setup adds cost without solving this.",
+        "how": "List the tools each store uses and what they measure. Agree one shared set of prompts, competitors and markets in the group. Only then decide whether to keep current tools or move to one. Done when all stores report visibility with the same setup."
+      }
+    },
+    {
+      "id": "3.1",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "Search bots allowed",
+      "d": "Googlebot, Bingbot, OAI-SearchBot, Claude-SearchBot, PerplexityBot, Applebot.",
+      "x": {
+        "what": "robots.txt is a file on the website that tells bots which pages they may read. The store makes sure it allows the bots that feed search results and AI answers: Googlebot, Bingbot, OAI-SearchBot (ChatGPT search), Claude-SearchBot, PerplexityBot and Applebot.",
+        "why": "If a search bot cannot read the store's pages, its AI tool cannot show the store's products, prices or stock. Googlebot also feeds AI Overviews and AI Mode, and Bingbot feeds Copilot, so blocking them removes the store from those answers.",
+        "how": "Open the store's address followed by /robots.txt in a browser. Check that none of these six bots has a rule blocking products, categories or guides. Test a product page in Google's robots.txt report in Search Console. Done when all six bots are allowed and the result is noted in the bot policy (item 1.2)."
+      }
+    },
+    {
+      "id": "3.2",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "partly",
+      "t": "User-request bots not blocked in robots.txt or on the WAF",
+      "d": "ChatGPT-User, Perplexity-User, Claude-User.",
+      "x": {
+        "what": "Some bots fetch a page only when a person asks an AI assistant about it, for example when a user pastes a product link into ChatGPT. These are ChatGPT-User, Perplexity-User and Claude-User. They must not be blocked in robots.txt or in the WAF, the web application firewall that filters traffic before it reaches the site.",
+        "why": "When a customer asks an AI about a specific product page and the bot is blocked, the AI cannot read price or stock and may answer from old data or point to another store. According to their providers, ChatGPT-User and Perplexity-User do not follow robots.txt, so the firewall is where they usually get blocked.",
+        "how": "Check robots.txt for these three bot names. Ask the person who manages Cloudflare or the firewall to look at firewall events for these bots and confirm they are not blocked or challenged. Ask each AI tool to read a product page and check it quotes the correct price. Done when all three get through."
+      }
+    },
+    {
+      "id": "3.3",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "yes",
+      "t": "Written decision on training bots",
+      "d": "GPTBot, ClaudeBot, Google-Extended, Applebot-Extended, CCBot, Meta-ExternalAgent, with date and reason. Being in training data usually helps a store, but it is a business decision.",
+      "x": {
+        "what": "Training bots collect pages to train AI models: GPTBot, ClaudeBot, Google-Extended, Applebot-Extended, CCBot and Meta-ExternalAgent. The store writes down whether it allows or blocks each one, with the date and the reason. Blocking them does not remove the store from search results.",
+        "why": "Being in training data usually helps a store, because the model then knows the brand and its range. It is still a business decision about content use, so it needs a clear owner and a written reason instead of an unexplained setting.",
+        "how": "For each of the six bots, decide allow or block and write the reason and date in the bot policy (item 1.2). Make robots.txt and Cloudflare match the decision. Done when the decision is written and both robots.txt and Cloudflare show the same result."
+      }
+    },
+    {
+      "id": "3.4",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "No broad User-agent: * rules that block products, categories or guides",
+      "d": "",
+      "x": {
+        "what": "In robots.txt, the line \"User-agent: *\" sets rules for every bot that has no rules of its own. A broad blocking rule in this group, for example one that blocks a whole folder by mistake, can hide products, categories or buying guides from all bots at once.",
+        "why": "One wrong line can remove large parts of the catalogue from Google, Bing and AI answers without anyone noticing for weeks. Products, categories and guides are exactly the pages AI tools quote.",
+        "how": "Open robots.txt and read every Disallow line in the \"User-agent: *\" group. For each line, check which real pages it matches. Test a sample of product, category and guide addresses in the robots.txt report in Search Console. Done when no rule blocks these page types."
+      }
+    },
+    {
+      "id": "3.5",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "partly",
+      "t": "Paths without value blocked for all bots",
+      "d": "Cart, checkout steps, account, internal search with parameters. Repeat the lines in groups of named bots: a bot with its own group ignores User-agent: *.",
+      "x": {
+        "what": "Some pages have no value for search or AI: the cart, checkout steps, customer account and internal search results with parameters. robots.txt blocks these for all bots. A bot that has its own group in robots.txt, for example \"User-agent: GPTBot\", ignores the general \"User-agent: *\" group, so the same blocking lines must be repeated in each named group.",
+        "why": "Bots that spend time on carts and search result pages read fewer product pages and put more load on the server. Without repeating the lines, named AI bots still read these pages.",
+        "how": "Add Disallow lines for cart, checkout, account and internal search to the \"User-agent: *\" group. Copy the same lines into every named bot group. Test the cart address with a bot name in a robots.txt testing tool. Done when the cart is blocked for both the general group and every named bot."
+      }
+    },
+    {
+      "id": "3.6",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "partly",
+      "t": "Sitemaps listed in robots.txt, with a real lastmod",
+      "d": "Separate for products, categories, guides and stores.",
+      "x": {
+        "what": "A sitemap is a file that lists the pages a site wants bots to find. The store keeps separate sitemaps for products, categories, guides and store locations, and lists them in robots.txt. Each entry has a real lastmod, the date the page last changed.",
+        "why": "Listing sitemaps in robots.txt helps every bot find them, not only Google. A real lastmod tells bots which pages changed, so they read new prices and stock sooner and AI answers stay current.",
+        "how": "Check that robots.txt has a \"Sitemap:\" line pointing to the sitemap index. Open the sitemaps and check they are split by page type and that lastmod dates change when a product changes. Done when the sitemap line is in robots.txt and lastmod reflects real updates."
+      }
+    },
+    {
+      "id": "3.7",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "robots.txt returns 200 to bots",
+      "d": "No 5xx, no challenge page. Test with curl and bot user agents.",
+      "x": {
+        "what": "When a bot asks for robots.txt, the server must answer with status 200, which means the file was delivered. It must not return a 5xx server error or a challenge page, the \"check you are human\" screen used by security services.",
+        "why": "If a bot cannot read robots.txt, it may stop reading the whole site or treat it as off limits. The file can work in a browser and still fail for bots, because the firewall treats bots differently.",
+        "how": "Ask IT to fetch robots.txt with curl, a command-line tool that requests a page, using bot names such as Googlebot, OAI-SearchBot and PerplexityBot. Each request must return 200 and the plain file. Done when all tested bot names get status 200 and the real file content."
+      }
+    },
+    {
+      "id": "3.8",
+      "p": "P3",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "Crawl-delay only where needed",
+      "d": "Anthropic respects it, Google ignores it.",
+      "x": {
+        "what": "Crawl-delay is a line in robots.txt that asks a bot to wait some seconds between page requests. Anthropic respects it, Google ignores it. The store uses it only for bots that put too much load on the server.",
+        "why": "A long delay slows down how fast a bot can read the catalogue, so price and stock changes reach AI answers later. Used without need, it only costs visibility.",
+        "how": "Check robots.txt for Crawl-delay lines. For each one, confirm with IT that the bot caused real load, for example in the server logs. Remove delays that have no reason. Done when every remaining Crawl-delay has a written reason."
+      }
+    },
+    {
+      "id": "3.9",
+      "p": "P3",
+      "e": "S",
+      "w": "B",
+      "a": "yes",
+      "t": "llms.txt: keep, do not expand",
+      "d": "Plain text without HTML tags, working links. Google ignores the file; 97% of llms.txt files got no request in May 2026 (Ahrefs).",
+      "x": {
+        "what": "llms.txt is a text file some sites publish to describe their content for AI models. Google ignores it, and an Ahrefs analysis found that 97% of llms.txt files got no request in May 2026. A store that already has the file keeps it simple and does not spend more time on it.",
+        "why": "The file has little measured effect on AI answers today, so effort is better spent on schema, feeds and content. A broken file with HTML tags or dead links still looks careless if a bot does read it.",
+        "how": "If the store has an llms.txt, open it and check it is plain text without HTML tags. Click the links and check they work. Do not build new versions or extra Markdown pages. Done when the file is clean and the team has agreed not to expand it."
+      }
+    },
+    {
+      "id": "4.1",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "AI Crawl Control reviewed",
+      "d": "Which AI bots are allowed, blocked or charged. Defaults may block bots without anyone deciding.",
+      "x": {
+        "what": "AI Crawl Control is a Cloudflare feature that shows which AI bots read the site and lets the store allow, block or charge each one. Cloudflare is the service that sits in front of the website and filters traffic. Its default settings can block some AI bots without anyone in the store deciding it.",
+        "why": "A blocked AI search bot means that AI tool cannot read the store's pages and will recommend others. If nobody reviewed the defaults, the store may be invisible in an AI assistant without knowing why.",
+        "how": "Ask the Cloudflare administrator to open AI Crawl Control and export the list of AI bots with their status: allowed, blocked or charged. Compare it with the bot policy (item 1.2) and change settings that differ. Done when every AI bot's status matches a written decision."
+      }
+    },
+    {
+      "id": "4.2",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Verified bots get through",
+      "d": "Bot Fight Mode does not challenge verified AI search bots. A challenge to a crawler is a block. Check firewall events filtered by verified bot category.",
+      "x": {
+        "what": "Cloudflare marks some bots as verified, meaning it has confirmed they really come from Google, OpenAI and similar companies. Bot Fight Mode, a Cloudflare setting that fights unwanted bots, must not show a challenge, the \"prove you are human\" check, to verified AI search bots. A crawler cannot solve a challenge, so for a bot a challenge works like a block.",
+        "why": "If verified AI search bots get challenged, they stop reading the store's pages, and the store drops out of their AI answers even though robots.txt allows them.",
+        "how": "Ask the Cloudflare administrator to open Security events, filter by the verified bot category, and check for challenge or block actions on AI search bots. If they appear, adjust Bot Fight Mode or add an exception. Done when verified AI search bots show no challenges over a full week."
+      }
+    },
+    {
+      "id": "4.3",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "partly",
+      "t": "Side effects of managed rules checked",
+      "d": "Exception for PerplexityBot and Perplexity-User verified by IP. At Cyfrowe managed rules reject about 90% of Perplexity requests.",
+      "x": {
+        "what": "Managed rules are ready-made security rules from Cloudflare that block traffic looking risky. They can also block wanted bots as a side effect. In one group audit, managed rules rejected about 90% of Perplexity requests. The fix is an exception for PerplexityBot and Perplexity-User, checked against Perplexity's published IP addresses.",
+        "why": "When most requests from an AI tool fail, that tool cannot read prices and stock and is unlikely to recommend the store. Nobody decided this block, it is a side effect.",
+        "how": "Ask the Cloudflare administrator to filter Security events by Perplexity bot names and count blocked requests. Add an exception for PerplexityBot and Perplexity-User that also checks the IP address against Perplexity's published list. Done when Perplexity requests pass and blocks drop close to zero."
+      }
+    },
+    {
+      "id": "4.4",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Monthly check of bot categories",
+      "d": "Cloudflare changes classification (Search, Training, Agent since 15 Sep 2026); a new category can block a bot overnight.",
+      "x": {
+        "what": "Cloudflare sorts bots into categories and attaches rules to them. Since 15 September 2026 it uses the categories Search, Training and Agent. It can move a bot to another category without notice, and a store's rule for that category then applies to it.",
+        "why": "A move to a blocked category can cut an AI search bot off overnight. Without a regular check, the store finds out only when its AI visibility drops.",
+        "how": "Once a month, the Cloudflare administrator compares the current category of each AI bot with last month's list and with the bot policy (item 1.2). Any change is written down and settings are fixed. Done when the monthly check has a saved record with date and results."
+      }
+    },
+    {
+      "id": "4.5",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Exceptions by published IP ranges plus user agent, refreshed automatically",
+      "d": "OpenAI and Perplexity publish JSON lists. A user agent alone is easy to fake.",
+      "x": {
+        "what": "A user agent is the name a bot gives itself, and anyone can fake it. OpenAI and Perplexity publish lists of the IP addresses their bots use, as JSON files. Firewall exceptions for these bots check both the name and the IP address, and the IP lists are refreshed automatically.",
+        "why": "An exception based only on the name lets fake bots in, which can lead the security team to remove the exception and block the real AI bots again. Checking IPs keeps real bots in and fakes out.",
+        "how": "Ask IT to build firewall exceptions that match both the bot name and the published IP list. Set up an automatic job that downloads the latest lists and updates the rules. Done when the exceptions use both checks and the IP lists update on their own."
+      }
+    },
+    {
+      "id": "4.6",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": "?",
+      "t": "Signed agents (Web Bot Auth) and agent browsers reach product pages and checkout",
+      "d": "Test: add to cart and check out with an agent, then check WAF events.",
+      "x": {
+        "what": "AI agents are AI tools that act for a user, for example open a product page, add it to the cart and go to checkout. Some sign their requests with Web Bot Auth, a standard that proves who sent them. Agent browsers are browsers driven by AI. They must be able to reach product pages and the checkout.",
+        "why": "If the firewall blocks agents, a customer who asks an AI to buy a camera cannot finish the purchase in this store, and the agent moves to a store that works.",
+        "how": "Use an AI agent, such as the agent mode in ChatGPT or Claude, to open a product page, add it to the cart and go through checkout. Ask the Cloudflare administrator to check the firewall events from that test. Done when the agent reaches checkout and no request was blocked."
+      }
+    },
+    {
+      "id": "4.7",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": "?",
+      "t": "Checkout limits and CAPTCHA tuned for legitimate agents",
+      "d": "Fraud protection stays in place.",
+      "x": {
+        "what": "Checkouts use limits on how many requests a visitor can send and CAPTCHAs, the image or click tests that prove a visitor is human. These protect against fraud. The store tunes them so that legitimate AI agents can complete a purchase while fraud protection stays in place.",
+        "why": "An agent that meets a CAPTCHA usually stops and reports that the purchase failed. As more customers buy through AI assistants, a checkout that stops agents loses those orders.",
+        "how": "Ask IT and the fraud team to list all limits and CAPTCHAs on cart and checkout. Run a test purchase with an AI agent and note where it stops. Adjust the rules for verified or signed agents only. Done when a test agent can finish checkout and fraud alerts stay at the usual level."
+      }
+    },
+    {
+      "id": "4.8",
+      "p": "P3",
+      "e": "M",
+      "w": "P",
+      "a": "?",
+      "t": "Bots without a declared user agent handled by behaviour rules",
+      "d": "For example Grok: bursts from data centre IPs, outdated browser strings. robots.txt does not work on them.",
+      "x": {
+        "what": "Some bots do not say who they are and pretend to be normal browsers, for example Grok, according to outside research. They often send bursts of requests from data centre IP addresses and use outdated browser names. robots.txt does not work on them, so the firewall handles them with rules based on behaviour.",
+        "why": "These bots can put load on the server and copy content without following any rules. Rules based on behaviour let the store decide what to do with them without blocking real customers.",
+        "how": "Ask the Cloudflare administrator to look for request bursts from data centre IPs with old browser strings. Create rules that slow down or challenge such traffic, then check that real customer traffic is not affected. Done when the rules are in place and reviewed in the monthly bot check (item 4.4)."
+      }
+    },
+    {
+      "id": "5.1",
+      "p": "P1",
+      "e": "S",
+      "w": "B",
+      "a": "yes",
+      "t": "Price, stock, specs, description and JSON-LD in server HTML",
+      "d": "Not only after JavaScript or through a tag manager. Most AI crawlers do not run JS. Test with curl or View source.",
+      "x": {
+        "what": "When a bot asks for a product page, the server sends back a first version of the page, the raw HTML. Some content is only added later by JavaScript running in a browser or by a tag manager. This item asks that price, stock, specs, description and the schema block (hidden labels in the page code that tell machines the price, brand and so on) are already in that first version.",
+        "why": "Most AI crawlers do not run JavaScript. They read only the raw HTML, so anything added later is invisible to them and cannot appear in an answer.",
+        "how": "Open a product page, right-click and choose View page source (the browser's developer tools show the page after JavaScript, so they do not count). Search for the price, the stock status and a spec value. A developer can also fetch the page with curl using an AI bot name, for example OAI-SearchBot. Check one page of each type. Done when all five elements are in the source."
+      }
+    },
+    {
+      "id": "5.2",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "yes",
+      "t": "Cookie walls and pop-ups do not hide content from bots",
+      "d": "",
+      "x": {
+        "what": "Cookie consent banners, newsletter pop-ups and age or country checks can cover the page. For some sites the content is only loaded after a visitor clicks Accept. This item makes sure that bots see the full page content even though they never click anything.",
+        "why": "A bot that only sees a cookie banner or a pop-up has nothing to quote. The page then drops out of AI answers, even if the product data behind it is perfect.",
+        "how": "Open the page source of a product and a category page and check that the main text is there, outside the banner code. Fetch the page as a bot (the developer can use curl with an AI bot name) and confirm the content is returned. Done when the banner is shown on top of content that is already in the HTML."
+      }
+    },
+    {
+      "id": "5.3",
+      "p": "P1",
+      "e": "M",
+      "w": "O",
+      "a": "partly",
+      "t": "Canonicals and filter pages",
+      "d": "Canonical on products and categories; filter combinations without value as noindex, follow or canonical to the category; valuable combinations as static categories with a description.",
+      "x": {
+        "what": "A canonical is a tag in the page code that says which address is the main version of a page. Category filters (brand, price, mount) create thousands of address variants with almost the same content. This item asks for a canonical on every product and category, filter combinations of no value marked noindex, follow or pointed to the category, and valuable combinations turned into real categories with their own description.",
+        "why": "Without this, search engines and AI crawlers waste time on duplicate filter pages and may pick a random filter page as the source. A clean set of pages makes it clear which page answers which question.",
+        "how": "Open a product, a category and a filtered category and check the canonical tag in View page source. Use Google Search Console, Pages report, to look for duplicate or unwanted filter addresses. Agree with SEO which filter combinations deserve their own category, for example \"mirrorless cameras for beginners\". Done when canonicals are correct on a sample and filter pages follow the agreed rule."
+      }
+    },
+    {
+      "id": "5.4",
+      "p": "P1",
+      "e": "M",
+      "w": "P",
+      "a": "partly",
+      "t": "Discontinued products stay online with a link to the successor",
+      "d": "No 404. Add a \"Successor and similar models\" block and isSimilarTo in schema.",
+      "x": {
+        "what": "Cameras and lenses are replaced by new models often. When a model is discontinued, its page should stay online instead of showing a 404 error (page not found). The page should show a block \"Successor and similar models\" with links, and the schema should point to similar products with isSimilarTo.",
+        "why": "Old model pages still get many visits and are often the pages AI tools already know and cite. A live page with a link to the successor turns that attention into a sale of the current model.",
+        "how": "Pick ten discontinued products, for example last generation camera bodies. Check that each page loads, says the product is no longer sold, and links to the successor or similar models. Ask the developer to add isSimilarTo in schema and check it with the Schema Markup Validator. Done when the sample passes and new discontinued products get the block automatically."
+      }
+    },
+    {
+      "id": "5.5",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": null,
+      "t": "Core Web Vitals in the green",
+      "d": "LCP under 2.5 s, INP under 200 ms, CLS under 0.1.",
+      "x": {
+        "what": "Core Web Vitals are three speed and stability measures from Google. LCP measures how fast the main content appears, INP how fast the page reacts to a click or tap, CLS how much the layout jumps while loading. The targets are LCP under 2.5 seconds, INP under 200 milliseconds and CLS under 0.1.",
+        "why": "Google uses these measures for page experience in search, and AI Overviews and AI Mode draw from the same search index. A slow, jumpy page also loses the visitors that an AI answer sends.",
+        "how": "Check product, category and home pages in PageSpeed Insights (free, from Google). Look at the field data from real users first. Use the Core Web Vitals report in Google Search Console for the whole site. Done when the report shows the main page groups as \"Good\" on both mobile and desktop."
+      }
+    },
+    {
+      "id": "5.6",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": "?",
+      "t": "Fast answers to bots, also on uncached pages",
+      "d": "TTFB under about 600 ms, no 5xx at peak times.",
+      "x": {
+        "what": "TTFB (time to first byte) is the time between a request and the first piece of the answer from the server. Bots often ask for rare pages that are not in the cache (a stored ready copy), so the server must build them from scratch. The target is TTFB under about 600 milliseconds and no server errors (5xx codes) at peak times.",
+        "why": "Slow pages are visited less often by crawlers. Server errors during a sale or campaign mean the bot gets nothing and may keep an old price or drop the page.",
+        "how": "Ask the developer or hosting team for TTFB and 5xx error counts from server logs or the CDN dashboard, split by bots. Test a few rare product pages in PageSpeed Insights, which also shows server response time. Check Google Search Console, Crawl stats, for average response time. Done when uncached pages stay under about 600 ms and peaks show no 5xx."
+      }
+    },
+    {
+      "id": "5.7",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "IndexNow for faster price and stock updates in Bing and Copilot",
+      "d": "",
+      "x": {
+        "what": "IndexNow is a free protocol that lets a store tell search engines right away that a page has changed. Bing supports it, and Bing's index feeds Microsoft Copilot. The store sends the address of a page whenever its price or stock changes.",
+        "why": "Without a signal, Bing finds changes only on its next visit, which can take days. With IndexNow, Copilot is more likely to show the current price and stock.",
+        "how": "Ask the developer to connect IndexNow to price and stock updates, or use a plugin or CDN setting if the platform offers one. In Bing Webmaster Tools, open the IndexNow section and check that submitted addresses appear. Done when changed pages show up there within the same day."
+      }
+    },
+    {
+      "id": "5.8",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "Structure and internal links",
+      "d": "Category hierarchy, breadcrumbs in HTML, links product - category - accessories - guides, one H1, 404 monitoring.",
+      "x": {
+        "what": "This covers how pages link to each other. Products sit in a clear category tree, each page shows breadcrumbs (the path, for example Cameras > Mirrorless > brand), products link to their category, accessories and buying guides, each page has one main heading (H1) with the product or category name, and broken links are monitored.",
+        "why": "Crawlers discover pages and understand their topic through links. A lens page linked from the right category, compatible bodies and a guide is easier to place and recommend for the right question.",
+        "how": "Open a product page and check that breadcrumbs are visible and are links in View page source. Count the H1 headings, there should be one. Check that the page links to accessories and at least one guide. Use the Pages report in Google Search Console or a free crawler such as Screaming Frog to find 404 errors. Done when a sample passes and 404s are reviewed monthly."
+      }
+    },
+    {
+      "id": "5.9",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "HTTPS and security",
+      "d": "",
+      "x": {
+        "what": "Every page should load over HTTPS, the secure version of the web address with a padlock in the browser. Old http addresses should redirect to https, and the security certificate should be valid and renewed on time.",
+        "why": "Search engines and AI tools prefer secure pages, and browsers warn users about insecure ones. A broken certificate can stop crawlers from reading the site at all.",
+        "how": "Type the store address with http:// and check that it redirects to https://. Run the free SSL Labs test (ssllabs.com) on the domain. Check that images and scripts on product pages also load over https, the browser shows no warning. Done when all checks pass and someone owns certificate renewal."
+      }
+    },
+    {
+      "id": "5.10",
+      "p": "P3",
+      "e": "S",
+      "w": "O",
+      "a": "na",
+      "t": "hreflang only where there are language versions",
+      "d": "",
+      "x": {
+        "what": "hreflang is a tag that tells search engines which page is the version of the same content in another language or for another country. It is needed only when a store has more than one language version of its pages.",
+        "why": "When language versions exist, hreflang helps search engines and AI tools send each user to the right language and avoids treating the versions as duplicates. A store with one language does not need it.",
+        "how": "Decide first whether the store has language or country versions. If not, mark this item as not applicable. If yes, ask the developer to add hreflang tags that point both ways between versions, and check them in View page source on a few pages. Done when each version lists all other versions and itself."
+      }
+    },
+    {
+      "id": "6.1",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "partly",
+      "t": "Product: name, description, images, brand, sku, gtin13, mpn",
+      "d": "",
+      "x": {
+        "what": "Schema is a block of hidden labels in the page code (usually in a format called JSON-LD) that tells machines what is on the page. The Product part should hold the name, description, several images, the brand, the store's own code (sku), the 13-digit barcode number (gtin13) and the manufacturer's part number (mpn).",
+        "why": "AI tools match the same product across shops, reviews and the manufacturer by these identifiers. Without the barcode and part number the store's offer may not be linked to the camera the user asks about.",
+        "how": "Paste a product page address into Google's Rich Results Test or the Schema Markup Validator (both free). Check that all seven fields are present and that gtin13 has 13 digits. Compare with the visible page: same name, same brand. Done when a sample of products from different categories shows all fields."
+      }
+    },
+    {
+      "id": "6.2",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "partly",
+      "t": "Offer: price, currency, availability, itemCondition, url, seller",
+      "d": "priceValidUntil on promotions.",
+      "x": {
+        "what": "The Offer part of schema describes what the store sells: price, currency, availability (in stock, out of stock, preorder), condition (new, used, refurbished), the page address and the seller, meaning the store as a company. During a promotion, priceValidUntil gives the date the promo price ends.",
+        "why": "AI shopping answers show who sells the product, for how much and whether it is in stock. A missing seller or wrong availability means the store may be left out or shown with wrong data.",
+        "how": "Check a few product pages in the Rich Results Test or Schema Markup Validator. Confirm every field is there and seller names the store. Compare price and availability with what the page shows and with the Merchant Center feed. Check one promo product for priceValidUntil. Done when the sample matches the page in all fields."
+      }
+    },
+    {
+      "id": "6.3",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "no",
+      "t": "OfferShippingDetails and MerchantReturnPolicy",
+      "d": "Delivery cost and time, store pickup, return window, matching Merchant Center.",
+      "x": {
+        "what": "OfferShippingDetails is the part of schema that describes delivery: cost, delivery time and options such as store pickup. MerchantReturnPolicy describes returns: how many days the customer has, who pays for return shipping. Both should match the store's policy pages and the settings in Google Merchant Center.",
+        "why": "Users ask AI about total cost and how fast and easy returns are. When the data is in schema, the AI can answer for this store; when it is missing, the store loses to shops that provide it.",
+        "how": "Ask the developer to add both blocks to the product schema, or to the Organization schema for a store-wide return policy. Check a product page in the Rich Results Test, which shows shipping and return details. Compare the values with the delivery and returns pages and with Merchant Center. Done when all three sources agree."
+      }
+    },
+    {
+      "id": "6.4",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": "no",
+      "t": "Variants as ProductGroup",
+      "d": "hasVariant, variesBy, productGroupID. A kit (body plus lens) is a separate product with its own GTIN; body vs kit is a frequent cause of wrong AI answers.",
+      "x": {
+        "what": "A product with variants, for example a camera body in two colours, can be described in schema as a ProductGroup. hasVariant lists the variants, variesBy says what changes (colour, size), and productGroupID is the shared group code. A kit, such as a body plus lens, is a separate product with its own barcode number.",
+        "why": "Mixing up body and kit is a frequent cause of wrong AI answers, for example quoting the body price for the kit. Clear groups and separate kits help the AI give the right price and contents.",
+        "how": "Choose a few products sold in variants and as kits. Ask the developer to mark variants with ProductGroup and to keep kits as separate products with their own GTIN. Check the pages in the Rich Results Test, which recognises product variants. Done when body and kit show different GTINs and prices, and variants point to one group."
+      }
+    },
+    {
+      "id": "6.5",
+      "p": "P1",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Specs as additionalProperty with consistent names",
+      "d": "Mount, sensor, resolution, focal length, aperture, stabilisation, video, weight with unit, weather sealing, filter thread; drones: weight vs the 250 g limit.",
+      "x": {
+        "what": "Technical specs can be written in schema as additionalProperty, a list of name and value pairs. For cameras and lenses that means mount, sensor, resolution, focal length, aperture, stabilisation, video, weight with unit, weather sealing and filter thread. For drones, weight in relation to the 250 g limit. The same feature should have the same name on every product.",
+        "why": "AI tools answer questions such as \"lightweight full-frame camera with stabilisation\" by comparing values. Consistent names and units let them compare this store's products directly.",
+        "how": "Agree one list of feature names and units per category with the product team. Ask the developer to output them as additionalProperty from the product data. Check several products in the Schema Markup Validator and confirm the names are identical, for example always \"Weight\" with \"g\". Done when every camera and lens in a sample has the agreed features."
+      }
+    },
+    {
+      "id": "6.6",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": "no",
+      "t": "Compatibility and relations",
+      "d": "isAccessoryOrSparePartFor, isRelatedTo, isSimilarTo for lenses, batteries, filters, flashes, adapters. Needs the compatibility data from 8.4.",
+      "x": {
+        "what": "Schema can say how products relate to each other. isAccessoryOrSparePartFor marks an accessory for a given product, isRelatedTo links related products, and isSimilarTo links alternatives. In photo and video this covers lenses, batteries, filters, flashes and adapters. It needs a compatibility database first (item 8.4).",
+        "why": "\"Which battery fits my camera\" and \"which lenses fit this mount\" are common questions to AI. Clear relations in the data let the AI recommend the store's matching product with confidence.",
+        "how": "Check whether compatibility data exists in the product system (item 8.4). Ask the developer to output it as these relations in schema. Test a battery and a lens page in the Schema Markup Validator and confirm the right cameras are linked. Done when a sample of accessories points to the correct compatible products."
+      }
+    },
+    {
+      "id": "6.7",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "partly",
+      "t": "Used and ex-demo gear linked to the new model",
+      "d": "UsedCondition or RefurbishedCondition, the new model's GTIN and a link to its page.",
+      "x": {
+        "what": "Used and ex-demo items need their own condition in schema: UsedCondition for used gear, RefurbishedCondition for refurbished. The schema should also hold the barcode number of the new model and a link to the new model's page.",
+        "why": "AI tools can suggest a cheaper used or ex-demo option only if they know which new model it matches. The barcode and the link make that connection clear.",
+        "how": "Open a few used product pages in the Schema Markup Validator. Check that itemCondition is UsedCondition or RefurbishedCondition, that the GTIN is the new model's, and that there is a link to the new model's page. Check the same link is visible on the page for shoppers. Done when the sample passes."
+      }
+    },
+    {
+      "id": "6.8",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "AggregateRating and Review only from reviews shown on the page",
+      "d": "author as Person.",
+      "x": {
+        "what": "AggregateRating is the average star rating and number of reviews in schema; Review holds single reviews. Both must come only from reviews that a visitor can see on the same page. The author of each review should be marked as a person (Person), with a name.",
+        "why": "Ratings help AI tools pick products and stores to recommend. Marking reviews that are not on the page, or copying ratings from other sites, breaks Google's rules and can remove the stars entirely.",
+        "how": "Check a product with reviews in the Rich Results Test. Compare the rating and review count in schema with what the page shows. Confirm author is a Person with a name. Check that no reviews from other sites (comparison sites, review platforms) are marked as the store's own. Done when the sample matches."
+      }
+    },
+    {
+      "id": "6.9",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": "no",
+      "t": "Warranty in schema, in line with the EU warranty label",
+      "d": "Dates to confirm with a lawyer.",
+      "x": {
+        "what": "Warranty information can be added to schema with warranty (WarrantyPromise), stating how long the warranty lasts and who gives it. The EU is introducing a warranty label, a set format for warranty information shown to shoppers. The schema should match the information on that label.",
+        "why": "Warranty length is a common buyer question, and with it in schema the AI can answer it for this store. Preparing the data now also helps meet the new EU information duty.",
+        "how": "Ask a lawyer to confirm the dates and scope of the EU warranty label for the store's country. Collect warranty length per product or brand. Ask the developer to add warranty to the product schema and check a few pages in the Schema Markup Validator. Done when the warranty in schema matches the page and the legal requirements."
+      }
+    },
+    {
+      "id": "6.10",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": "no",
+      "t": "Product FAQ or Q&A in HTML",
+      "d": "The value is in the text; FAQ rich results for shops ended in 2023.",
+      "x": {
+        "what": "This is a section of questions and answers on the product page, written in normal visible text. It can use FAQ or Q&A schema as an option. Google stopped showing FAQ rich results for shops in 2023, so the value is in the text itself.",
+        "why": "AI tools quote short, direct answers to real questions, such as whether a lens fits a given camera. A visible answer on the product page gives them something to cite.",
+        "how": "Collect real questions from customer service, store staff and reviews (item 8.5). Add three to five questions and answers to top product pages, in the page HTML. Check in View page source that the answers are there without clicking. Done when top products have answered questions in the source."
+      }
+    },
+    {
+      "id": "6.11",
+      "p": "P3",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Energy label data for products that need it",
+      "d": "hasEnergyConsumptionDetails.",
+      "x": {
+        "what": "Some products, such as monitors and some printers, must show an EU energy label. Schema can hold this label data in hasEnergyConsumptionDetails, including the energy class.",
+        "why": "AI tools and shopping surfaces can show and compare energy class only when it is in the data. For products that need a label, missing data can also be a compliance issue.",
+        "how": "List the categories in the store that need an energy label. Ask the developer to add hasEnergyConsumptionDetails to their schema. Check a few products in the Schema Markup Validator and compare with the label shown on the page. Done when every product that needs a label carries the data."
+      }
+    },
+    {
+      "id": "6.12",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "VideoObject and ImageObject for videos and galleries",
+      "d": "",
+      "x": {
+        "what": "VideoObject is schema for a video on a page: title, description, thumbnail, length and transcript. ImageObject is schema for photos: for example the creator and licence of the image. This applies to product videos, reviews and photo galleries.",
+        "why": "AI tools and search show videos and images in answers. Clear data about each video and photo helps them find, describe and credit the store's content.",
+        "how": "Pick pages with videos and galleries. Ask the developer to add VideoObject for each embedded video and ImageObject with creator and licence for own photos. Check the pages in the Rich Results Test, which reports video data. Done when sample videos show title, thumbnail and length without errors."
+      }
+    },
+    {
+      "id": "6.13",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "no",
+      "t": "Store / LocalBusiness for every physical store",
+      "d": "Address, geo, opening hours including holidays, phone, matching Google Business Profile. No EIG store has it today.",
+      "x": {
+        "what": "Store or LocalBusiness is schema for a physical shop: address, map coordinates (geo), opening hours including holidays, and phone number. Each shop should have it on its page. The data must match the Google Business Profile, the shop's listing in Google Maps.",
+        "why": "This data helps the AI answer \"where can I try this camera near me\" with the right shop, address and hours. No EIG store has it today.",
+        "how": "Ask the developer to add Store schema to each shop page with the full address, coordinates, hours and phone. Check each page in the Rich Results Test. Compare hours and phone with Google Business Profile, including holiday hours. Done when every shop has schema matching its Google listing."
+      }
+    },
+    {
+      "id": "6.14",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "Organization on the home page",
+      "d": "name, logo, url, sameAs, contactPoint, award, company register data.",
+      "x": {
+        "what": "Organization is schema on the home page that describes the company: name, logo, web address, sameAs (links to the company's profiles elsewhere, such as social media and Wikidata), contactPoint (customer service contact), award, and company register data.",
+        "why": "AI tools build a picture of a company from many sources. Clear official data on the home page helps them name the store correctly and link it to its profiles and reviews.",
+        "how": "Check the home page in the Schema Markup Validator. Confirm all fields are there and the sameAs links work. Compare name, contact data and register data with the imprint or legal page. Done when every field is present and matches."
+      }
+    },
+    {
+      "id": "6.15",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "BreadcrumbList on categories, brands and products",
+      "d": "",
+      "x": {
+        "what": "BreadcrumbList is schema for the breadcrumb path shown at the top of a page, for example Home > Lenses > Mirrorless lenses > product. It should be on category, brand and product pages.",
+        "why": "The breadcrumb path tells search engines and AI tools where a product sits in the catalogue. This helps them understand what kind of product it is and which category it belongs to.",
+        "how": "Check a category, a brand and a product page in the Rich Results Test, which shows breadcrumbs. Compare the path with the visible breadcrumbs on the page. Done when all three page types pass without errors."
+      }
+    },
+    {
+      "id": "6.16",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "ItemList on categories and buying guides",
+      "d": "",
+      "x": {
+        "what": "ItemList is schema for a list of products on a page. Each entry holds its position and the address of the product page. It applies to category pages and buying guides such as \"best cameras for beginners\".",
+        "why": "Lists help AI tools see which products the store groups for a given need. A buying guide with a clear list is easier to quote as a recommendation.",
+        "how": "Check a category page and a buying guide in the Schema Markup Validator. Confirm the list matches the products shown, in the same order, with working addresses. Done when both page types pass."
+      }
+    },
+    {
+      "id": "6.17",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "Article / BlogPosting with author, datePublished, dateModified",
+      "d": "",
+      "x": {
+        "what": "Article or BlogPosting is schema for articles and blog posts. It should name the author as a person (Person), the publication date (datePublished) and the date of the last update (dateModified).",
+        "why": "AI tools prefer content with a named author and a clear date, as these show who wrote it and whether it is current. Without dates an older guide may look outdated and be skipped.",
+        "how": "Check a few articles in the Rich Results Test. Confirm author is a person with a name, and both dates are there. Check that dateModified changes when the article is updated and matches the date shown on the page. Done when the sample passes."
+      }
+    },
+    {
+      "id": "6.18",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": "yes",
+      "t": "Author and expert pages with Person",
+      "d": "jobTitle, knowsAbout, worksFor, sameAs.",
+      "x": {
+        "what": "Author and expert pages describe the people who write content or advise customers. Their schema is Person with jobTitle (role), knowsAbout (topics such as wildlife photography), worksFor (the store) and sameAs (links to their profiles elsewhere).",
+        "why": "AI tools look for signs that content comes from real experts. A clear author page links the store's guides to people with proven knowledge.",
+        "how": "Create a page for each regular author or expert, with photo, short bio and topics. Ask the developer to add Person schema and link articles to these pages. Check the pages in the Schema Markup Validator. Done when every article links to an author page with complete schema."
+      }
+    },
+    {
+      "id": "6.19",
+      "p": "P3",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Event for workshops",
+      "d": "If the store runs them.",
+      "x": {
+        "what": "Event is schema for workshops and events: date, place and ticket offer. It applies only if the store runs workshops, for example photo courses or product demos.",
+        "why": "Workshops appear in AI answers to questions about learning photography. Event data lets the AI show the date, place and how to sign up.",
+        "how": "First check whether the store runs workshops. If not, mark the item as not applicable. If yes, ask the developer to add Event schema to each workshop page and check it in the Rich Results Test. Done when every upcoming workshop shows correct date, place and offer."
+      }
+    },
+    {
+      "id": "6.20",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Schema validated and monitored",
+      "d": "Rich Results Test, Schema Markup Validator, Search Console reports; test a sample after every template change.",
+      "x": {
+        "what": "Schema can break when page templates change. This item sets up regular checks: test pages with the Rich Results Test and the Schema Markup Validator (both free), follow the schema reports in Google Search Console, and test a sample of pages after every template change.",
+        "why": "Broken or missing schema removes the data that AI tools rely on, often without anyone noticing. Regular checks catch errors before they cost visibility.",
+        "how": "Pick a fixed sample: a few products, categories, articles and the home page. Add a schema check to the release checklist for every template change. Review Search Console schema reports monthly and assign someone to fix errors. Done when an owner is named and the sample passes after the last release."
+      }
+    },
+    {
+      "id": "7.1",
+      "p": "P1",
+      "e": "M",
+      "w": "O",
+      "a": "?",
+      "t": "One source of truth: page, JSON-LD and feed agree",
+      "d": "Same price and stock everywhere, matching what Add to cart allows. Test on 50-100 product pages.",
+      "x": {
+        "what": "The price and stock of a product appear in three places: on the product page people see, in the structured data in the page code (JSON-LD, a hidden block of product facts written for machines) and in the product feed (the file with all products, prices and stock that the store sends to Google and other platforms). All three must show the same values and match what the Add to cart button allows.",
+        "why": "Google and AI assistants compare these sources. When they disagree, an answer can show a wrong price or stock, the system can stop trusting the offer, or Merchant Center can reject the product so it drops out of shopping answers.",
+        "how": "Take 50-100 product pages, including promotions and sold-out items. For each, note the visible price and stock, the values in the JSON-LD (Google Rich Results Test shows them) and the values in the feed. Check that Add to cart works when the stock says available. Done when every page in the sample matches. Fix mismatches in the source system, not page by page."
+      }
+    },
+    {
+      "id": "7.2",
+      "p": "P1",
+      "e": "M",
+      "w": "O",
+      "a": "partly",
+      "t": "Complete Google Merchant Center feed",
+      "d": "GTIN, MPN, brand, condition, price, stock, shipping, returns; titles Brand + Model + Type + feature + variant; product_highlight, product_detail; images without watermarks.",
+      "x": {
+        "what": "Google Merchant Center is the Google tool that receives the store's product feed. A complete feed fills the key fields for every product: GTIN (the barcode number, EAN in Europe), MPN (the manufacturer part number), brand, condition, price, stock, shipping and returns. Titles follow one pattern: Brand + Model + Type + key feature + variant. product_highlight holds short benefit points, product_detail holds spec name-value pairs. Images carry no watermarks.",
+        "why": "The same feed supplies Google Shopping, AI Overviews and AI Mode, and later possibly checkout inside AI tools. Missing barcodes or vague titles stop Google from matching the product to a question, so it shows another store.",
+        "how": "In Merchant Center, open product diagnostics and fix all errors and warnings about missing identifiers, shipping and returns. Check a sample of titles against the pattern. Confirm product_type and google_product_category are set and that product_highlight and product_detail are filled in the main categories. Done when diagnostics show no missing-attribute issues for active products and no image has a watermark."
+      }
+    },
+    {
+      "id": "7.3",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "no",
+      "t": "Feed, page and schema refreshed at least daily",
+      "d": "Stock and prices close to real time, with ongoing monitoring.",
+      "x": {
+        "what": "The feed, the product page and the structured data are updated at least once a day, and stock and prices change close to real time. A camera that sold out in the morning should not still show as available in Google in the evening. Ongoing monitoring means an automatic check that catches the moment these sources drift apart.",
+        "why": "AI answers repeat the price and stock they read last. Old data leads to wrong recommendations, disappointed customers and products rejected in Merchant Center for a price or availability mismatch.",
+        "how": "In Merchant Center, check the feed fetch schedule and set it to daily or more often. Ask IT how quickly the page and its structured data change after a stock or price change. Set up a daily automatic comparison of sample pages against the feed, with an alert on mismatch. Done when the schedule is daily or faster and a named person reads the monitoring alerts."
+      }
+    },
+    {
+      "id": "7.4",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "yes",
+      "t": "Variants grouped (item_group_id), used gear with the new model's EAN",
+      "d": "",
+      "x": {
+        "what": "Many products come in variants, such as a camera body alone and a kit with a lens, or one lens in two colours. In the feed, item_group_id is a shared code that ties all variants of one product together, while each variant keeps its own barcode number. Used and demo gear carries the EAN (barcode number) of the new model, so it is recognised as the same model in a different condition.",
+        "why": "Grouping lets Google show the right variant, and body versus kit is a common cause of wrong AI answers. Used gear tied to the new model's EAN can appear as a cheaper alternative when someone asks about that model.",
+        "how": "Check in the feed that variants share one item_group_id and each has its own GTIN and price. Check that used items have condition set to used and the GTIN of the new model. Done when a sample of 20 variant products and 20 used items shows no identifier warnings in Merchant Center."
+      }
+    },
+    {
+      "id": "7.5",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Tracking parameters in feed URLs per channel",
+      "d": "For example utm_medium=feed with a separate utm_source for Google, Microsoft and OpenAI.",
+      "x": {
+        "what": "Each product link in a feed can carry tracking parameters (UTM parameters), small tags added to the end of the address that tell analytics where a visit came from. For example, utm_medium=feed marks all feed traffic, and a separate utm_source names each channel: Google, Microsoft or OpenAI.",
+        "why": "Without these tags, visits from shopping listings and AI tools mix with other traffic, and the store cannot see which channel brings sales. OpenAI's feed guidelines recommend them.",
+        "how": "In the tool that builds the feeds, add UTM parameters to the product link field, with a different utm_source for each channel's feed. Open a few links from each feed and check that the tags are present and the page loads normally. Done when the analytics tool shows separate rows for each feed source a few days later."
+      }
+    },
+    {
+      "id": "7.6",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "AI-written titles and descriptions only in structured_title and structured_description",
+      "d": "",
+      "x": {
+        "what": "Google Merchant Center has two special feed fields, structured_title and structured_description. When a product title or description was generated by AI, Google asks the store to send it in these fields with a label that says the text is AI-generated. The ordinary title and description fields then hold only text written or checked by people.",
+        "why": "This is Google's rule for AI-written product text. Sending AI text as an ordinary title breaks Merchant Center policy and puts the products at risk in Shopping and AI Mode.",
+        "how": "Ask the feed team whether any titles or descriptions come from an AI tool. If they do, move that text to structured_title and structured_description and set the AI-generated label (digital_source_type with the value trained_algorithmic_media). Done when no AI-generated text sits in the plain title or description fields."
+      }
+    },
+    {
+      "id": "7.7",
+      "p": "P1",
+      "e": "M",
+      "w": "O",
+      "a": "?",
+      "t": "Merchant Center conversational attributes: pilot on 200-500 SKUs with a control group",
+      "d": "question_and_answer, related_product, document_link, item_group_title, variant_option, popularity_rank. Check availability for your country first.",
+      "x": {
+        "what": "Google Merchant Center has newer feed fields made for conversational answers: question_and_answer (common questions with answers), related_product (accessories, compatible parts, replacements), document_link (links to manuals or spec sheets), item_group_title (a shared name for a variant group), variant_option (what differs between variants) and popularity_rank (how well the product sells in the store). They supply AI Mode, Gemini and Google's Business Agent.",
+        "why": "These fields hand Google ready answers to questions such as which batteries fit a camera. The sources disagree on whether the fields are open in every country, and their effect is not proven, so a measured pilot comes first.",
+        "how": "Check in Merchant Center whether these attributes are available for your country account. If they are, fill them for 200-500 products and pick a similar control group that stays unchanged. Compare impressions, clicks and mentions in AI test prompts for both groups over several weeks. Done when the pilot runs with a defined control group and its result decides on a wider rollout."
+      }
+    },
+    {
+      "id": "7.8",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Microsoft Merchant Center (import from Google)",
+      "d": "Copilot uses the Bing shopping index.",
+      "x": {
+        "what": "Microsoft Merchant Center is Microsoft's counterpart to Google Merchant Center. It can import the product feed and settings straight from Google, so the store does not have to build and maintain a second feed.",
+        "why": "Copilot answers shopping questions from the Bing shopping index. Products that are missing from Microsoft Merchant Center have fewer chances to appear in Copilot answers.",
+        "how": "Open the store's Microsoft Merchant Center account, connect it to Google Merchant Center and run the import. Turn on scheduled re-import so prices and stock stay current. Done when the Microsoft catalogue shows the store's products as active, the error list is checked, and the import runs on a schedule."
+      }
+    },
+    {
+      "id": "7.9",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": "?",
+      "t": "ChatGPT merchant programme",
+      "d": "Apply at chatgpt.com/merchants, feed template to the OpenAI specification. Shopping in ChatGPT works in the US for now.",
+      "x": {
+        "what": "OpenAI runs a programme where stores send their product feed so their products can appear in ChatGPT shopping answers. The store applies at chatgpt.com/merchants and prepares a feed in the format set out in OpenAI's specification. Shopping in ChatGPT works only in the US for now.",
+        "why": "A feed sent directly gives ChatGPT the store's exact prices and stock, so it does not depend only on what its bot reads from pages. Applying now means the store is ready if the programme opens in its market.",
+        "how": "Apply at chatgpt.com/merchants. Build a feed template from the existing feed following OpenAI's field list. Check that the store has the right to share all images and texts in the feed, for example manufacturer photos. Done when the application is sent, the feed template is ready and someone tracks when the programme opens in your country."
+      }
+    },
+    {
+      "id": "7.10",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Price comparison sites at Merchant Center quality",
+      "d": "",
+      "x": {
+        "what": "Price comparison sites receive their own product feed from the store. That feed should meet the same standard as the Google Merchant Center feed: correct barcode numbers, full and consistent titles, current prices and stock, and shipping costs.",
+        "why": "AI assistants also read price comparison sites as a source of offers and prices. If the store's data there is outdated or incomplete, an answer can show a wrong price or point to another store.",
+        "how": "For each comparison site the store uses, compare a sample of 50 offers with Merchant Center: barcode, title, price, stock and shipping cost. Fix the gaps in that site's feed. Done when the site's own error report shows no missing identifiers and the sample prices match the store."
+      }
+    },
+    {
+      "id": "7.11",
+      "p": "P3",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "Perplexity Merchant Program and marketplaces: monitor",
+      "d": "Only if it applies.",
+      "x": {
+        "what": "Perplexity runs a merchant programme for stores that want their products shown in its shopping answers. Marketplaces, large online platforms where many sellers list products, are another possible channel. For now this item means watching both and joining only where it applies to your market.",
+        "why": "These channels have a lower priority today. Watching them lets the store act quickly when they open in its country, without spending effort too early.",
+        "how": "Name one person who checks the Perplexity merchant programme and relevant marketplaces every quarter. Record the date of each check and the status for your country. Done when this check is part of the quarterly review and the last entry is less than three months old."
+      }
+    },
+    {
+      "id": "8.1",
+      "p": "P1",
+      "e": "L",
+      "w": "B",
+      "a": null,
+      "t": "Numbers instead of adjectives",
+      "d": "\"740 g with battery\", \"IBIS up to 6.5 EV (CIPA)\".",
+      "x": {
+        "what": "Product texts state measurable facts in place of words such as light, compact or excellent stabilisation. For example: \"740 g with battery\" or \"in-body stabilisation (IBIS) up to 6.5 stops (EV) according to the CIPA test standard\". Every claim that can be measured gets a number, a unit and, where one exists, the standard behind it.",
+        "why": "AI models can quote and compare concrete facts. A 2023 lab study (Princeton and IIT Delhi) found that statistics, expert quotes and sources raised visibility in AI answers by about 30-40%, while keyword stuffing did not help. It was a lab test, so it shows a direction only.",
+        "how": "Take the top products and mark every adjective in their descriptions. Replace each one with the measured value from the manufacturer's spec, with its unit. Done when a review of the chosen pages finds no claims such as lightweight or fast without a number next to them."
+      }
+    },
+    {
+      "id": "8.2",
+      "p": "P2",
+      "e": "M",
+      "w": "B",
+      "a": null,
+      "t": "Quotes and sources",
+      "d": "Signed opinions of advisers and photographers, links to official specs and standards.",
+      "x": {
+        "what": "Product pages and guides include opinions signed with a real name and role, such as a store adviser or a photographer who used the gear. They also link to official sources: the manufacturer's spec page and the standards behind the numbers, for example CIPA for battery life.",
+        "why": "The same 2023 study found that quotes and references to sources made content more likely to appear in AI answers. A signed opinion from someone with experience also gives the AI something other stores cannot copy.",
+        "how": "Collect short opinions from advisers and photographers with their name, role and date, and get their consent to publish. Add them to top product pages and guides. Link key spec claims to the manufacturer's page. Done when each page in the chosen set has at least one signed opinion and links to official specs."
+      }
+    },
+    {
+      "id": "8.3",
+      "p": "P1",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Unified product attributes in the shop system",
+      "d": "Mount, sensor and key specs for 100% of cameras and lenses.",
+      "x": {
+        "what": "In the shop system, products have spec fields (attributes) such as mount, sensor size, resolution, focal length, aperture and weight. Unified means the same field names and value formats across all products: the same mount always written the same way, weight always in grams. The target is 100% of cameras and lenses with mount, sensor and key specs filled in.",
+        "why": "Filters, comparison tables, structured data and the feed all read from these fields. When values are missing or spelled differently, the store's own data cannot answer a question such as which lenses fit a given mount.",
+        "how": "Export all cameras and lenses with their attributes to a spreadsheet. Count empty fields and different spellings of the same value. Agree a list of allowed values for each field and correct the data. Done when the export shows 100% of cameras and lenses with mount, sensor and key specs filled in the agreed format."
+      }
+    },
+    {
+      "id": "8.4",
+      "p": "P1",
+      "e": "L",
+      "w": "P",
+      "a": null,
+      "t": "Compatibility database in the PIM",
+      "d": "Exported to the page, schema (6.6) and related_product (7.7).",
+      "x": {
+        "what": "A PIM (product information management system, the central place where product data is kept) records which products work together: which lens fits which camera mount, which battery fits which body, which filter fits which lens thread. This one database then feeds the product page, the structured data (item 6.6) and the related_product feed field (item 7.7).",
+        "why": "Whether an accessory fits a camera is a typical question before buying. A store that publishes reliable compatibility data gives the AI a clear answer and a link to the right accessory.",
+        "how": "Start with the main accessory groups: lenses, batteries, chargers, filters, flashes and adapters. Record each compatible pair in the PIM together with its source. Export the data to a fits-with block on the page, to the structured data and to related_product. Done when sample accessory pages list compatible models and the same list appears in the structured data and the feed."
+      }
+    },
+    {
+      "id": "8.5",
+      "p": "P1",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Bank of customer questions",
+      "d": "From customer service, stores, internal search, reviews, Search Console, forums.",
+      "x": {
+        "what": "A shared list of real questions customers ask before buying, collected from customer service, store staff, the site's internal search, reviews, Google Search Console (Google's free tool that shows which searches lead to the site) and photo forums. Each question is tagged with the product or category it concerns.",
+        "why": "People ask AI the same questions they ask advisers. When the store's pages answer those exact questions, the AI has a source to quote and link.",
+        "how": "Set up one shared sheet or tool with columns for the question, its source, the product or category and how often it comes up. Ask customer service and store staff to add questions every week, and add internal search terms and Search Console queries every month. Done when the bank covers the top categories and the content team uses it to plan pages."
+      }
+    },
+    {
+      "id": "8.6",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Question headings with a 40-60 word answer below",
+      "d": "",
+      "x": {
+        "what": "On guides, category texts and product pages, some headings are written as the question a customer asks, such as \"Which lens is best for bird photography?\". Directly below comes a concrete answer of 40-60 words that makes sense on its own. More detail can follow after that.",
+        "why": "AI tools pick short passages to build their answers. A clear question with a self-contained answer right below it is easy to quote and to attribute to the store.",
+        "how": "Take questions from the bank of customer questions (8.5). On each chosen page, turn the matching headings into questions that end with a question mark, and write the first 40-60 words below each as a direct answer. Done when the chosen pages have question headings and each answer still makes sense when read alone."
+      }
+    },
+    {
+      "id": "8.7",
+      "p": "P1",
+      "e": "L",
+      "w": "O",
+      "a": "?",
+      "t": "Product descriptions answer: for whom, for what, why this one, when an alternative is better",
+      "d": "Top 500 SKUs; the rest gets complete specs and a correct template.",
+      "x": {
+        "what": "A product description answers four questions: who the product is for, what it is good for, why choose this one, and when another product is a better choice. For example: suits travel vloggers who want a light body, while a sports photographer is better served by a model with faster burst shooting. The top 500 products get such descriptions. The rest of the catalogue gets complete specs and a correct page template.",
+        "why": "People write prompts with a role and a situation, such as a camera for a beginner who films travel. Descriptions built the same way match those prompts, and an honest note on alternatives makes the text more credible.",
+        "how": "List the top 500 products by sales or traffic. Write or rewrite their descriptions with the four answers, using the bank of questions and advisers' knowledge. Done when each of the 500 descriptions contains all four answers and the remaining products have no empty spec fields."
+      }
+    },
+    {
+      "id": "8.8",
+      "p": "P1",
+      "e": "M",
+      "w": "P",
+      "a": "?",
+      "t": "Buying guide text in HTML on the top 20 categories",
+      "d": "What to look for and which choice suits which user.",
+      "x": {
+        "what": "Each of the 20 most important category pages carries a short buying guide in its text: what to look for and which choice suits which kind of user, for example which telephoto lens to choose for bird photography. The text is in the page HTML (the page code the server sends), so bots can read it without clicking or running extra scripts.",
+        "why": "Buyers often start with a category question, and AI answers it by quoting pages that explain the choice. A category page with only a product grid gives the AI nothing to quote.",
+        "how": "Pick the 20 categories with the most traffic or sales. For each, write a guide with the main buying criteria and a recommendation for 2-4 types of user, with links to products. Open View page source in the browser and check that the text is there. Done when all 20 category pages show the guide in the page source."
+      }
+    },
+    {
+      "id": "8.9",
+      "p": "P1",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Buying-choice pages by budget and use",
+      "d": "Prices pulled live from the catalogue.",
+      "x": {
+        "what": "Pages built around one buying situation, such as the best vlogging camera within a set budget or portrait lenses for one camera system. Each page lists a few recommended products with a short reason for each. Prices are pulled live from the catalogue, so they change whenever the store price changes.",
+        "why": "Many AI prompts include a budget and a use. A page built around exactly that question is a direct match, and live prices stop it from showing outdated amounts.",
+        "how": "Pick the most frequent budget and use questions from the bank of questions and search data. Build one page per question, with products pulled from the catalogue and a written reason for each pick. Done when the pages are live and indexable and their prices match the product pages."
+      }
+    },
+    {
+      "id": "8.10",
+      "p": "P1",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Comparison tables and compatibility pages generated from the PIM",
+      "d": "",
+      "x": {
+        "what": "Comparison tables show several similar products side by side with their key specs, for example three mid-range mirrorless cameras. Compatibility pages list everything that fits one product, such as all batteries, lenses and adapters for a camera. Both are generated automatically from the PIM (the central product database), so they update when the data changes.",
+        "why": "Comparison and compatibility questions are among the most typical buying prompts. Tables built from consistent data give the AI exact numbers to quote, and they stay as current as the catalogue.",
+        "how": "Define a table template for each main category with 6-10 key specs. Generate compatibility pages from the compatibility database (8.4). Check in the page source that the tables are real HTML text and not images. Done when the main categories have comparison tables and the top cameras have compatibility pages."
+      }
+    },
+    {
+      "id": "8.11",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": "no",
+      "t": "Q&A under products with advisers' answers",
+      "d": "In HTML, exported to question_and_answer.",
+      "x": {
+        "what": "A questions and answers section on the product page, where customers' questions get answers from the store's advisers. The text sits in the page HTML, and the same question-answer pairs are sent in the question_and_answer feed field (item 7.7).",
+        "why": "Q&A gives the AI direct answers about a specific product, written by people with hands-on experience. Sending them in the feed puts the same answers into Google's shopping data.",
+        "how": "Add a Q&A block to the product page template, with answers signed by named advisers. Start with the top products and questions from the bank (8.5). Check that the answers appear in the page source and contain no customers' personal data. Done when the top products show Q&A in HTML and the feed carries question_and_answer for them."
+      }
+    },
+    {
+      "id": "8.12",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": "yes",
+      "t": "Articles link to the products and categories they discuss",
+      "d": "",
+      "x": {
+        "what": "Blog posts, guides and reviews link to the exact products and categories they discuss. An article about choosing a travel lens links to each lens it mentions and to the lens category.",
+        "why": "These links connect the article that answers a question with the product that solves it. Search and AI bots follow them and learn which store pages belong to the topic.",
+        "how": "Review the top articles and check that every product mention links to its product page. Add a rule for authors that new articles must do the same. Done when a sample of articles has no product names without links and no links to removed pages."
+      }
+    },
+    {
+      "id": "8.13",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": "?",
+      "t": "Service pages with clear terms",
+      "d": "Trade-in, used gear, repair, rental, finance: each a separate indexable page.",
+      "x": {
+        "what": "Each service the store offers, such as trade-in, used gear, repair, rental and finance, has its own page with clear terms: what is accepted, how the process works, how prices are set, how long it takes. Each page is indexable, meaning search engines are allowed to find and list it.",
+        "why": "People ask AI about these services, for example where to trade in an old camera. Clear service pages let the AI recommend the store for that need, and these services set a specialist store apart from marketplaces.",
+        "how": "List all services and check that each has its own page with its own address, title and clear terms. Check that no page is blocked in robots.txt (the file that tells bots what not to read) and none has a noindex tag. Done when each service page shows up in Google for a search of the service name together with the store name."
+      }
+    },
+    {
+      "id": "8.14",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": "?",
+      "t": "Policies on permanent indexable pages in plain language",
+      "d": "Delivery, returns, warranty, trade-in, linked from the footer.",
+      "x": {
+        "what": "The rules for delivery, returns, warranty and trade-in sit on fixed pages with permanent addresses, written in plain language and linked from the footer of every page. Search engines are allowed to index them.",
+        "why": "When someone asks AI about a store's return period or delivery cost, the answer comes from these pages. Rules hidden in a PDF, a pop-up or dense legal text are harder for AI to read and quote correctly.",
+        "how": "Check that each policy has its own HTML page linked from the footer. Rewrite legal wording into short sentences with concrete numbers, such as days and costs. Make sure the numbers match the feed and the structured data. Done when all four pages exist, are indexable and give the same numbers as the feed."
+      }
+    },
+    {
+      "id": "8.15",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": "yes",
+      "t": "Authors and E-E-A-T",
+      "d": "",
+      "x": {
+        "what": "E-E-A-T stands for experience, expertise, authoritativeness and trustworthiness, the qualities Google's guidelines use to judge content quality. In practice, each article shows a named author with a short bio, linked to an author page that describes their real experience, for example years as a photographer or store adviser.",
+        "why": "Google and AI tools give more weight to content from people whose experience is visible and checkable. Anonymous store text is harder to trust.",
+        "how": "Create an author page for each regular writer with name, role, experience and links to their profiles elsewhere. Show the author and the date on every article. Done when all articles have a named author linked to an author page."
+      }
+    },
+    {
+      "id": "8.16",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Data nobody else has",
+      "d": "Sample photos, in-store tests, popularity rankings.",
+      "x": {
+        "what": "Content only this store can publish: sample photos taken with the gear it sells, results of tests done in its own stores, popularity rankings based on its own sales. A manufacturer spec sheet looks the same on every site, while this data exists in one place only.",
+        "why": "The AI can choose from many copies of the same spec sheet, so it has no reason to cite one particular store. Unique data gives it a reason to quote this store as the source.",
+        "how": "Pick one or two kinds of own data to start, for example sample photos for the top lenses or a monthly bestseller list per category. Publish them on product and category pages with the date and how the data was gathered. Done when the chosen data is live on the pages and updated on a fixed schedule."
+      }
+    },
+    {
+      "id": "8.17",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Freshness",
+      "d": "Quarterly review and after launches, update date plus dateModified.",
+      "x": {
+        "what": "Guides, buying-choice pages and key descriptions are reviewed every quarter and after major product launches. Each page shows a visible updated-on date, and the structured data carries the same date in the dateModified field (the date of the last real change).",
+        "why": "Photo and video gear changes fast, and AI tools use dates to judge how current a page is. A guide that still calls last year's model the newest leads to wrong answers.",
+        "how": "Keep a list of pages with an owner and a next review date. After each review, update the content, the date shown on the page and dateModified, and change the date only when the content really changed. Done when every page on the list was reviewed within the last three months and the shown date matches dateModified."
+      }
+    },
+    {
+      "id": "8.18",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "Title and meta description for real queries, without the price",
+      "d": "",
+      "x": {
+        "what": "The title is the page name shown in the browser tab and as the headline in search results. The meta description is the short summary shown below it. Both use the words people actually search for, such as the model name and product type, and neither includes the price.",
+        "why": "Search and AI systems use these fields to understand what a page is about. A price in the description goes out of date and can still be shown as the current price long after it changed.",
+        "how": "Use Search Console to see which searches lead to each important page, and write the title and description with those words. Remove prices from all meta descriptions and from the templates that generate them. Done when a check with an SEO crawler (a tool that scans every page of the site) finds no prices in meta descriptions."
+      }
+    },
+    {
+      "id": "8.19",
+      "p": "P3",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Glossary of 100-200 terms",
+      "d": "",
+      "x": {
+        "what": "A glossary of 100-200 photo and video terms explained in plain words, such as IBIS, crop factor, rolling shutter or ND filter. Each entry has a short definition, an example and links to related products and guides.",
+        "why": "People ask AI what technical terms mean while choosing gear. A clear definition on the store's site can be quoted, and its links lead from the term to products.",
+        "how": "Take terms from the bank of questions and from the product spec fields. Write a short entry for each term and have an adviser check it. Link the terms from product pages and guides. Done when the glossary has at least 100 terms, each on an indexable page or section."
+      }
+    },
+    {
+      "id": "9.1",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": null,
+      "t": "Images: many angles, descriptive alt, readable file names, WebP or AVIF",
+      "d": "",
+      "x": {
+        "what": "Each product has several photos from different angles: front, back, top, ports, with lens and without. Each image has an alt text that describes what it shows, for example 'Sony A7 IV body, rear view with tilting screen'. File names are readable words instead of random codes. Images are saved in WebP or AVIF, modern formats that load faster than JPEG at the same quality.",
+        "why": "AI systems cannot look at a photo the way a customer does, so they rely on alt text, file names and the text around the image. Good descriptions let them match your images to questions about a specific model, and fast images keep pages quick for both people and crawlers.",
+        "how": "Pick 20 top product pages. Check that each has at least 4 angles, a specific alt text on every image and a file name with brand and model. Check in the browser's network tab that images load as WebP or AVIF. Fix the image template so new products get this by default. Done when the sample passes and new uploads follow the rule."
+      }
+    },
+    {
+      "id": "9.2",
+      "p": "P3",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "IPTC metadata on own photos",
+      "d": "Creator, Credit, Copyright.",
+      "x": {
+        "what": "IPTC metadata is information stored inside the image file itself: who took the photo, who should be credited and who owns the copyright. This item applies to photos your own team makes, such as sample shots from cameras, store photos and studio product photos. Fill in at least the Creator, Credit and Copyright fields.",
+        "why": "Search engines and AI tools can read this data and show who made an image. It helps your own photos stay linked to your brand when they are reused or shown in image results, and it documents your rights if a licence question comes up.",
+        "how": "Agree one standard text for Creator, Credit and Copyright. Add it as a preset in the photo editing or export tool your team uses, so every exported file carries it. Check by opening 10 recently published own photos in a metadata viewer. Done when all of them show the three fields."
+      }
+    },
+    {
+      "id": "9.3",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": null,
+      "t": "Video with transcript and captions, VideoObject, YouTube channel",
+      "d": "",
+      "x": {
+        "what": "Product videos, reviews and tutorials come with a full text transcript and captions. On your site, each video page carries VideoObject, a piece of structured data (code that describes the page to machines) with title, description, thumbnail, length and transcript. Videos also live on a maintained YouTube channel under your brand.",
+        "why": "AI assistants read text much better than they watch video, so a transcript turns a video into content they can quote. VideoObject tells search engines exactly what the video is, and YouTube is one of the sources AI answers often draw on.",
+        "how": "List your published videos. Add captions and a transcript to each, on YouTube and on the page where the video is embedded. Add VideoObject to those pages and test them in Google's Rich Results Test. Done when every new video ships with captions, transcript and valid VideoObject, and the YouTube channel links to your site."
+      }
+    },
+    {
+      "id": "9.4",
+      "p": "P3",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Customer photo gallery (with consent)",
+      "d": "",
+      "x": {
+        "what": "A gallery where customers share photos they took with gear bought from you, for example sample shots from a lens shown on its product page. Each photo is published only with the customer's clear consent, with a record of who agreed and to what.",
+        "why": "Real sample photos are content that no other store has, and they show what a product does in real use. Unique material of this kind gives AI systems a reason to cite your page instead of a copy of the manufacturer's text.",
+        "how": "Decide where the gallery appears, for example on product pages for lenses and cameras. Ask your lawyer for consent wording covering publication and licence. Set up a simple upload or submission route with moderation. Done when the gallery is live on at least one product group and every photo has a stored consent."
+      }
+    },
+    {
+      "id": "10.1",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Brand Facts Document",
+      "d": "One document with the official facts about the company, the source for all profiles.",
+      "x": {
+        "what": "A Brand Facts Document is one internal document with the official facts about your company: legal name, founding year, addresses, phone numbers, opening hours, services, awards, social profiles and key numbers. It is the single source that every listing, profile and press text copies from.",
+        "why": "AI systems compare what many sources say about a company and repeat what they agree on. If your facts differ between sites, the AI may give customers wrong hours or addresses, or trust you less. One master document is the way to keep every source the same.",
+        "how": "Write the document in a shared place with one named owner. Include every fact that appears on your site and external profiles. Add a date of last review. Done when the document exists, an owner is named and the team uses it when updating any profile."
+      }
+    },
+    {
+      "id": "10.2",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": "?",
+      "t": "Same company data everywhere",
+      "d": "Name, addresses, phones, hours, services on the site, Google Business Profile, Bing Places, Apple Business Connect, comparison and review sites, social. Compare 5 sources per store.",
+      "x": {
+        "what": "Your company name, addresses, phone numbers, opening hours and services read the same everywhere: your website, Google Business Profile, Bing Places, Apple Business Connect, price comparison and review sites, and social profiles. Small differences count, such as an old phone number or different holiday hours.",
+        "why": "AI assistants build answers from several sources at once. When sources disagree, they may show the wrong data or skip your store in local questions such as 'where can I try this camera near me'.",
+        "how": "For each physical store, compare the data in 5 sources against the Brand Facts Document (10.1). Note every difference in a simple table and fix it at the source. Repeat after any change of hours or address. Done when all 5 sources match for every store."
+      }
+    },
+    {
+      "id": "10.3",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "Google Business Profile for every physical store",
+      "d": "",
+      "x": {
+        "what": "Every physical store has its own verified Google Business Profile, the free listing that appears in Google Maps and local search. The profile has the correct address, hours (including holiday hours), phone, categories, photos and a link to the matching store page on your site.",
+        "why": "Google uses these profiles in AI Overviews and AI Mode when people ask where to buy or test gear nearby. A missing or outdated profile means your store does not appear in those answers.",
+        "how": "Log in to Google Business Profile and list all your locations. Check that each store has a verified profile and that every field matches the Brand Facts Document (10.1). Add holiday hours before each holiday period. Done when every store is verified and complete."
+      }
+    },
+    {
+      "id": "10.4",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": "?",
+      "t": "Reviews on independent platforms with steady volume",
+      "d": "KPI: reviews in the last 90 days per platform.",
+      "x": {
+        "what": "Customers leave reviews about your store on independent platforms, such as Google, Trustpilot and local price comparison or review sites. The aim is a steady flow of new reviews every month, without long gaps after a single campaign. The measure is the number of reviews in the last 90 days on each platform.",
+        "why": "AI assistants check what independent sources say about a store before recommending it. Recent reviews on outside platforms show that real customers buy from you now, and your own site cannot provide that proof.",
+        "how": "Choose the platforms that matter in your country. Send a review request after delivery or pickup, through the platform's own invitation tool where it has one. Track reviews from the last 90 days per platform in your monthly report. Done when the KPI is reported every month and no main platform goes a month without new reviews."
+      }
+    },
+    {
+      "id": "10.5",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Real delivery time matches the promised one",
+      "d": "",
+      "x": {
+        "what": "The delivery time you promise on the product page, in the feed and in structured data matches the time customers actually wait. If a page says 'delivery in 24 hours', most orders should arrive in 24 hours.",
+        "why": "AI systems read your delivery promise and repeat it to customers. If reality is slower, customers complain in reviews, and those reviews feed back into what AI says about your store.",
+        "how": "Take a sample of recent orders and compare the promised delivery time with the actual one, per delivery method. Where the gap is large, change the promise or fix the process. Repeat the check every quarter. Done when promised and actual times match for most orders in the sample."
+      }
+    },
+    {
+      "id": "10.6",
+      "p": "P3",
+      "e": "S",
+      "w": "P",
+      "a": "?",
+      "t": "Awards shown with the reason they were given",
+      "d": "Plus award in Organization.",
+      "x": {
+        "what": "Awards and ratings your store has received are shown together with the reason: who gave the award, when and for what, with a link to the source. A badge alone says less than a short line explaining it. The award is also listed in the 'award' field of the Organization structured data on your home page.",
+        "why": "AI systems prefer facts they can check. An award with a source and a reason can be verified and repeated in an answer, while a logo image on its own gives them nothing to read.",
+        "how": "List your current awards. For each, add a sentence with the awarding body, the year, the reason and a link to the announcement. Add the awards to the Organization structured data. Done when every award shown on the site has its reason and source, and the structured data lists them."
+      }
+    },
+    {
+      "id": "10.7",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": "?",
+      "t": "Experts active in communities",
+      "d": "Photo forums, Reddit, YouTube: real help, no ads.",
+      "x": {
+        "what": "Your staff experts take part in photo forums, Reddit, YouTube comments and similar communities. They answer questions, share tests and explain technical topics, with no sales pitches or links pushed into every post. The company agrees an approach first: who takes part, where, and how they say they work for you.",
+        "why": "AI assistants draw heavily on community discussions when answering buying questions. Helpful answers from known experts build a reputation that AI models pick up and connect with your brand.",
+        "how": "Choose 2-3 experts and the communities where your customers ask questions. Write a short guideline on tone, disclosure of employment and what not to post. Set a regular time budget. Done when the guideline exists and the experts post helpful answers every month."
+      }
+    },
+    {
+      "id": "10.8",
+      "p": "P3",
+      "e": "M",
+      "w": "P",
+      "a": "?",
+      "t": "PR based on own data",
+      "d": "",
+      "x": {
+        "what": "Press work built on data only you have, for example the most popular lenses of the year from your sales, trends in used camera prices or what customers ask most in your stores. You publish the findings on your site and offer them to journalists and bloggers.",
+        "why": "Media and bloggers who quote your data link back to you, and AI systems treat such mentions as independent sources. Original data is also hard for competitors to copy.",
+        "how": "Pick one data set you can publish without revealing confidential numbers. Write a short report with charts on your site. Send it to relevant photo and tech media. Done when at least one data-based story is published and you track who picked it up."
+      }
+    },
+    {
+      "id": "10.9",
+      "p": "P3",
+      "e": "S",
+      "w": "P",
+      "a": "?",
+      "t": "Wikidata and Wikipedia only from independent sources",
+      "d": "sameAs in Organization.",
+      "x": {
+        "what": "Wikidata is a free public database of facts that many AI systems use, and Wikipedia is the encyclopedia built on similar rules. Your company may have entries there only if they are based on independent sources such as press articles. You do not write promotional entries yourself. Your Organization structured data links to these entries through the 'sameAs' field, which tells machines that both describe the same company.",
+        "why": "AI models rely on Wikidata and Wikipedia to identify companies. A correct entry helps them know who you are, while a promotional entry is likely to be removed and can harm your reputation.",
+        "how": "Check whether entries about your company exist. If they do, check facts against the Brand Facts Document (10.1) and suggest corrections through the talk pages with sources. Add the links to 'sameAs' in the Organization structured data. Done when existing entries are correct and linked."
+      }
+    },
+    {
+      "id": "11.1",
+      "p": "P1",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "Waiting lists joined, availability in your country tracked",
+      "d": "Google UCP and Business Agent, chatgpt.com/merchants, Copilot Checkout, Perplexity.",
+      "x": {
+        "what": "Several AI platforms are building ways to buy directly inside the chat: Google UCP and Business Agent (through Merchant Center), the ChatGPT merchant programme at chatgpt.com/merchants, Copilot Checkout and Perplexity. Most of them start in the USA. This item means signing up to their waiting lists and checking regularly when they open in your country.",
+        "why": "When a programme opens in your market, stores already on the list can join early. Stores that wait may miss the first period when competition inside AI shopping is still low.",
+        "how": "Sign up to each programme's waiting list or interest form. Write down the date and the contact. Check each programme's status every quarter and note changes for your country. Done when you are on every available list and someone owns the quarterly check."
+      }
+    },
+    {
+      "id": "11.2",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "Meeting with the payment provider about agent payments",
+      "d": "Agent tokens, local methods for agents, timeline, fraud liability.",
+      "x": {
+        "what": "A meeting with your payment provider about how AI agents will pay. Topics: agent tokens (a way to let an agent pay with a customer's saved method without seeing card details), which local payment methods will work for agents, the provider's timeline and who carries the cost of fraud in agent purchases.",
+        "why": "An AI agent can only finish a purchase if your payment setup accepts its way of paying. Knowing your provider's plans early tells you when agent sales become possible for your store.",
+        "how": "Book a meeting with your payment provider's account manager. Prepare the four topics as questions. Write a short note with their answers, dates and open points. Done when the note exists and the next check-in date is set."
+      }
+    },
+    {
+      "id": "11.3",
+      "p": "P2",
+      "e": "M",
+      "w": "P",
+      "a": "?",
+      "t": "Agent-friendly checkout",
+      "d": "Guest checkout, clear field labels and error messages. Test the checkout with an agent on a test environment.",
+      "x": {
+        "what": "AI agents, such as the agent modes in ChatGPT or Claude, can fill in a checkout form the way a person does. An agent-friendly checkout lets customers buy without creating an account, uses clear labels on every field and shows error messages that say exactly what is wrong.",
+        "why": "Agents get stuck on unclear forms, hidden fields and vague errors. If your checkout stops them, they move on to another store that lets them finish the purchase.",
+        "how": "Check that guest checkout works. Review every checkout field for a clear visible label and every error for a specific message. On a test environment, ask an AI agent to buy a product and record where it fails. Fix the problems and repeat. Done when the agent completes a test purchase without help."
+      }
+    },
+    {
+      "id": "11.4",
+      "p": "P3",
+      "e": "S",
+      "w": "P",
+      "a": "?",
+      "t": "Local payment methods available to agents",
+      "d": "",
+      "x": {
+        "what": "The payment methods your customers use most in your country, such as local bank transfers, mobile payment apps, cards and wallets, can also be used when an AI agent completes the purchase. This depends on your payment provider and on the agent platform.",
+        "why": "An agent finishes a purchase only with a payment method it supports. If your popular local methods are not available to agents, customers in your country may not be able to buy from you through AI.",
+        "how": "List your top payment methods by share of orders. Ask your payment provider which of them it plans to offer for agent purchases and when. Record the answers and track changes. Done when you know the status of each top method and have a date for the next review."
+      }
+    },
+    {
+      "id": "11.5",
+      "p": "P2",
+      "e": "L",
+      "w": "O",
+      "a": "?",
+      "t": "Product data API with clear access rules",
+      "d": "Price, stock per store, specs, delivery time; authentication, limits and SLO monitoring.",
+      "x": {
+        "what": "An API (a way for other systems to request data from yours automatically) that serves product data: price, stock per store, specifications and delivery time. It has clear rules on who can use it, requires a login key, limits how many requests each user can make and is monitored against an SLO, a promised level of speed and uptime.",
+        "why": "Agent shopping protocols such as UCP, ACP and MCP all need fresh product data on request. A stable API is the base for connecting to any of them, and it avoids building a separate solution for each platform.",
+        "how": "With IT, decide which data the API returns and who may use it. Set up authentication, request limits and monitoring. Write short documentation. Test with a sample request for price and stock. Done when the API answers with current data, access needs a key and monitoring alerts on failures."
+      }
+    },
+    {
+      "id": "11.6",
+      "p": "P2",
+      "e": "M",
+      "w": "O",
+      "a": null,
+      "t": "Data ready for UCP checkout",
+      "d": "Healthy Merchant Center account, return and delivery policies, OAuth 2.0.",
+      "x": {
+        "what": "Google's UCP (a protocol for buying inside AI Mode and Gemini) draws on what you already keep in Merchant Center. This item means the Merchant Center account has no serious errors or warnings, return and delivery policies are filled in, and your system supports OAuth 2.0, a standard way to let another service act on behalf of a logged-in customer.",
+        "why": "When UCP opens in your market, stores with clean data and the required setup can join quickly. Stores with account problems will have to fix them first.",
+        "how": "Open Merchant Center diagnostics and fix all errors and important warnings. Fill in return and delivery policies so they match your site. Ask IT whether customer accounts support OAuth 2.0. Done when diagnostics show no serious problems, both policies are complete and the OAuth answer is documented."
+      }
+    },
+    {
+      "id": "11.7",
+      "p": "P3",
+      "e": "L",
+      "w": "O",
+      "a": null,
+      "t": "UCP or ACP prototype on a test environment",
+      "d": "Go or no-go once your market opens.",
+      "x": {
+        "what": "A test build of in-chat checkout using UCP (Google) or ACP (the protocol from OpenAI and Stripe), run on a test environment and not on the live store. The goal is to learn how much work it takes and what is missing. Once your market opens, you decide go or no-go based on what you learned.",
+        "why": "A prototype shows the real effort and gaps before there is time pressure. When a platform opens in your country, you can decide quickly instead of starting from zero.",
+        "how": "Choose one protocol. Build a simple prototype on a test environment using the published specification. Write down what worked, what failed and the estimated work for production. Done when the prototype runs a test order and the go or no-go criteria are written down."
+      }
+    },
+    {
+      "id": "11.8",
+      "p": "P3",
+      "e": "M",
+      "w": "P",
+      "a": null,
+      "t": "Store MCP server (2027)",
+      "d": "",
+      "x": {
+        "what": "MCP (Model Context Protocol) is an open standard that lets AI assistants connect to a company's data and tools. A store MCP server would let an assistant search your catalogue, check prices and stock, or find a store near the customer. The source plans this for 2027.",
+        "why": "MCP works across many AI assistants, so one connection can serve several of them. It gives assistants direct access to your current data, without guessing from web pages.",
+        "how": "Plan it after the product data API (11.5) is in place, since the MCP server can use that API. Start by deciding which actions to offer, such as product search and stock check. Done for now when it is on the roadmap with a planned date and depends on 11.5."
+      }
+    },
+    {
+      "id": "12.1",
+      "p": "P3",
+      "e": "L",
+      "w": "P",
+      "a": null,
+      "t": "Hybrid site search (text plus vectors) with an A/B test",
+      "d": "",
+      "x": {
+        "what": "Search on your own site that combines two methods. Text search finds exact words such as a model name. Vector search, which compares meaning instead of exact words, finds results for questions such as 'small camera for travel videos'. Hybrid search uses both. You test the new search against the old one in an A/B test.",
+        "why": "Customers now type longer, conversational questions, the way they talk to AI assistants. Search that understands meaning helps them find products on your site, and the A/B test shows whether it actually sells more.",
+        "how": "Choose a search tool that supports hybrid search. Run it for part of your visitors as an A/B test against the current search. Compare conversion from search, searches with no results and revenue. Done when the test has a result and you have decided to keep or drop it."
+      }
+    },
+    {
+      "id": "12.2",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Internal search logs as a source of questions for 8.5",
+      "d": "",
+      "x": {
+        "what": "Your site search records what visitors type. These logs show real questions and needs in customers' own words, including searches that return no results. This item uses the logs as one source for the bank of customer questions (8.5).",
+        "why": "AI assistants answer the questions people ask. Searches on your own site show which questions your content should answer, so pages built on them have a better chance of matching what customers ask AI.",
+        "how": "Export the most common searches and the searches with no results for the last 3 months. Group them by topic. Add the useful questions to the customer question bank (8.5). Repeat every quarter. Done when the export is part of the question bank process."
+      }
+    },
+    {
+      "id": "12.3",
+      "p": "P3",
+      "e": "L",
+      "w": "O",
+      "a": null,
+      "t": "AI assistant on the site, labelled as AI",
+      "d": "AI Act, article 50.",
+      "x": {
+        "what": "A chat assistant on your site that answers product questions using AI. The visitor is told clearly that they are talking to AI and not to a person. The EU AI Act, article 50, sets transparency duties for systems that interact with people.",
+        "why": "An assistant on your own site can answer the same conversational questions customers ask ChatGPT, using your current data. Clear labelling keeps you in line with the transparency duty.",
+        "how": "Choose a tool and connect it to your product and policy data. Add a visible label such as 'AI assistant' at the start of every conversation. Check with your lawyer how article 50 applies in your case. Test answers on a set of real questions before launch. Done when it is live, labelled and tested."
+      }
+    },
+    {
+      "id": "13.1",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Wrong prices and stock in AI answers kept in check",
+      "d": "Frequent updates (7.3) and checks in the test prompts.",
+      "x": {
+        "what": "AI assistants sometimes show an old price or say a product is in stock when it is not. This item keeps that risk small in two ways: your feed, site and structured data are updated often (7.3), and your monthly test prompts check whether AI answers show correct prices and stock.",
+        "why": "A wrong price in an AI answer leads to disappointed customers and complaints when the real price differs. Frequent updates give AI systems fresh data, and regular checks show where errors still appear.",
+        "how": "Confirm that prices and stock update at least daily in feed, site and structured data. In your test prompts, note whether price and stock in each answer are correct. Investigate every wrong answer and trace its source. Done when updates run daily and the prompt check reports price and stock accuracy every month."
+      }
+    },
+    {
+      "id": "13.2",
+      "p": "P1",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Omnibus: lowest price of the last 30 days on discounts, consistent with feeds",
+      "d": "To confirm with a lawyer.",
+      "x": {
+        "what": "The EU Omnibus rules require that when you announce a price reduction, you also show the lowest price from the 30 days before the discount. This item means the price is shown correctly on the site and that the same information is consistent in your product feeds. Whether and how feeds are covered should be confirmed with your lawyer.",
+        "why": "AI systems read prices from your site and feeds. If a discount looks different in the feed than on the page, AI answers may show a misleading discount, which is a legal and trust risk.",
+        "how": "Check with your lawyer what the rules require for your site and feeds in your country. Check 20 discounted products: the lowest 30-day price is shown on the page, and the feed matches the page. Done when the lawyer has confirmed the approach and the sample passes."
+      }
+    },
+    {
+      "id": "13.3",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "EU warranty label: date and scope agreed with a lawyer",
+      "d": "Prepare the data for 6.9.",
+      "x": {
+        "what": "The EU is introducing a harmonised warranty label, a standard notice that tells customers about their legal guarantee and any extra commercial warranty. The start date and scope differ by country. This item means agreeing the date and scope for your country with your lawyer and preparing warranty data for structured data on product pages (6.9).",
+        "why": "Customers often ask AI about warranty terms. Preparing the data now means it can appear correctly in AI answers and you meet the legal duty on time.",
+        "how": "Check with your lawyer when the label applies in your country and what it must contain. Collect warranty data per product or brand: length, type and provider. Plan the template change and the structured data with IT. Done when the date and scope are confirmed in writing and the data is ready for 6.9."
+      }
+    },
+    {
+      "id": "13.4",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "GDPR: logs with IPs, Consent Mode, no personal data in feeds and Q&A",
+      "d": "",
+      "x": {
+        "what": "Three GDPR points connected with AI work. Server logs used to analyse bot traffic contain IP addresses, which count as personal data. Consent Mode, a Google setting that adjusts tracking to the visitor's consent choice, must be set up correctly. Product feeds and published customer questions and answers must not contain names, emails or other personal data.",
+        "why": "Feeds and Q&A content are sent to Google, Microsoft and AI platforms and may be repeated in AI answers. Personal data in them would spread far beyond your site.",
+        "how": "Check with your lawyer or data protection officer how long logs with IP addresses may be kept and why. Confirm Consent Mode is active and tested. Scan feeds and Q&A content for names, emails and phone numbers. Done when retention is documented, Consent Mode works and the scan finds no personal data."
+      }
+    },
+    {
+      "id": "13.5",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "AI Act and review of AI-assisted content",
+      "d": "",
+      "x": {
+        "what": "The EU AI Act sets rules for how companies use AI, including transparency in some cases. This item means checking which of your AI uses fall under it, such as a chat assistant, and putting a human review step on content written with AI help, such as product descriptions and guides.",
+        "why": "AI text that nobody checked can contain wrong specifications, and AI systems may repeat those errors to customers. Review protects accuracy, and knowing your AI Act duties avoids legal surprises.",
+        "how": "List where you use AI to create content or talk to customers. Check with your lawyer which AI Act duties apply to each use. Set a rule that a named person checks AI-assisted content before publication. Done when the list exists, the duties are documented and the review rule is in use."
+      }
+    },
+    {
+      "id": "13.6",
+      "p": "P2",
+      "e": "S",
+      "w": "P",
+      "a": null,
+      "t": "Image and data licences in feeds",
+      "d": "Plus the conscious decision on training bots (3.3).",
+      "x": {
+        "what": "Images and texts in your product feeds often come from manufacturers or photographers. This item means checking that your licences allow sending this material to Google, Microsoft and AI platforms. It also links to the written decision on whether AI training bots may use your content (3.3).",
+        "why": "Feeds go to AI shopping surfaces that show images and text to many people. Material you have no right to share there creates legal risk, and a clear training bot decision shows you chose what happens with your content.",
+        "how": "List the sources of images and texts in your feeds. Check the licence terms of each source for use in third-party platforms, and check with your lawyer if unclear. Remove or replace material without clear rights. Done when every source has a known licence and the training bot decision (3.3) is written down."
+      }
+    },
+    {
+      "id": "13.7",
+      "p": "P2",
+      "e": "S",
+      "w": "O",
+      "a": null,
+      "t": "No dependence on a single protocol",
+      "d": "",
+      "x": {
+        "what": "Several protocols compete for agent shopping: Google's UCP, ACP from OpenAI and Stripe, and MCP. This item means you do not build your whole setup around only one of them. Your core data and systems, such as the product data API (11.5), should work with any of them.",
+        "why": "Protocols and programmes change often, and it is not yet clear which will matter in your market. If you tie everything to one, a change in that platform can leave you starting over.",
+        "how": "When planning agent shopping work, check that each piece serves more than one protocol. Keep protocol-specific code in a thin layer on top of shared data. Review the choice every quarter. Done when the architecture plan names a shared data layer and no production checkout is built for a single platform only."
+      }
+    }
   ],
   "donts": [
     "Do not treat llms.txt as the key to AI.",
