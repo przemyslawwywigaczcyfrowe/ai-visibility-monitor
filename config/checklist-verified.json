@@ -88,6 +88,22 @@
       "by": "Automatic check (Claude)",
       "at": "2026-10-10T10:54:09.888Z",
       "evidence": "Product JSON-LD on both product pages has name, description, image, brand (Brand Sony), sku (SONA7IV / SONSEL247028GM2), gtin with 13 digits (4548736133754 / 4548736134102) and mpn (ILCE7M4B.CEC / SEL2470GM2.SYX)."
+    },
+    {
+      "m": "PL",
+      "id": "3.1",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T11:02:58.611Z",
+      "evidence": "https://www.cyfrowe.pl/robots.txt (200, plain text) has only a User-agent: * group, with no own groups for Googlebot, Bingbot, OAI-SearchBot, Claude-SearchBot, PerplexityBot or Applebot. Its 16 Disallow rules block only addresses with filter, sort and paging parameters; none blocks / or plain product and category pages. Checked in a browser, because Cloudflare stops command-line requests."
+    },
+    {
+      "m": "PL",
+      "id": "3.4",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T11:02:58.611Z",
+      "evidence": "All Disallow rules in the * group of https://www.cyfrowe.pl/robots.txt match only query parameters (parameters, facets, price, order_by, name, sort, limit). Sampled pages /aparat-cyfrowy-sony-a7-iv-body-ilce-7m4-p.html, /aparat-cyfrowy-canon-eos-r6-body-mark-ii-p.html and /fotografia/aparaty-cyfrowe/bezlusterkowce have no parameters, so they are allowed."
     }
   ]
 }
