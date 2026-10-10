@@ -464,7 +464,6 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
   <button class="rlink" data-v="sources"><span class="pg"><svg class="ic"><use href="#i-link"/></svg></span>Sources</button>
   <button class="rlink" data-v="checklist"><span class="pg"><svg class="ic"><use href="#i-check"/></svg></span>Checklist</button>
   <button class="rlink dol" data-v="how"><span class="pg"><svg class="ic"><use href="#i-info"/></svg></span>How it works</button>
-  <button class="rlink tylko-wl" data-v="usage" hidden title="How the panel is used, in numbers (visible only to the owner)"><span class="pg"><svg class="ic"><use href="#i-sum"/></svg></span>Usage</button>
   <button class="rlink" data-v="access" title="Who can open this panel, and invitations"><span class="pg"><svg class="ic"><use href="#i-user"/></svg></span>Access</button>
   <button class="rlink" id="wyloguj"><span class="pg"><svg class="ic"><use href="#i-close"/></svg></span>Sign out</button>
 </nav>
@@ -746,7 +745,7 @@ function zapiszAdres() {
 /* Reads the address into the state. Returns the prompt to open, if any. */
 function czytajAdres() {
   var h = (location.hash || '').replace(/^#\/?/, ''), sciezka = h.split('?')[0].split('/'), q = new URLSearchParams(h.split('?')[1] || '');
-  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how', 'usage', 'checklist', 'access'];
+  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how', 'checklist', 'access'];
   if (!sciezka[0] || widoki.indexOf(sciezka[0]) < 0) return null;
   S.view = sciezka[0];
   if (S.view === 'checklist') { S.chkAll = sciezka[1] === 'all'; czytajFiltryChecklisty(q); }
@@ -1081,6 +1080,8 @@ function wyslij(x) {
   } catch (err) {}
 }
 function licz(path, title, event) {
+  /* The anonymous counter (Usage view) was replaced on 10 Oct 2026 by per-person usage in Analityka paneli. */
+  return;
   var x = { path: path, title: title, event: !!event };
   if (LICZ_KOLEJKA) LICZ_KOLEJKA.push(x); else wyslij(x);
 }
