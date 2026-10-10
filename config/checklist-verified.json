@@ -104,6 +104,38 @@
       "by": "Automatic check (Claude)",
       "at": "2026-10-10T11:02:58.611Z",
       "evidence": "All Disallow rules in the * group of https://www.cyfrowe.pl/robots.txt match only query parameters (parameters, facets, price, order_by, name, sort, limit). Sampled pages /aparat-cyfrowy-sony-a7-iv-body-ilce-7m4-p.html, /aparat-cyfrowy-canon-eos-r6-body-mark-ii-p.html and /fotografia/aparaty-cyfrowe/bezlusterkowce have no parameters, so they are allowed."
+    },
+    {
+      "m": "UK",
+      "id": "5.2",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T11:18:04.061Z",
+      "evidence": "The lens page and /compact-system-cameras/ fetched with GPTBot and ClaudeBot user agents returned 200 with the H1, price (£2,499.00), specification table and the category intro text in the raw HTML. The cookie banner is the iubenda script (iubenda_cs.js) injected by JavaScript on top of that HTML, not a wall in the server response."
+    },
+    {
+      "m": "DE",
+      "id": "5.2",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T11:18:04.061Z",
+      "evidence": "Fetched /product/sony-alpha-7-iv as OAI-SearchBot and /category/spiegellose-systemkameras-dslm as ClaudeBot: both returned 200 with the full content in raw HTML (H1, price, description, specs; the category lists its 47 products with names, prices and stock). The Usercentrics consent banner is only an async script loader (web.cmp.usercentrics.eu/ui/loader.js) with no blocking markup around the content."
+    },
+    {
+      "m": "DE",
+      "id": "6.7",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T11:18:04.061Z",
+      "evidence": "/product/sony-alpha-7-iii/gebraucht has itemCondition UsedCondition, gtin 4548736079656 identical to the new model /product/sony-alpha-7-iii, isSimilarTo with url to the new model and a visible 'Neu' tab linking to it. The ex-return /product/sony-akku-np-fz100-.../neuwertiger-ruecklaeufer has RefurbishedCondition, the new model's gtin 4548736064522, isSimilarTo url to the new page and a visible 'Neu' tab link."
+    },
+    {
+      "m": "NL",
+      "id": "3.4",
+      "s": "done",
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-10T11:18:04.061Z",
+      "evidence": "Applying the * group of https://www.cameranu.nl/robots.txt (rules matched as Google does), product pages (/p3241204/sony-alpha-a7-iv-..., /p3516060/..., /p3508524/...), categories (/systeemcamera, /spiegelreflexcamera, /c2/digitale-cameras, /c212/occasions-en-demo) and guides (/advies, /b59010/hoe-fotografeer-je-cityscapes) are all allowed. Checked in a browser, because Cloudflare stops command-line requests."
     }
   ]
 }
