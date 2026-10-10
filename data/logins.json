@@ -2,5 +2,10 @@
  "v": 1,
  "iterations": 600000,
  "users": {},
- "invites": {}
+ "invites": {
+  "dwtXDKkDBeAV": {
+   "w": "PuTiK/aO0I4i46tO+4DLz3gXUVvfJz/gGKA8RbRwJ6T1g36MteQclLnDYNA6kA4FRttO2JWC+Q3ygdc6",
+   "exp": "2026-10-17T12:18:30.530Z"
+  }
+ }
 }
