@@ -1,0 +1,46 @@
+name: Invite a person
+
+# Sends an invitation e-mail with a link to set a password (the same as "Invite a colleague" in the panel).
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: 'Work e-mail'
+        required: true
+      name:
+        description: 'Name shown in the e-mail'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: checklist
+  cancel-in-progress: false
+
+jobs:
+  invite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Create the invitation
+        env:
+          DATA_KEY: ${{ secrets.DATA_KEY }}
+          GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
+          EMAIL: ${{ inputs.email }}
+          NAME: ${{ inputs.name }}
+        run: node scripts/checklist-sync.mjs --invite "$EMAIL" "$NAME"
+      - name: Commit
+        run: |
+          git config user.name "ai-visibility-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet && exit 0
+          git commit -m "Invitation"
+          for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
+          exit 1

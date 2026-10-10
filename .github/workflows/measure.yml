@@ -36,7 +36,7 @@ jobs:
         env:
           OPENROUTER_KEY: ${{ secrets.OPENROUTER_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
+          DATA_KEY: ${{ secrets.DATA_KEY }}
           MARKETS: ${{ inputs.markets }}
           PROMPTS: ${{ inputs.prompts }}
           EVENT: ${{ github.event_name }}
@@ -54,6 +54,6 @@ jobs:
         # Only counts and prompt ids, no answers. A failure here must not fail the measurement.
         continue-on-error: true
         env:
-          PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
+          DATA_KEY: ${{ secrets.DATA_KEY }}
           GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
         run: node scripts/export-puls.mjs

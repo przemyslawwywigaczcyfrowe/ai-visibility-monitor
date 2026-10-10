@@ -22,6 +22,6 @@ jobs:
           node-version: 22
       - name: Export summary numbers
         env:
-          PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
+          DATA_KEY: ${{ secrets.DATA_KEY }}
           GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
         run: node scripts/export-puls.mjs

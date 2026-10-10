@@ -150,3 +150,17 @@ export async function decryptJson(key, b64) {
   const plain = await subtle.decrypt({ name: 'AES-GCM', iv: raw.subarray(0, 12) }, key, raw.subarray(12));
   return JSON.parse(gunzipSync(Buffer.from(plain)).toString('utf8'));
 }
+
+/* The data key. Since 10 Oct 2026 every file is encrypted with one random key (secret DATA_KEY,
+   base64 of 32 bytes). People sign in with their own e-mail and password; data/logins.json holds the
+   data key wrapped with a key derived from each person's password (see index.html). Before the
+   switch the key was derived from one shared PANEL_PASSWORD, kept here only for the migration. */
+export async function dataKey() {
+  if (process.env.DATA_KEY) return subtle.importKey('raw', Buffer.from(process.env.DATA_KEY, 'base64'), { name: 'AES-GCM' }, true, ['encrypt', 'decrypt']);
+  if (process.env.PANEL_PASSWORD) {
+    const { readFileSync } = await import('node:fs');
+    const salt = JSON.parse(readFileSync('data/salt.json', 'utf8'));
+    return deriveKey(process.env.PANEL_PASSWORD, salt.salt, salt.iterations);
+  }
+  throw new Error('DATA_KEY missing.');
+}

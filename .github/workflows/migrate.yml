@@ -1,6 +1,5 @@
-name: Re-encrypt with new password
+name: Switch to personal accounts (one time)
 
-# Moves all results to a new key: new salt, and the new PANEL_PASSWORD if the secret was changed.
 on:
   workflow_dispatch:
 
@@ -8,28 +7,30 @@ permissions:
   contents: write
 
 concurrency:
-  group: measure   # never at the same time as a measurement
+  group: data
   cancel-in-progress: false
 
 jobs:
-  rekey:
+  migrate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
-          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - env:
+      - name: Re-encrypt with the data key
+        env:
           PANEL_PASSWORD: ${{ secrets.PANEL_PASSWORD }}
-        run: node scripts/rekey.mjs
-      - run: |
+          DATA_KEY: ${{ secrets.DATA_KEY }}
+        run: node scripts/migrate.mjs
+      - name: Commit
+        run: |
           git config user.name "ai-visibility-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A data
           git diff --cached --quiet && exit 0
-          git commit -m "Re-encrypted with a new password"
+          git commit -m "Switch to personal accounts: data under the new key"
           for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done
           exit 1

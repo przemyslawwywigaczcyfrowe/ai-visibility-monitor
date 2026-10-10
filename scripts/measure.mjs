@@ -1,17 +1,16 @@
 // Daily measurement. Asks every prompt of every market in every engine, analyses the answers
 // and writes encrypted results to data/. Run by .github/workflows/measure.yml.
 //
-// Env: OPENROUTER_KEY, PANEL_PASSWORD (required), GEMINI_API_KEY (optional: engines with
+// Env: OPENROUTER_KEY, DATA_KEY (required), GEMINI_API_KEY (optional: engines with
 // provider "google" go straight to the Gemini API; without the key they fall back to OpenRouter).
 // Optional: MARKETS="PL,UK", PROMPTS="PL01,UK02".
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
-import { buildRequest, parseResponse, buildGoogleRequest, parseGoogleResponse, analyse, shopsForMarket, deriveKey, encryptJson, decryptJson, ITERATIONS } from './lib.mjs';
+import { buildRequest, parseResponse, buildGoogleRequest, parseGoogleResponse, analyse, shopsForMarket, dataKey, encryptJson, decryptJson } from './lib.mjs';
 
 const KEY = process.env.OPENROUTER_KEY;
 const GKEY = process.env.GEMINI_API_KEY;
-const PASSWORD = process.env.PANEL_PASSWORD;
-if (!KEY || !PASSWORD) { console.error('Missing OPENROUTER_KEY or PANEL_PASSWORD.'); process.exit(1); }
+if (!KEY || !(process.env.DATA_KEY || process.env.PANEL_PASSWORD)) { console.error('Missing OPENROUTER_KEY or DATA_KEY.'); process.exit(1); }
 
 const CONCURRENCY = 10;
 const MAX_ANSWER = 40000;
@@ -21,17 +20,13 @@ const onlyPrompts = process.env.PROMPTS ? process.env.PROMPTS.split(',') : null;
 
 /* ---------- key and existing data ---------- */
 mkdirSync('data/runs', { recursive: true });
-if (!existsSync('data/salt.json')) {
-  writeFileSync('data/salt.json', JSON.stringify({ salt: randomBytes(16).toString('base64'), iterations: ITERATIONS }, null, 2) + '\n');
-}
-const salt = JSON.parse(readFileSync('data/salt.json', 'utf8'));
-const key = await deriveKey(PASSWORD, salt.salt, salt.iterations);
+const key = await dataKey();
 
 let index = { runs: [], hist: [] };
 if (existsSync('data/index.enc')) {
   // A wrong password must stop the run. Otherwise a new, empty index would replace the history.
   try { index = await decryptJson(key, readFileSync('data/index.enc', 'utf8')); }
-  catch (e) { console.error('Cannot decrypt data/index.enc. Is PANEL_PASSWORD the same as before?'); process.exit(1); }
+  catch (e) { console.error('Cannot decrypt data/index.enc. Is DATA_KEY the same as before?'); process.exit(1); }
 }
 
 /* GitHub can start a scheduled run hours late. If someone already ran the measurement by hand

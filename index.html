@@ -370,6 +370,29 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
 .nierob li::before { content:"✕"; position:absolute; left:4px; top:10px; color:var(--down); font-weight:700; }
 @media (max-width:900px) { .cit { grid-template-columns:36px minmax(0,1fr); } .cid, .cst { display:none; } .cna { grid-column:2; justify-self:start; } .csek-p { width:100%; } .nierob ul { columns:1; } }
 
+/* access and accounts */
+#kto { color:var(--muted); }
+.acc-grid { display:grid; grid-template-columns:minmax(0,1fr) 420px; gap:16px; align-items:start; }
+.pole-t { display:flex; flex-direction:column; gap:6px; font-size:13px; color:var(--muted); }
+.brama label.pole-t { align-items:stretch; cursor:default; }
+.pole-t input { height:48px; border:0; border-radius:14px; background:var(--tonal); padding:0 16px; font-size:15px; outline:none; font-family:inherit; color:var(--ink); width:100%; }
+.pole-t input:focus { background:#fff; box-shadow:inset 0 0 0 2px var(--acc); }
+.pole-t input:disabled { color:var(--muted); }
+.h-wiersz { display:flex; align-items:center; gap:4px; background:var(--tonal); border-radius:14px; padding-right:6px; }
+.h-wiersz input { background:transparent; }
+.h-wiersz:focus-within { background:#fff; box-shadow:inset 0 0 0 2px var(--acc); }
+.h-wiersz input:focus { box-shadow:none; background:transparent; }
+.stat { display:inline-flex; align-items:center; height:26px; padding:0 10px; border-radius:13px; font-size:12px; font-weight:600; white-space:nowrap; }
+.stat.ok { background:var(--up-soft); color:var(--up); } .stat.wait { background:#FFE8C2; color:#6B3B00; }
+.os { display:flex; align-items:center; gap:12px; }
+.av2 { width:36px; height:36px; border-radius:18px; background:var(--acc-soft); color:var(--acc-dark); display:grid; place-items:center; font-weight:600; font-size:13px; flex:none; overflow:hidden; }
+.av2 img { width:100%; height:100%; transform:scale(1.08); }
+.os b { display:block; font-weight:500; } .os small { display:block; color:var(--muted); font-size:12.5px; }
+.lnk { border:0; background:none; color:var(--acc); font:500 13px var(--f); cursor:pointer; padding:4px 6px; }
+.lnk.red { color:var(--down); } .lnk:disabled { opacity:.4; cursor:default; }
+.wsk { font-size:13px; color:var(--muted); line-height:1.5; }
+.wsk.ok { color:var(--up); } .wsk.ok::before { content:"✓ "; font-weight:700; }
+@media (max-width:1280px) { .acc-grid { grid-template-columns:minmax(0,1fr); } }
 @media (max-width:1500px) { .kpi.k6 { grid-template-columns:repeat(3, minmax(0,1fr)); } .naglowek .hr { flex-basis:100%; } .appbar .stan .dalej { display:none; } }
 @media (max-width:1280px) { .g2, .g3 { grid-template-columns:minmax(0,1fr); } .rk4 { grid-template-columns:repeat(2, minmax(0,1fr)); } .metoda { grid-template-columns:minmax(0,1fr); }
   .projekty button .kod { display:none; } .hero-r { flex-basis:100%; } }
@@ -398,6 +421,7 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
 <symbol id="i-down" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
 <symbol id="i-check" viewBox="0 0 24 24"><path d="M22 5.18L10.59 16.6l-4.24-4.24 1.41-1.41 2.83 2.83 10-10L22 5.18zM12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8c1.57 0 3.04.46 4.28 1.25l1.45-1.45A10.02 10.02 0 0012 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.73 0 3.36-.44 4.78-1.22l-1.5-1.5c-1 .46-2.11.72-3.28.72zm7-5h-3v2h3v3h2v-3h3v-2h-3v-3h-2v3z"/></symbol>
 <symbol id="i-tick" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></symbol>
 <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
 </defs></svg>
 
@@ -407,12 +431,27 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
     <h1>AI Visibility</h1>
     <p>Daily rank tracking of our stores in ChatGPT and Google AI Mode answers.</p>
     <div class="loga"><img src="assets/stores/pl-cyfrowe.svg" alt="Cyfrowe.pl" style="height:18.3px"><img src="assets/stores/uk-wex.png" alt="Wex Photo Video" style="height:17.5px"><img src="assets/stores/nl-cameranu.svg" alt="Cameranu" style="height:13.3px"><img src="assets/stores/de-calumet.svg" alt="Calumet" style="height:15.3px"></div>
+    <input type="email" id="login" placeholder="Work e-mail" autocomplete="username" required aria-label="Work e-mail">
     <input type="password" id="haslo" placeholder="Password" autocomplete="current-password" required aria-label="Password">
     <label><input type="checkbox" id="pamietaj"> Remember on this device</label>
-    <button class="btn primary duzy" type="submit" id="otworz-btn"><svg class="ic"><use href="#i-lock"/></svg>Open</button>
+    <button class="btn primary duzy" type="submit" id="otworz-btn"><svg class="ic"><use href="#i-lock"/></svg>Sign in</button>
+    <div class="postep" style="min-height:0">Forgot your password? Ask anyone with access to send you a new invitation.</div>
     <div class="postep" id="postep" aria-live="polite"></div>
     <div class="blad" id="blad" role="alert"></div>
     <a class="autor" href="https://www.linkedin.com/in/wywigacz" target="_blank" rel="noopener" title="Przemysław Wywigacz on LinkedIn"><span class="av"><img src="assets/author.jpg" alt=""></span><span><span>Built by <b>Przemysław Wywigacz</b></span><span>Cyfrowe.pl · European Imaging Group</span></span></a>
+  </form>
+  <form id="haslo-form" autocomplete="off" hidden>
+    <span class="logo-eig" role="img" aria-label="AI Visibility, European Imaging Group"></span>
+    <h1 id="h-tytul">Welcome</h1>
+    <p id="h-kto">Checking your invitation…</p>
+    <div id="h-pola" style="display:flex;flex-direction:column;gap:14px">
+      <label class="pole-t">Login<input id="h-login" disabled autocomplete="username"></label>
+      <label class="pole-t">New password<span class="h-wiersz"><input type="password" id="h-haslo" autocomplete="new-password" required minlength="12"><button type="button" class="lnk" id="h-pokaz">Show</button></span></label>
+      <div class="wsk" id="h-dl">At least 12 characters</div>
+      <button class="btn primary duzy" type="submit" id="h-btn">Set password and open the panel</button>
+      <div class="postep" id="h-postep">Only you know this password. Nobody, including the panel author, can read it.</div>
+    </div>
+    <div class="blad" id="h-blad" role="alert"></div>
   </form>
 </div>
 
@@ -426,12 +465,13 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
   <button class="rlink" data-v="checklist"><span class="pg"><svg class="ic"><use href="#i-check"/></svg></span>Checklist</button>
   <button class="rlink dol" data-v="how"><span class="pg"><svg class="ic"><use href="#i-info"/></svg></span>How it works</button>
   <button class="rlink tylko-wl" data-v="usage" hidden title="How the panel is used, in numbers (visible only to the owner)"><span class="pg"><svg class="ic"><use href="#i-sum"/></svg></span>Usage</button>
-  <button class="rlink" id="wyloguj"><span class="pg"><svg class="ic"><use href="#i-lock"/></svg></span>Sign out</button>
+  <button class="rlink" data-v="access" title="Who can open this panel, and invitations"><span class="pg"><svg class="ic"><use href="#i-user"/></svg></span>Access</button>
+  <button class="rlink" id="wyloguj"><span class="pg"><svg class="ic"><use href="#i-close"/></svg></span>Sign out</button>
 </nav>
 
 <div class="kol">
   <header class="appbar">
-    <div class="tb-t"><h1>AI Visibility</h1><p>European Imaging Group · <a class="autor" href="https://www.linkedin.com/in/wywigacz" target="_blank" rel="noopener" title="Przemysław Wywigacz on LinkedIn"><span class="av"><img src="assets/author.jpg" alt=""></span><span>Built by <b>Przemysław Wywigacz</b></span></a> <button class="stan" id="stan" title="Open the run log"></button></p></div>
+    <div class="tb-t"><h1>AI Visibility</h1><p>European Imaging Group · <a class="autor" href="https://www.linkedin.com/in/wywigacz" target="_blank" rel="noopener" title="Przemysław Wywigacz on LinkedIn"><span class="av"><img src="assets/author.jpg" alt=""></span><span>Built by <b>Przemysław Wywigacz</b></span></a> <button class="stan" id="stan" title="Open the run log"></button> <span id="kto"></span></p></div>
     <span class="gap"></span>
     <nav class="projekty" id="projekty" aria-label="Store"></nav>
   </header>
@@ -638,18 +678,18 @@ var BUCKETS = [[1, 'Named 1st', 'var(--b1)'], [3, 'Named 2nd-3rd', 'var(--b2)'],
 
 /* ---------- shell ---------- */
 function rysuj() {
-  var cala = S.view === 'all' || S.view === 'how' || S.view === 'usage' || S.view === 'checklist';
+  var cala = S.view === 'all' || S.view === 'how' || S.view === 'usage' || S.view === 'checklist' || S.view === 'access';
   var grupa = S.view === 'all' || (S.view === 'checklist' && S.chkAll);
   document.querySelectorAll('.tylko-wl').forEach(function (b) { b.hidden = !jestWlasciciel(); });
   liczWidok();
   document.body.classList.toggle('bez-filtrow', cala);
   document.getElementById('projekty').innerHTML = '<button class="all ' + (grupa ? 'on' : '') + '" data-p="all">All stores</button>' + M.map(function (m) {
-    return '<button data-p="' + m.code + '" class="' + (!grupa && S.view !== 'how' && S.view !== 'usage' && S.market === m.code ? 'on' : '') + '" title="' + esc(m.name + ': ' + m.store) + '">' + logo(m.code) + '<span class="kod">' + m.code + '</span></button>';
+    return '<button data-p="' + m.code + '" class="' + (!grupa && S.view !== 'how' && S.view !== 'usage' && S.view !== 'access' && S.market === m.code ? 'on' : '') + '" title="' + esc(m.name + ': ' + m.store) + '">' + logo(m.code) + '<span class="kod">' + m.code + '</span></button>';
   }).join('');
   document.querySelectorAll('#projekty button').forEach(function (b) {
     b.onclick = function () {
       var p = b.getAttribute('data-p'); zamknijCicho();
-      if (p === 'all') { if (S.view === 'checklist') S.chkAll = true; else S.view = 'all'; } else { wybierzRynek(p); S.chkAll = false; if (S.view === 'all' || S.view === 'how' || S.view === 'usage') S.view = 'summary'; }
+      if (p === 'all') { if (S.view === 'checklist') S.chkAll = true; else S.view = 'all'; } else { wybierzRynek(p); S.chkAll = false; if (S.view === 'all' || S.view === 'how' || S.view === 'usage' || S.view === 'access') S.view = 'summary'; }
       rysuj(); window.scrollTo(0, 0);
     };
   });
@@ -665,7 +705,8 @@ function rysuj() {
   if (!cala) rysujFiltry();
   WYK = {};
   var el = document.getElementById('tresc');
-  el.innerHTML = ({ all: widokAll, summary: widokSummary, rankings: widokRankings, history: widokHistory, competitors: widokCompetitors, sources: widokSources, how: widokHow, usage: widokUsage, checklist: widokChecklist })[S.view]();
+  el.innerHTML = ({ all: widokAll, summary: widokSummary, rankings: widokRankings, history: widokHistory, competitors: widokCompetitors, sources: widokSources, how: widokHow, usage: widokUsage, checklist: widokChecklist, access: widokAccess })[S.view]();
+  liczWejscie();
   podepnij(); narysujWykresy();
   zapiszAdres();
 }
@@ -678,7 +719,7 @@ var OTW = null, BEZ_ZAPISU = false;
 function adres() {
   if (S.view === 'checklist') return adresChecklisty();
   var czesci = [S.view];
-  var bezRynku = S.view === 'all' || S.view === 'how' || S.view === 'usage';
+  var bezRynku = S.view === 'all' || S.view === 'how' || S.view === 'usage' || S.view === 'access';
   if (!bezRynku) czesci.push(S.market.toLowerCase());
   var m = rynek(S.market), q = new URLSearchParams();
   if (!bezRynku) {
@@ -705,7 +746,7 @@ function zapiszAdres() {
 /* Reads the address into the state. Returns the prompt to open, if any. */
 function czytajAdres() {
   var h = (location.hash || '').replace(/^#\/?/, ''), sciezka = h.split('?')[0].split('/'), q = new URLSearchParams(h.split('?')[1] || '');
-  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how', 'usage', 'checklist'];
+  var widoki = ['all', 'summary', 'rankings', 'history', 'competitors', 'sources', 'how', 'usage', 'checklist', 'access'];
   if (!sciezka[0] || widoki.indexOf(sciezka[0]) < 0) return null;
   S.view = sciezka[0];
   if (S.view === 'checklist') { S.chkAll = sciezka[1] === 'all'; czytajFiltryChecklisty(q); }
@@ -1043,8 +1084,12 @@ function licz(path, title, event) {
   var x = { path: path, title: title, event: !!event };
   if (LICZ_KOLEJKA) LICZ_KOLEJKA.push(x); else wyslij(x);
 }
-function liczZdarzenie(path, title) { licz(path, title, true); }
-var NAZWY_WIDOKOW = { all: 'All stores', summary: 'Summary', rankings: 'Rankings', history: 'Position history', competitors: 'Competitors', sources: 'Sources', how: 'How it works', checklist: 'Checklist' };
+function liczZdarzenie(path, title) {
+  licz(path, title, true);
+  var typ = /^open-prompt/.test(path) ? 'odpowiedz' : /^export-csv/.test(path) ? 'csv' : /^checklist/.test(path) ? 'checklista' : null;
+  if (typ) zdarzenieUzycia(typ, title);
+}
+var NAZWY_WIDOKOW = { all: 'All stores', summary: 'Summary', rankings: 'Rankings', history: 'Position history', competitors: 'Competitors', sources: 'Sources', how: 'How it works', checklist: 'Checklist', access: 'Access' };
 function liczWidok() {
   if (S.view === 'usage') return;
   var zRynkiem = S.view !== 'all' && S.view !== 'how' && !(S.view === 'checklist' && S.chkAll);
@@ -1263,11 +1308,8 @@ function checklistaGrupy() {
   return h;
 }
 function podepnijChecklist() {
-  var kto = function () {
-    var n = ''; try { n = localStorage.getItem('aiv-name') || ''; } catch (e) {}
-    if (!n) { n = (prompt('Your name, shown next to the items you tick:') || '').trim(); if (!n) return null; try { localStorage.setItem('aiv-name', n); } catch (e) {} }
-    return n;
-  };
+  /* the name of the signed-in person, from the access list */
+  var kto = function () { return mojeImie(); };
   function ustaw(id, s) {
     var code = S.market, by = kto(); if (!by) return;
     var e = { m: code, id: id, s: s || null, by: by, at: new Date().toISOString() };
@@ -1304,7 +1346,7 @@ function widokHow() {
     '<h3>Clean context</h3><p>Each prompt is a new conversation with web search, no history, no account and no mention of our stores. The only extra information is the customer\'s approximate city: ' + esc(M.map(function (m) { return m.city; }).join(', ')) + '.</p>' +
     '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables.</p>' +
     '<h3>Schedule</h3><p>Daily at 07:00 UTC. Latest run: ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. Answers vary from day to day, so read trends over several runs.</p>' +
-    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored; the password never leaves your device. The panel counts visits to its views anonymously in a Google Form of cyfrowe.pl: no cookies, no names, no IP addresses. Checklist ticks are sent encrypted with the panel key through the same kind of form and are visible to everyone with the password, together with the name the person typed.</p>' +
+    '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored. Everyone signs in with their own e-mail and password; the password never leaves your device and nobody else can read it. To see how the panel is used, it records per person which views are opened, active time and what is clicked, and sends this encrypted to Cyfrowe.pl (the panel author). Checklist ticks and invitations go the same way and are visible to everyone with access, with the name of the person.</p>' +
     '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Google searches</th><th class="r">Cost</th></tr></thead><tbody>' +
     IDX.runs.slice().reverse().map(function (r) {
       var min = r.start && r.end ? Math.round((new Date(r.end) - new Date(r.start)) / 60000) : null;
@@ -1315,7 +1357,7 @@ function widokHow() {
 }
 
 function podepnij() {
-  podepnijChecklist();
+  podepnijChecklist(); podepnijAccess();
   var up = document.getElementById('u-ponow'); if (up) up.onclick = function () { USAGE_BLAD = ''; rysuj(); };
   document.querySelectorAll('.rkc[data-p]').forEach(function (b) { b.onclick = function () { wybierzRynek(b.getAttribute('data-p')); S.view = 'summary'; rysuj(); window.scrollTo(0, 0); }; });
   document.querySelectorAll('[data-go]').forEach(function (b) { b.onclick = function () { S.view = b.getAttribute('data-go'); rysuj(); window.scrollTo(0, 0); }; });
@@ -1403,56 +1445,250 @@ document.getElementById('cien').onclick = zamknij;
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') zamknij(); });
 var tm; window.addEventListener('resize', function () { clearTimeout(tm); tm = setTimeout(narysujWykresy, 150); });
 
+/* ---------- accounts (since 10 Oct 2026) ----------
+   One random data key encrypts all data. Every person signs in with their e-mail and own password:
+   data/logins.json holds, under SHA-256(e-mail), a salt and the data key wrapped (AES-GCM) with a key
+   derived from that person's password (PBKDF2-SHA-256, 600,000 rounds). Nobody else can read the password.
+   An invitation e-mail carries a one-time token; data/logins.json keeps the data key wrapped with
+   SHA-256(token) until the person sets a password. People, invitations and usage live in data/access.enc. */
+var JA = null, ACC = { people: {} }, ACC_CZAS = 0;
+async function sha256hex(s) { var d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return Array.from(new Uint8Array(d)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join(''); }
+function b64url(u) { return b64z(u).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function zB64url(s) { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; return b64(s); }
+async function loginy() { var r = await fetch('data/logins.json', { cache: 'no-store' }); if (!r.ok) throw new Error('NO_LOGINS'); return r.json(); }
+async function kluczZHasla2(haslo, saltB64, it) {
+  var baza = await crypto.subtle.importKey('raw', new TextEncoder().encode(haslo), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(saltB64), iterations: it || 600000 }, baza, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+async function odwin(k, wB64) { var raw = b64(wB64); return new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: raw.slice(0, 12) }, k, raw.slice(12))); }
+async function zawin(k, rawKey) { var iv = crypto.getRandomValues(new Uint8Array(12)); var ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, k, rawKey)); var all = new Uint8Array(12 + ct.length); all.set(iv); all.set(ct, 12); return b64z(all); }
+async function ustawKlucz(raw) { KLUCZ = await crypto.subtle.importKey('raw', raw, { name: 'AES-GCM' }, true, ['decrypt', 'encrypt']); }
+function zapamietaj(raw, email, trwale) {
+  try { sessionStorage.setItem('aiv-key', b64z(raw)); sessionStorage.setItem('aiv-user', email); if (trwale) { localStorage.setItem('aiv-key', b64z(raw)); localStorage.setItem('aiv-user', email); } } catch (e) {}
+}
+async function wczytajDostep() {
+  try { ACC = await odszyfruj('data/access.enc'); } catch (e) { ACC = { people: {} }; }
+  ACC_CZAS = Date.now();
+}
+function osoba(email) { return (ACC.people || {})[String(email || '').toLowerCase()] || null; }
+function mojeImie() { var p = osoba(JA); return p && p.name ? p.name : JA || 'Someone'; }
+
+/* every message to the inbox (checklist, invitations, usage) goes the same way: encrypted with the data key */
+async function wyslijWiadomosc(e) { return wyslijZmiane(e); }
+
+/* ---------- usage, by person, for "Analityka paneli" (same events and fields as the cyfrowe.pl panels) ---------- */
+var UZ = { sesja: Math.random().toString(36).slice(2, 10) + Date.now().toString(36), ruch: Date.now(), akt: 0, kl: 0, el: {}, widok: '' };
+function widokNazwa() {
+  var n = NAZWY_WIDOKOW[S.view] || S.view;
+  var zRynkiem = ['all', 'how', 'usage', 'access'].indexOf(S.view) < 0 && !(S.view === 'checklist' && S.chkAll);
+  return n + (zRynkiem ? ' · ' + rynek(S.market).store : '');
+}
+function zdarzenieUzycia(typ, widok) {
+  if (!JA || !KLUCZ) return;
+  var w = innerWidth || 0, el = Object.keys(UZ.el).map(function (k) { return k + '×' + UZ.el[k]; }).join('|');
+  if (typ === 'aktywnosc' && !UZ.akt && !UZ.kl) return;
+  var e = { t: 'ev', email: JA, typ: typ, sesja: UZ.sesja, widok: widok || UZ.widok || widokNazwa(), aktywne: UZ.akt, klik: UZ.kl, elementy: el,
+    urzadzenie: w < 768 ? 'telefon' : w < 1280 ? 'laptop' : 'komputer', szerokosc: w, at: new Date().toISOString() };
+  if (typ === 'aktywnosc') { UZ.akt = 0; UZ.kl = 0; UZ.el = {}; }
+  wyslijWiadomosc(e).catch(function () {});
+}
+function nazwaKlikniecia(c) {
+  var x = c.closest('button,a,[role=tab],select,input,label,th,tr.klik,.ruch li,.csk,.rkc');
+  if (!x) return '~' + (c.closest('svg') ? 'wykres' : c.closest('table') ? 'tabela' : 'tekst lub tło');
+  var t = (x.getAttribute('aria-label') || x.getAttribute('title') || x.textContent || x.value || '').replace(/\s+/g, ' ').trim().slice(0, 50);
+  var sek = ''; for (var a = x; a && a !== document.body; a = a.parentElement) { var h = a.querySelector && a.querySelector('h1,h2'); if (h && h.compareDocumentPosition(x) & 4) { sek = h.textContent.replace(/\s+/g, ' ').trim().slice(0, 40); break; } }
+  return (sek ? sek + ' › ' : '') + (t || x.tagName.toLowerCase());
+}
+function wlaczSledzenie() {
+  ['mousemove', 'keydown', 'scroll', 'touchstart', 'wheel'].forEach(function (n) { document.addEventListener(n, function () { UZ.ruch = Date.now(); }, { passive: true, capture: true }); });
+  document.addEventListener('click', function (ev) { UZ.ruch = Date.now(); if (document.body.classList.contains('zamkniety')) return; UZ.kl++; var c = ev.target; if (c && c.nodeType === 3) c = c.parentElement; if (!c || !c.closest) return; var n = ''; try { n = nazwaKlikniecia(c); } catch (e) { n = '~nieznane miejsce'; } UZ.el[n] = (UZ.el[n] || 0) + 1; }, true);
+  setInterval(function () { if (document.visibilityState === 'visible' && Date.now() - UZ.ruch < 60000) UZ.akt += 5; }, 5000);
+  setInterval(function () { zdarzenieUzycia('aktywnosc'); }, 60000);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden' && (UZ.akt >= 15 || UZ.kl)) zdarzenieUzycia('aktywnosc'); });
+}
+/* a new view or store counts as an entry, as a page open does in the other panels */
+var UZ_OST = '';
+function liczWejscie() {
+  var w = widokNazwa(); if (w === UZ_OST) return; UZ_OST = w;
+  if (UZ.widok) zdarzenieUzycia('aktywnosc', UZ.widok);
+  UZ.widok = w; zdarzenieUzycia('wejscie', w);
+}
+
+/* ---------- Access view ---------- */
+var DOST_LOKALNE = [];   /* invitations and removals sent from this browser, until the sync shows them */
+function widokAccess() {
+  if (Date.now() - ACC_CZAS > 12e4) { ACC_CZAS = Date.now(); wczytajDostep().then(function () { if (S.view === 'access') rysuj(); }); }
+  var lud = Object.keys(ACC.people || {}).map(function (k) { return ACC.people[k]; });
+  DOST_LOKALNE.forEach(function (d) {
+    var p = lud.filter(function (x) { return x.email === d.email; })[0];
+    if (d.t === 'invite') { if (!p) { p = { email: d.email, name: d.name, status: 'invited', invitedBy: JA, invitedAt: d.at, lokalne: true }; lud.push(p); } else if (!p.invitedAt || p.invitedAt < d.at) { p.lokalne = true; if (p.status !== 'active') p.status = 'invited'; p.invitedAt = d.at; p.invitedBy = JA; } }
+    if (d.t === 'remove' && p && (!p.removedAt || p.removedAt < d.at)) { p.status = 'removed'; p.lokalne = true; }
+  });
+  var akt = lud.filter(function (p) { return p.status === 'active'; }), zapr = lud.filter(function (p) { return p.status === 'invited'; });
+  var tydz = new Date(Date.now() - 7 * 864e5).toISOString();
+  function wizyty(p, dni) { var od = new Date(Date.now() - dni * 864e5).toISOString().slice(0, 10); return Object.keys(p.visitDays || {}).filter(function (d) { return d >= od; }).reduce(function (a, d) { return a + p.visitDays[d]; }, 0); }
+  function kiedyO(t) { if (!t) return '-'; var d = new Date(t), dzis = new Date(); var godz = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); if (d.toDateString() === dzis.toDateString()) return 'today ' + godz; if (d.toDateString() === new Date(Date.now() - 864e5).toDateString()) return 'yesterday ' + godz; return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' ' + godz; }
+  function inicjaly(p) { return (p.name || p.email).split(/[\s.@]+/).filter(Boolean).slice(0, 2).map(function (x) { return x[0].toUpperCase(); }).join(''); }
+  var firmy = {}; akt.forEach(function (p) { firmy[p.email.split('@')[1]] = 1; });
+  var h = naglowekProsty('Who can open this panel', 'Access', '<b>' + akt.length + (akt.length === 1 ? ' person' : ' people') + '</b> have their own login. Anyone with access can invite a colleague or remove access. An invitation goes by e-mail and is valid for 7 days.',
+    [['People with access', akt.length, Object.keys(firmy).length + (Object.keys(firmy).length === 1 ? ' company' : ' companies')], ['Invitations waiting', zapr.length, zapr.length ? 'oldest ' + kiedyKrotko(zapr.map(function (p) { return p.invitedAt; }).sort()[0]) : 'none'],
+      ['Active in 7 days', akt.filter(function (p) { return p.lastSeen && p.lastSeen >= tydz; }).length, 'of ' + akt.length + ' people']]);
+  var rzad = lud.filter(function (p) { return p.status !== 'removed'; }).sort(function (a, b) { return (a.status === b.status ? 0 : a.status === 'active' ? -1 : 1) || String(a.name || a.email).localeCompare(String(b.name || b.email)); });
+  h += '<div class="acc-grid"><section class="card" style="padding:4px 8px 8px"><table class="t"><thead><tr><th>Person</th><th>Status</th><th>Invited by</th><th class="r">Last visit</th><th class="r">Visits, 30 days</th><th></th></tr></thead><tbody>' +
+    rzad.map(function (p) {
+      var wl = p.email === WLASCICIEL, ja = p.email === JA;
+      var st = p.status === 'active' ? '<span class="stat ok">Active</span>' : '<span class="stat wait">' + (p.lokalne ? 'E-mail on its way' : 'Invitation sent') + '</span>';
+      var akc = '';
+      if (p.status === 'invited') akc = '<button class="lnk" data-zapros="' + esc(p.email) + '" data-imie="' + esc(p.name || '') + '">Send again</button>' + (wl ? '' : '<button class="lnk red" data-usun="' + esc(p.email) + '">Cancel</button>');
+      else if (!wl && !ja) akc = '<button class="lnk red" data-usun="' + esc(p.email) + '">Remove</button>';
+      return '<tr><td><div class="os"><span class="av2">' + (wl ? '<img src="assets/author.jpg" alt="">' : esc(inicjaly(p))) + '</span><span><b>' + esc(p.name || p.email) + (ja ? ' (you)' : '') + '</b><small>' + esc(p.email) + (wl ? ' · panel author' : '') + '</small></span></div></td>' +
+        '<td>' + st + '</td><td>' + (p.invitedBy ? esc((osoba(p.invitedBy) || {}).name || p.invitedBy) : '<span class="szary">-</span>') + '</td>' +
+        '<td class="r">' + (p.status === 'active' ? esc(kiedyO(p.lastSeen)) : '<span class="szary">-</span>') + '</td><td class="r num">' + (p.status === 'active' ? wizyty(p, 30) : '<span class="szary">-</span>') + '</td><td class="r" style="white-space:nowrap">' + akc + '</td></tr>';
+    }).join('') + '</tbody></table></section>' +
+    '<section class="card"><div class="ch"><h2>Invite a colleague<small>They get an e-mail with a link to set their own password.</small></h2></div>' +
+    '<form id="zapros-form" style="display:flex;flex-direction:column;gap:14px"><label class="pole-t">Work e-mail<input type="email" id="z-email" required autocomplete="off"></label>' +
+    '<label class="pole-t">Name (shown in the e-mail and in this list)<input id="z-imie" required autocomplete="off"></label>' +
+    '<button class="btn primary duzy" type="submit">Send invitation</button><p class="wsk" id="z-info">The e-mail is sent from przemyslaw.wywigacz@cyfrowe.pl within about 15 minutes, with your name as the person who invited them.</p></form></section></div>';
+  return h;
+}
+/* a white header card for views without a store (Access) */
+function naglowekProsty(kick, tytul, lead, kafle) {
+  return '<section class="naglowek"><div class="hl"><div class="kick">' + esc(kick) + '</div><h1>' + esc(tytul) + '</h1><p class="lead">' + lead + '</p></div>' +
+    '<div class="hr">' + kafle.map(function (k) { return '<div class="kf"><span>' + esc(k[0]) + '</span><b class="num">' + k[1] + '</b><small>' + esc(k[2]) + '</small></div>'; }).join('') + '</div></section>';
+}
+var WLASCICIEL = 'przemyslaw.wywigacz@cyfrowe.pl';
+function podepnijAccess() {
+  var f = document.getElementById('zapros-form');
+  async function zapros(email, name) {
+    email = String(email || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(email)) { alert('Check the e-mail address.'); return false; }
+    var e = { t: 'invite', email: email, name: String(name || '').trim().slice(0, 80), by: JA, id: b64url(crypto.getRandomValues(new Uint8Array(9))), tok: b64url(crypto.getRandomValues(new Uint8Array(32))), at: new Date().toISOString() };
+    try { await wyslijWiadomosc(e); } catch (err) { alert('The invitation was not sent: ' + (err && err.message || err)); return false; }
+    DOST_LOKALNE.push({ t: 'invite', email: email, name: e.name, at: e.at }); zdarzenieUzycia('zaproszenie', 'Access');
+    return true;
+  }
+  if (f) f.onsubmit = async function (ev) {
+    ev.preventDefault(); var b = f.querySelector('button'); b.disabled = true;
+    if (await zapros(document.getElementById('z-email').value, document.getElementById('z-imie').value)) { rysuj(); var i = document.getElementById('z-info'); if (i) i.innerHTML = '<b style="color:var(--up)">Invitation queued.</b> The e-mail goes out within about 15 minutes.'; }
+    else b.disabled = false;
+  };
+  document.querySelectorAll('[data-zapros]').forEach(function (b) { b.onclick = async function () { b.disabled = true; if (await zapros(b.getAttribute('data-zapros'), b.getAttribute('data-imie'))) rysuj(); else b.disabled = false; }; });
+  document.querySelectorAll('[data-usun]').forEach(function (b) {
+    b.onclick = async function () {
+      var email = b.getAttribute('data-usun'), p = osoba(email) || {};
+      if (!confirm('Remove access for ' + (p.name || email) + '? They will not be able to sign in. You can invite them again later.')) return;
+      var e = { t: 'remove', email: email, by: JA, at: new Date().toISOString() };
+      try { await wyslijWiadomosc(e); DOST_LOKALNE.push({ t: 'remove', email: email, at: e.at }); rysuj(); } catch (err) { alert('Not saved: ' + (err && err.message || err)); }
+    };
+  });
+}
+
 /* ---------- sign-in ---------- */
-async function start(haslo, pamietaj) {
+async function start(pamietaj) {
   var post = document.getElementById('postep');
-  if (haslo) { post.textContent = 'Checking the password…'; KLUCZ = await kluczZHasla(haslo); }
   post.textContent = 'Decrypting the data…';
-  await wczytaj();
-  if (haslo) { var raw = b64z(new Uint8Array(await crypto.subtle.exportKey('raw', KLUCZ))); try { sessionStorage.setItem('aiv-key', raw); if (pamietaj) localStorage.setItem('aiv-key', raw); } catch (e) {} }
+  await Promise.all([wczytaj(), wczytajDostep()]);
   post.textContent = '';
+  document.getElementById('kto').textContent = JA ? 'signed in as ' + JA : '';
   var r = 'PL'; try { r = localStorage.getItem('aiv-market') || 'PL'; } catch (e) {}
   wybierzRynek(M.some(function (m) { return m.code === r; }) ? r : M[0].code);
   document.body.classList.remove('zamkniety');
   D_GOTOWE = true;
+  wlaczSledzenie();
   /* A shared link opens exactly the view it points to; without a link the panel opens on All stores. */
-  if (location.hash.length > 2) { await wejdzZAdresu(); }
-  else rysuj();
+  if (location.hash.length > 2 && !/^#\/accept/.test(location.hash)) { await wejdzZAdresu(); }
+  else { history.replaceState(null, '', '#/all'); S.view = 'all'; rysuj(); }
+}
+async function zaloguj(email, haslo, pamietaj) {
+  email = String(email || '').trim().toLowerCase();
+  var L = await loginy(), u = (L.users || {})[await sha256hex(email)];
+  if (!u) throw new Error('NO_USER');
+  document.getElementById('postep').textContent = 'Checking the password…';
+  var raw;
+  try { raw = await odwin(await kluczZHasla2(haslo, u.s, L.iterations), u.w); } catch (e) { throw new Error('BAD_PASSWORD'); }
+  await ustawKlucz(raw); JA = email; zapamietaj(raw, email, pamietaj);
+  await start();
+  zdarzenieUzycia('logowanie', 'Sign-in');
 }
 document.getElementById('brama-form').addEventListener('submit', async function (e) {
   e.preventDefault();
   var bl = document.getElementById('blad'), btn = document.getElementById('otworz-btn');
   bl.textContent = ''; btn.disabled = true;
-  try { await start(document.getElementById('haslo').value, document.getElementById('pamietaj').checked); liczZdarzenie('signed-in', 'Signed in'); }
+  try { await zaloguj(document.getElementById('login').value, document.getElementById('haslo').value, document.getElementById('pamietaj').checked); }
   catch (err) {
-    var t = String(err && (err.name + ' ' + err.message));
-    bl.textContent = /NO_DATA/.test(t) ? 'There are no results yet.' : /OperationError|decrypt/i.test(t) ? 'Wrong password. Check it and try again.' : 'Could not load the data: ' + (err && err.message || err);
+    var t = String(err && err.message);
+    bl.textContent = /NO_USER|BAD_PASSWORD/.test(t) ? 'The e-mail or the password is wrong. If you set your password in the last 15 minutes, wait a moment and try again.' :
+      /NO_LOGINS/.test(t) ? 'Sign-in is not available right now. Try again in a few minutes.' : 'Could not load the data: ' + (err && err.message || err);
     document.getElementById('postep').textContent = '';
   }
   btn.disabled = false;
 });
+
+/* ---------- invitation: set your password ---------- */
+var ZAPR = null;
+async function ekranZaproszenia() {
+  var q = new URLSearchParams(location.hash.split('?')[1] || ''), id = q.get('i'), tok = q.get('t');
+  document.getElementById('brama-form').hidden = true;
+  var f = document.getElementById('haslo-form'); f.hidden = false;
+  var bl = document.getElementById('h-blad');
+  try {
+    if (!CFG) CFG = await (await fetch('config/config.json', { cache: 'no-store' })).json();
+    var L = await loginy(), inv = (L.invites || {})[id];
+    if (!inv || !tok || Date.parse(inv.exp) < Date.now()) throw new Error('EXPIRED');
+    var k = await crypto.subtle.importKey('raw', await crypto.subtle.digest('SHA-256', zB64url(tok)), { name: 'AES-GCM' }, false, ['decrypt']);
+    var raw = await odwin(k, inv.w);
+    await ustawKlucz(raw); await wczytajDostep();
+    var p = Object.keys(ACC.people || {}).map(function (x) { return ACC.people[x]; }).filter(function (x) { return x.inviteId === id; })[0];
+    if (!p) throw new Error('EXPIRED');
+    ZAPR = { id: id, raw: raw, p: p, it: L.iterations || 600000 };
+    document.getElementById('h-tytul').textContent = 'Welcome' + (p.name ? ', ' + p.name.split(' ')[0] : '');
+    document.getElementById('h-kto').textContent = ((osoba(p.invitedBy) || {}).name || p.invitedBy || 'A colleague') + ' invited you to AI Visibility. Set a password for your login.';
+    document.getElementById('h-login').value = p.email;
+    document.getElementById('h-haslo').focus();
+  } catch (e) {
+    KLUCZ = null;
+    document.getElementById('h-tytul').textContent = 'This invitation does not work any more';
+    document.getElementById('h-kto').textContent = 'It has expired or was already used. Ask anyone with access to send you a new one, or sign in if you already set your password.';
+    document.getElementById('h-pola').hidden = true;
+    bl.innerHTML = '<a href="./" class="btn duzy" style="margin-top:8px">Go to sign-in</a>';
+  }
+}
+document.getElementById('h-pokaz').onclick = function () { var i = document.getElementById('h-haslo'); i.type = i.type === 'password' ? 'text' : 'password'; this.textContent = i.type === 'password' ? 'Show' : 'Hide'; };
+document.getElementById('h-haslo').oninput = function () { document.getElementById('h-dl').className = 'wsk' + (this.value.length >= 12 ? ' ok' : ''); };
+document.getElementById('haslo-form').addEventListener('submit', async function (ev) {
+  ev.preventDefault();
+  var haslo = document.getElementById('h-haslo').value, bl = document.getElementById('h-blad'), btn = document.getElementById('h-btn');
+  if (haslo.length < 12) { bl.textContent = 'Use at least 12 characters.'; return; }
+  if (!ZAPR) return;
+  btn.disabled = true; bl.textContent = ''; document.getElementById('h-postep').textContent = 'Saving your password…';
+  try {
+    var salt = crypto.getRandomValues(new Uint8Array(16)), saltB = b64z(salt);
+    var w = await zawin(await kluczZHasla2(haslo, saltB, ZAPR.it), ZAPR.raw);
+    await wyslijWiadomosc({ t: 'accept', id: ZAPR.id, email: ZAPR.p.email, s: saltB, w: w, at: new Date().toISOString() });
+    JA = ZAPR.p.email; zapamietaj(ZAPR.raw, JA, true);
+    document.getElementById('haslo-form').hidden = true; document.getElementById('brama-form').hidden = false;
+    await start();
+    zdarzenieUzycia('logowanie', 'Password set');
+  } catch (err) { bl.textContent = 'Not saved: ' + (err && err.message || err) + '. Try again.'; btn.disabled = false; document.getElementById('h-postep').textContent = ''; }
+});
+
 document.querySelectorAll('.rlink[data-v]').forEach(function (b) { b.onclick = function () { S.view = b.getAttribute('data-v'); rysuj(); window.scrollTo(0, 0); }; });
 document.getElementById('dom').onclick = function () { zamknijCicho(); S.view = 'all'; rysuj(); window.scrollTo(0, 0); };
-document.getElementById('wyloguj').onclick = function () { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (e) {} location.reload(); };
+document.getElementById('wyloguj').onclick = function () {
+  zdarzenieUzycia('aktywnosc');
+  try { ['aiv-key', 'aiv-user'].forEach(function (k) { sessionStorage.removeItem(k); localStorage.removeItem(k); }); } catch (e) {}
+  setTimeout(function () { location.href = './'; }, 300);
+};
 (async function () {
   wlaczLicznik();
-  /* PUBLIC ACCESS (temporary). While data/public-key.json exists (workflow "Public access",
-     mode "on"), the panel opens without the sign-in screen and "Sign out" is hidden.
-     The password flow below stays in place: mode "off" removes the file and the sign-in screen
-     comes back by itself. */
-  try {
-    var pub = await fetch('data/public-key.json', { cache: 'no-store' });
-    if (pub.ok) {
-      KLUCZ = await crypto.subtle.importKey('raw', b64((await pub.json()).key), { name: 'AES-GCM' }, true, ['decrypt', 'encrypt']);
-      document.getElementById('wyloguj').hidden = true;
-      await start();
-      return;
-    }
-  } catch (e) { KLUCZ = null; }
-  var s = null; try { s = sessionStorage.getItem('aiv-key') || localStorage.getItem('aiv-key'); } catch (e) {}
-  if (!s) licz('/sign-in', 'Sign-in page');
-  if (s) { try { KLUCZ = await crypto.subtle.importKey('raw', b64(s), { name: 'AES-GCM' }, true, ['decrypt', 'encrypt']); await start(); return; } catch (e) { try { sessionStorage.removeItem('aiv-key'); localStorage.removeItem('aiv-key'); } catch (x) {} } }
-  document.getElementById('haslo').focus();
+  if (/^#\/accept/.test(location.hash)) { await ekranZaproszenia(); return; }
+  var s = null, u = null; try { s = sessionStorage.getItem('aiv-key') || localStorage.getItem('aiv-key'); u = sessionStorage.getItem('aiv-user') || localStorage.getItem('aiv-user'); } catch (e) {}
+  if (!s || !u) licz('/sign-in', 'Sign-in page');
+  if (s && u) {
+    try { await ustawKlucz(b64(s)); JA = u; await start(); return; }
+    catch (e) { try { ['aiv-key', 'aiv-user'].forEach(function (k) { sessionStorage.removeItem(k); localStorage.removeItem(k); }); } catch (x) {} JA = null; KLUCZ = null; }
+  }
+  document.getElementById('login').focus();
 })();
 </script>
 </body>

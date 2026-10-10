@@ -1059,5 +1059,11 @@
     "formResponse": "https://docs.google.com/forms/d/e/1FAIpQLScXPxGj_3ljzM9OJmqjrRBWBOa9HsX_-v-Ig32iIMM7cgcp8Q/formResponse",
     "entry": "entry.330467632",
     "sheetId": "1UE3UJqIg6nokb_UlERfKRY0jeSIwqyoQgZa4Ay8sQXc"
+  },
+  "access": {
+    "owner": "przemyslaw.wywigacz@cyfrowe.pl",
+    "site": "https://przemyslawwywigaczcyfrowe.github.io/ai-visibility-monitor/",
+    "outboxSheet": "1byeozUS5wTRaWU59ySddEoXwcmuuUmn-5y7u4wqCFLs",
+    "analyticsSheet": "18FOj6X9i8-SVf0Q3qTwBmJaO4Apu4f5GILeZtGa9ClY"
   }
 }

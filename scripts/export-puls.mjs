@@ -7,7 +7,7 @@
 // Local test without decryption: node scripts/export-puls.mjs --test <summary.json>
 import { readFileSync } from 'node:fs';
 import { createSign } from 'node:crypto';
-import { deriveKey, decryptJson } from './lib.mjs';
+import { dataKey, decryptJson } from './lib.mjs';
 
 const SHEET = process.env.PULS_SHEET_ID || '1WcWoyMqYSgbz3KSQJnNEHQQCGn7ULArc4xvyPuwI95s';
 const TAB = process.env.PULS_TAB || 'AI_WIDOCZNOSC';
@@ -147,11 +147,8 @@ async function write(rows) {
 if (process.argv[2] === '--test') {
   await write(JSON.parse(readFileSync(process.argv[3], 'utf8')));
 } else {
-  const PASSWORD = process.env.PANEL_PASSWORD;
-  if (!PASSWORD) { console.error('Missing PANEL_PASSWORD.'); process.exit(1); }
   if (!process.env.GOOGLE_SA_KEY) { console.log('No GOOGLE_SA_KEY secret, export to Puls skipped.'); process.exit(0); }
-  const salt = JSON.parse(readFileSync('data/salt.json', 'utf8'));
-  const key = await deriveKey(PASSWORD, salt.salt, salt.iterations);
+  const key = await dataKey();
   const index = await decryptJson(key, readFileSync('data/index.enc', 'utf8'));
   const rows = summarise(index);
   const last = rows[rows.length - 1];
