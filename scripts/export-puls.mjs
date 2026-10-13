@@ -14,12 +14,21 @@ const TAB = process.env.PULS_TAB || 'AI_WIDOCZNOSC';
 const MARKET = process.env.MARKET || 'PL';
 
 /* ---------- numbers, as in index.html ---------- */
+/* Since 13 Oct 2026, as in the panel: price comparison sites, classifieds and review sites
+   (shop.kind in config.json) take no place, and "named first / top 3" are also given in prompts. */
+const CFG = JSON.parse(readFileSync('config/config.json', 'utf8'));
+const NOT_STORE = Object.fromEntries((CFG.shops || []).filter(s => s.kind).map(s => [s.name, s.kind]));
+const storesOnly = l => String(l || '').split('; ').filter(n => n && !NOT_STORE[n]);
 function summarise(index) {
   const m = index.markets.find(x => x.code === MARKET);
-  const prompts = index.prompts.filter(p => p.market === MARKET);
+  const allPrompts = index.prompts.filter(p => p.market === MARKET);
+  let prompts = allPrompts;
   const engines = (index.engines || []).map(e => e.label);
   const cell = {};
-  index.hist.forEach(h => { cell[h[0] + '|' + h[1] + '|' + h[2]] = h; });
+  index.hist.forEach(h => {
+    if (String(h[1]).startsWith(MARKET) && h[3] != null && h[4]) { const i = storesOnly(h[4]).indexOf(m.store); if (i >= 0) h[3] = i + 1; }
+    cell[h[0] + '|' + h[1] + '|' + h[2]] = h;
+  });
   const runs = [...new Set(index.hist.filter(h => String(h[1]).startsWith(MARKET)).map(h => h[0]))].sort();
 
   const kom = (run, id, e) => cell[run + '|' + id + '|' + e] || null;
@@ -38,9 +47,14 @@ function summarise(index) {
       eng.forEach(e => { const c = kom(run, p.id, e); if (!c || c[6]) return; if (c[3] != null) { o.odp.push(c[3]); if (c[3] === 1) o.first++; if (c[3] <= 3) o.top3++; } if (c[5]) cyt = true; });
       if (cyt) o.cited++;
     });
-    const avg = o.odp.length ? o.odp.reduce((a, b) => a + b, 0) / o.odp.length : null;
+    /* Average position as in the panel: over prompts (best place in the engines), not over answers. */
+    const best = [];
+    prompts.forEach(p => { const v = poz(run, p.id, eng); if (v != null) best.push(v); });
+    const avg = best.length ? best.reduce((a, b) => a + b, 0) / best.length : null;
     return { pytan: o.n, widoczne: o.ment, widocznosc: o.n ? Math.round(o.ment / o.n * 1000) / 10 : 0,
-      srednieMiejsce: avg == null ? null : Math.round(avg * 10) / 10, pierwsze: o.first, top3: o.top3, cytowane: o.cited,
+      srednieMiejsce: avg == null ? null : Math.round(avg * 10) / 10,
+      pierwsze: o.first, top3: o.top3, jednostkaPierwsze: 'odpowiedzi',
+      pierwszePytan: o.b1, top3Pytan: o.b1 + o.b3, cytowane: o.cited,
       rozklad: { pierwsze: o.b1, drugieTrzecie: o.b3, dalej: o.b10, brak: o.b0 } };
   }
   function sklepy(run, eng) {
@@ -50,18 +64,21 @@ function summarise(index) {
       eng.forEach(e => {
         const c = kom(run, p.id, e); if (!c || c[6]) return; was = true;
         if (!c[4]) return;
-        String(c[4]).split('; ').forEach((nm, i) => {
-          const o = s[nm] = s[nm] || { nazwa: nm, p: {}, odp: 0, sum: 0, pierwsze: 0 };
-          o.p[p.id] = 1; o.odp++; o.sum += i + 1; if (!i) o.pierwsze++; all++;
+        let j = 0;
+        String(c[4]).split('; ').forEach(nm => {
+          const o = s[nm] = s[nm] || { nazwa: nm, p: {}, odp: 0, sum: 0, pierwsze: 0, sklepOdp: 0, typ: NOT_STORE[nm] || '' };
+          o.p[p.id] = 1; o.odp++; all++;
+          if (!o.typ) { j++; o.sum += j; o.sklepOdp++; if (j === 1) o.pierwsze++; }
         });
       });
       if (was) n++;
     });
     const l = Object.values(s).map(o => ({ nazwa: o.nazwa, pytan: Object.keys(o.p).length,
       widocznosc: n ? Math.round(Object.keys(o.p).length / n * 1000) / 10 : 0,
-      srednieMiejsce: Math.round(o.sum / o.odp * 10) / 10, pierwsze: o.pierwsze, udzialGlosu: all ? Math.round(o.odp / all * 1000) / 10 : 0 }));
-    if (!l.some(x => x.nazwa === m.store)) l.push({ nazwa: m.store, pytan: 0, widocznosc: 0, srednieMiejsce: null, pierwsze: 0, udzialGlosu: 0 });
-    l.sort((a, b) => b.pytan - a.pytan || b.pierwsze - a.pierwsze || (a.srednieMiejsce || 99) - (b.srednieMiejsce || 99));
+      srednieMiejsce: o.sklepOdp ? Math.round(o.sum / o.sklepOdp * 10) / 10 : null, pierwsze: o.pierwsze,
+      udzialGlosu: all ? Math.round(o.odp / all * 1000) / 10 : 0, typ: o.typ }));
+    if (!l.some(x => x.nazwa === m.store)) l.push({ nazwa: m.store, pytan: 0, widocznosc: 0, srednieMiejsce: null, pierwsze: 0, udzialGlosu: 0, typ: '' });
+    l.sort((a, b) => (a.typ ? 1 : 0) - (b.typ ? 1 : 0) || b.pytan - a.pytan || b.pierwsze - a.pierwsze || (a.srednieMiejsce || 99) - (b.srednieMiejsce || 99));
     return l.slice(0, 8).map(x => ({ ...x, nasz: x.nazwa === m.store }));
   }
   function ruchy(run, prev, eng) {
@@ -79,6 +96,10 @@ function summarise(index) {
     const prev = i ? runs[i - 1] : null;
     const silniki = { wszystkie: kpi(run, engines) };
     engines.forEach(e => { silniki[e] = kpi(run, [e]); });
+    /* The same without prompt 4, which names a competitor (prompt set of EIG, not changed here). */
+    prompts = allPrompts.filter(p => +String(p.id).slice(2) !== 4);
+    const bezPytania4 = kpi(run, engines);
+    prompts = allPrompts;
     /* Every prompt with our place per engine (null = not named, undefined = no answer), the leader
        of the answer and whether our site was cited. For the 25-tile map in Puls. */
     const pytania = prompts.map(p => {
@@ -88,12 +109,13 @@ function summarise(index) {
         const c = kom(run, p.id, e);
         if (!c || c[6]) return;
         poz[e] = c[3] == null ? null : c[3];
-        lid[e] = c[4] ? String(c[4]).split('; ')[0] : '';
+        lid[e] = c[4] ? (storesOnly(c[4])[0] || '') : '';
         if (c[5]) cyt = true;
       });
       return { id: p.id, pytanie: p.text, temat: p.topic || '', pozycje: poz, lider: lid, cytowane: cyt };
     });
-    return { pomiar: run, poprzedni: prev, rynek: MARKET, sklep: m.store, silniki, sklepy: sklepy(run, engines), ruchy: ruchy(run, prev, engines), pytania };
+    const silnikiOpis = Object.fromEntries((CFG.engines || []).map(e => [e.label, e.short || e.label]));
+    return { pomiar: run, poprzedni: prev, rynek: MARKET, sklep: m.store, silniki, bezPytania4, silnikiOpis, sklepy: sklepy(run, engines), ruchy: ruchy(run, prev, engines), pytania };
   });
 }
 

@@ -4,20 +4,22 @@
       "label": "ChatGPT",
       "model": "openai/gpt-5.6-luna",
       "web": true,
-      "note": "Default model in free ChatGPT since 2026-08-06"
+      "note": "API model, not the ChatGPT app. Called through OpenRouter with its web search plugin (5 results, low search context). It is the default model of free ChatGPT since 2026-08-06, but the app adds its own search, memory and shopping cards, so app answers can differ",
+      "short": "GPT-5.6 Luna API (approx. ChatGPT)"
     },
     {
       "label": "Google AI Mode",
       "model": "google/gemini-3.8-flash",
       "web": true,
-      "note": "Default model in AI Mode in Google Search since 2026-09-02",
+      "note": "API model, not AI Mode in Google Search. Called through the Gemini API with Google Search grounding (OpenRouter with web search when the Gemini key is missing; the run log shows which way each run went). It is the default model of AI Mode since 2026-09-02, but AI Mode adds its own search pipeline and product cards, so its answers can differ",
       "provider": "google",
       "googleModel": "gemini-3.8-flash",
       "price": {
         "in": 0.75,
         "out": 3.75
       },
-      "priceNote": "USD per 1M tokens until 31 Dec 2026; 1.50 / 7.50 from 1 Jan 2027"
+      "priceNote": "USD per 1M tokens until 31 Dec 2026; 1.50 / 7.50 from 1 Jan 2027",
+      "short": "Gemini 3.8 Flash API (approx. Google AI Mode)"
     }
   ],
   "markets": [
@@ -191,7 +193,7 @@
     {
       "market": "PL",
       "name": "Cyfrowe.pl",
-      "pattern": "cyfrowe\\.(pl|com)",
+      "pattern": "cyfrowe\\.(pl|com)|\\b(sklep\\w*|salon\\w*) cyfrowe\\b",
       "domains": [
         "cyfrowe.pl"
       ],
@@ -367,7 +369,8 @@
       "domains": [
         "optyczne.pl"
       ],
-      "ours": false
+      "ours": false,
+      "kind": "review"
     },
     {
       "market": "PL",
@@ -439,7 +442,8 @@
       "domains": [
         "olx.pl"
       ],
-      "ours": false
+      "ours": false,
+      "kind": "classifieds"
     },
     {
       "market": "PL",
@@ -448,7 +452,8 @@
       "domains": [
         "ceneo.pl"
       ],
-      "ours": false
+      "ours": false,
+      "kind": "comparison"
     },
     {
       "market": "PL",
@@ -457,7 +462,8 @@
       "domains": [
         "skapiec.pl"
       ],
-      "ours": false
+      "ours": false,
+      "kind": "comparison"
     },
     {
       "market": "UK",
@@ -679,7 +685,7 @@
     {
       "market": "NL",
       "name": "bol",
-      "pattern": "bol\\.com|\\bbol\\b",
+      "pattern": "bol\\.com|\\b(bij|via|op) bol\\b",
       "domains": [
         "bol.com"
       ],
@@ -692,7 +698,8 @@
       "domains": [
         "marktplaats.nl"
       ],
-      "ours": false
+      "ours": false,
+      "kind": "classifieds"
     },
     {
       "market": "DE",
@@ -806,7 +813,7 @@
     {
       "market": "DE",
       "name": "Otto",
-      "pattern": "\\botto\\b",
+      "pattern": "otto\\.de|(^|[\\s(])(bei|von|auf|über) otto\\b",
       "domains": [
         "otto.de"
       ],
@@ -819,7 +826,8 @@
       "domains": [
         "kleinanzeigen.de"
       ],
-      "ours": false
+      "ours": false,
+      "kind": "classifieds"
     },
     {
       "market": "DE",

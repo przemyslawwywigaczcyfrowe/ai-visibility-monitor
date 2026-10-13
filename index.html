@@ -115,6 +115,7 @@ body.zamkniety .rail, body.zamkniety .kol { display:none; }
 /* filters: tonal pill fields, the bar sticks to the top while scrolling */
 .filtry { position:sticky; top:0; z-index:40; display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:10px 0 14px; background:var(--paper); }
 body.bez-filtrow .filtry { display:none; }
+.pole.p4 { padding:0 16px 0 12px; gap:8px; } .pole.p4 input { margin:0; accent-color:var(--acc); }
 .pole { display:flex; align-items:center; gap:2px; height:40px; padding:0 0 0 16px; border-radius:20px; background:var(--tonal); font-size:13px; color:var(--muted); cursor:pointer; }
 .pole:hover { background:var(--tonal-h); }
 .pole select { height:40px; border:0; border-radius:20px; padding:0 34px 0 6px; font-size:14px; font-weight:500; color:var(--ink); background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23444746'/%3E%3C/svg%3E") no-repeat right 14px center;
@@ -359,6 +360,7 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
 .cit.na .ctx b { text-decoration:line-through; text-decoration-color:#A8ABAE; }
 .ctg { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
 .ctg .tag.pr1 { background:#FFE8C2; color:#6B3B00; }
+.ctg .tag.uw { background:#FEF7E0; color:#7A4F01; white-space:normal; height:auto; min-height:24px; }
 .ctg .tag.audyt { background:#fff; box-shadow:inset 0 0 0 1px var(--edge); color:var(--muted); }
 .cst { font-size:13px; color:var(--ink); padding-top:2px; }
 .cst span { display:block; font-weight:500; }
@@ -494,7 +496,26 @@ var REPO = 'przemyslawwywigaczcyfrowe/ai-visibility-monitor';
 var LOGO = { PL: 'assets/stores/pl-cyfrowe.svg', UK: 'assets/stores/uk-wex.png', NL: 'assets/stores/nl-cameranu.svg', DE: 'assets/stores/de-calumet.svg' };
 var KOLOR_KONK = ['#E8710A', '#9334E6', '#12B5CB', '#E52592'];
 var KLUCZ = null, IDX = null, CFG = null, M = [], ENG = [], RUNS = {}, CELL = {}, DET = {}, START = {}, PLIKI = {}, CACHE = {};
-var S = { view: 'all', market: 'PL', engine: 'all', run: null, cmp: null, topic: '', q: '', metric: 'vis', sort: 'n', dir: 1 };
+var S = { view: 'all', market: 'PL', engine: 'all', run: null, cmp: null, topic: '', q: '', metric: 'vis', sort: 'n', dir: 1, bez4: false };
+/* One answer per prompt and engine a day, so a single prompt moves visibility by 4 points.
+   "Visibility up/down" and "ahead of" need a difference of at least PROG prompts (PROG_GRUPA for all stores). */
+var PROG = 3, PROG_GRUPA = 6;
+/* Names on the watch list that are not stores: price comparison sites, classifieds, review sites.
+   They are shown, but they do not take a place in the position (config.json, field "kind"). */
+var NIE_SKLEP = {};
+var TYP_NAZWA = { comparison: 'price comparison', classifieds: 'classifieds', review: 'review site' };
+function sklepyWOdp(lista) { return String(lista || '').split('; ').filter(function (n) { return n && !NIE_SKLEP[n]; }); }
+function miejsceSklepu(h, store) {
+  if (h[3] == null || !h[4]) return h[3];
+  var i = sklepyWOdp(h[4]).indexOf(store);
+  return i < 0 ? h[3] : i + 1;
+}
+/* Engine name as shown: the API model, and which app it approximates (config.json, field "short"). */
+function nazwaSil(e) {
+  var x = ((CFG && CFG.engines) || []).filter(function (k) { return k.label === e; })[0];
+  return x && x.short ? x.short : e;
+}
+function typTag(t) { return t ? ' <span class="tag" title="Shown for reference, does not take a place in the position">' + esc(TYP_NAZWA[t] || t) + '</span>' : ''; }
 
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 function ic(id) { return '<svg class="ic"><use href="#' + id + '"/></svg>'; }
@@ -527,6 +548,9 @@ function szczegoly(run) {
 async function wczytaj() {
   var w = await Promise.all([odszyfruj('data/index.enc'), fetch('config/config.json', { cache: 'no-store' }).then(function (r) { return r.json(); })]);
   IDX = w[0]; CFG = w[1];
+  NIE_SKLEP = {}; (CFG.shops || []).forEach(function (s) { if (s.kind) NIE_SKLEP[s.name] = s.kind; });
+  var sklepRynku = {}; (IDX.markets || []).forEach(function (m) { sklepRynku[m.code] = m.store; });
+  IDX.hist.forEach(function (h) { h[3] = miejsceSklepu(h, sklepRynku[String(h[1]).slice(0, 2)]); });
   try { CHL = await (await fetch('config/checklist.json', { cache: 'no-store' })).json(); } catch (e) { CHL = null; }
   await wczytajStanChecklisty();
   IDX.runs.forEach(function (r) { PLIKI[r.run] = r.file; START[r.run] = r.start; });
@@ -560,7 +584,7 @@ function poz(run, id, eng) {
 }
 function prompty(m) {
   var q = S.q.toLowerCase();
-  return m.prompts.filter(function (p) { return (!S.topic || p.topic === S.topic) && (!q || (p.en + ' ' + p.text).toLowerCase().indexOf(q) >= 0); });
+  return m.prompts.filter(function (p) { return (!S.topic || p.topic === S.topic) && !(S.bez4 && p.n === 4) && (!q || (p.en + ' ' + p.text).toLowerCase().indexOf(q) >= 0); });
 }
 function kpi(m, run, eng) {
   var o = { n: 0, ment: 0, odp: [], first: 0, top3: 0, cited: 0, b: { 1: 0, 3: 0, 10: 0, 0: 0 } };
@@ -569,9 +593,10 @@ function kpi(m, run, eng) {
   prompty(m).forEach(function (p) {
     var v = poz(run, p.id, eng); if (v === undefined) return;
     o.n++;
-    if (v != null) { o.ment++; o.b[v === 1 ? 1 : v <= 3 ? 3 : 10]++; } else o.b[0]++;
+    /* Unit = prompt: its best place in the selected engines, as in the Position column. */
+    if (v != null) { o.ment++; o.odp.push(v); o.b[v === 1 ? 1 : v <= 3 ? 3 : 10]++; if (v === 1) o.first++; if (v <= 3) o.top3++; } else o.b[0]++;
     var cyt = false;
-    eng.forEach(function (e) { var c = kom(run, p.id, e); if (!c || c[6]) return; if (c[3] != null) { o.odp.push(c[3]); if (c[3] === 1) o.first++; if (c[3] <= 3) o.top3++; } if (c[5]) cyt = true; });
+    eng.forEach(function (e) { var c = kom(run, p.id, e); if (!c || c[6]) return; if (c[5]) cyt = true; });
     if (cyt) o.cited++;
   });
   o.vis = o.n ? o.ment / o.n * 100 : 0;
@@ -586,16 +611,25 @@ function sklepy(m, run, eng) {
     eng.forEach(function (e) {
       var c = kom(run, p.id, e); if (!c || c[6]) return; byl = true;
       if (!c[4]) return;
-      c[4].split('; ').forEach(function (nm, i) {
-        var o = s[nm] = s[nm] || { name: nm, p: {}, odp: 0, sum: 0, first: 0 };
-        o.p[p.id] = 1; o.odp++; o.sum += i + 1; if (!i) o.first++; wszystkie++;
+      var j = 0;
+      c[4].split('; ').forEach(function (nm) {
+        var o = s[nm] = s[nm] || { name: nm, p: {}, best: {}, odp: 0, typ: NIE_SKLEP[nm] || '' };
+        o.p[p.id] = 1; o.odp++; wszystkie++;
+        if (!o.typ) { j++; if (o.best[p.id] == null || j < o.best[p.id]) o.best[p.id] = j; }
       });
     });
     if (byl) n++;
   });
-  var l = Object.keys(s).map(function (k) { var o = s[k]; o.count = Object.keys(o.p).length; o.vis = n ? o.count / n * 100 : 0; o.avg = o.sum / o.odp; o.sov = wszystkie ? o.odp / wszystkie * 100 : 0; return o; });
-  if (!l.some(function (x) { return x.name === m.store; })) l.push({ name: m.store, count: 0, vis: 0, avg: null, first: 0, sov: 0, odp: 0 });
-  return l.sort(function (a, b) { return b.count - a.count || b.first - a.first || (a.avg || 99) - (b.avg || 99); });
+  /* Visibility and share of voice count every name; place, average and "named first" only stores,
+     per prompt (best place in the selected engines), the same unit as for our store. */
+  var l = Object.keys(s).map(function (k) {
+    var o = s[k], b = Object.keys(o.best).map(function (x) { return o.best[x]; });
+    o.count = Object.keys(o.p).length; o.vis = n ? o.count / n * 100 : 0;
+    o.avg = b.length ? b.reduce(function (a, x) { return a + x; }, 0) / b.length : null;
+    o.first = b.filter(function (x) { return x === 1; }).length; o.sov = wszystkie ? o.odp / wszystkie * 100 : 0; return o;
+  });
+  if (!l.some(function (x) { return x.name === m.store; })) l.push({ name: m.store, count: 0, vis: 0, avg: null, first: 0, sov: 0, odp: 0, typ: '' });
+  return l.sort(function (a, b) { return (a.typ ? 1 : 0) - (b.typ ? 1 : 0) || b.count - a.count || b.first - a.first || (a.avg || 99) - (b.avg || 99); });
 }
 
 /* ---------- small pieces ---------- */
@@ -727,6 +761,7 @@ function adres() {
     if ((S.cmp || null) !== (domCmp || null)) q.set('cmp', S.cmp || 'none');
     if (S.engine !== 'all') q.set('engine', S.engine);
     if (S.topic) q.set('topic', S.topic);
+    if (S.bez4) q.set('q4', '0');
     if (S.q) q.set('q', S.q);
     if (S.view === 'summary' && S.metric !== 'vis') q.set('metric', S.metric);
     if (S.view === 'rankings' && (S.sort !== 'n' || S.dir !== 1)) q.set('sort', S.sort + (S.dir < 0 ? '-desc' : ''));
@@ -757,6 +792,7 @@ function czytajAdres() {
   S.cmp = c === 'none' ? null : c && R.indexOf(c) >= 0 ? c : przed(m, S.run);
   S.engine = q.get('engine') && ENG.indexOf(q.get('engine')) >= 0 ? q.get('engine') : 'all';
   S.topic = q.get('topic') || '';
+  S.bez4 = q.get('q4') === '0';
   S.q = q.get('q') || '';
   S.metric = ['vis', 'avg', 'sov'].indexOf(q.get('metric')) >= 0 ? q.get('metric') : 'vis';
   var so = (q.get('sort') || 'n').split('-'); S.sort = ['n', 'pos', 'chg'].indexOf(so[0]) >= 0 ? so[0] : 'n'; S.dir = so[1] === 'desc' ? -1 : 1;
@@ -784,14 +820,16 @@ function rysujFiltry() {
     '<label class="pole">Run<select id="f-run">' + r.map(function (x) { return opt(x, kiedy(x), S.run); }).join('') + '</select></label>' +
     '<label class="pole">compared with<select id="f-cmp">' + opt('', 'no comparison', S.cmp || '') + r.filter(function (x) { return x < S.run; }).map(function (x) { return opt(x, kiedy(x), S.cmp); }).join('') + '</select></label>' +
     '<span class="sep"></span>' +
-    '<label class="pole">Engine<select id="f-eng">' + opt('all', 'All engines', S.engine) + ENG.map(function (e) { return opt(e, e, S.engine); }).join('') + '</select></label>' +
+    '<label class="pole">Engine<select id="f-eng">' + opt('all', 'All engines', S.engine) + ENG.map(function (e) { return opt(e, nazwaSil(e), S.engine); }).join('') + '</select></label>' +
     '<label class="pole">Topic<select id="f-top">' + opt('', 'All topics', S.topic) + tem.map(function (t) { return opt(t, t, S.topic); }).join('') + '</select></label>' +
+    '<label class="pole p4" title="Prompt 4 of every store names a competitor (Allegro, Amazon, bol.com). The prompt set belongs to EIG."><input type="checkbox" id="f-q4"' + (S.bez4 ? ' checked' : '') + '>Without prompt 4</label>' +
     '<span class="gap"></span><input type="search" id="f-q" placeholder="Filter prompts" value="' + esc(S.q) + '" aria-label="Filter prompts">' +
     '<button class="btn" id="csv">' + ic('i-down') + 'Export CSV</button>';
   document.getElementById('f-run').onchange = function (e) { S.run = e.target.value; S.cmp = przed(m, S.run); szczegoly(S.run).then(rysuj); };
   document.getElementById('f-cmp').onchange = function (e) { S.cmp = e.target.value || null; rysuj(); };
   document.getElementById('f-eng').onchange = function (e) { S.engine = e.target.value; rysuj(); };
   document.getElementById('f-top').onchange = function (e) { S.topic = e.target.value; rysuj(); };
+  document.getElementById('f-q4').onchange = function (e) { S.bez4 = e.target.checked; rysuj(); };
   var q = document.getElementById('f-q'); q.oninput = function () { S.q = q.value; clearTimeout(q.t); q.t = setTimeout(function () { rysuj(); var n = document.getElementById('f-q'); n.focus(); n.setSelectionRange(n.value.length, n.value.length); }, 250); };
   document.getElementById('csv').onclick = csv;
 }
@@ -803,7 +841,7 @@ function naglowek(tytul, lead, kafle) {
     (lead ? '<p class="lead">' + lead + '</p>' : '') + '</div>' +
     (kafle && kafle.length ? '<div class="hr">' + kafle.map(function (k) { return '<div class="kf"><span>' + esc(k[0]) + '</span><b class="num" title="' + esc(String(k[1]).replace(/<[^>]+>/g, '')) + '">' + k[1] + '</b>' + (k[2] ? '<small>' + esc(k[2]) + '</small>' : '') + '</div>'; }).join('') + '</div>' : '') + '</section>';
 }
-function silnikiTekst() { return S.engine === 'all' ? ENG.join(' and ') + ' together' : S.engine; }
+function silnikiTekst() { return (S.engine === 'all' ? ENG.map(nazwaSil).join(' and ') + ' together' : nazwaSil(S.engine)) + (S.bez4 ? ', without prompt 4' : ''); }
 /* Blue header card (Summary, All stores): verdict sentence on the left, key number on the right. */
 function hero(o) {
   return '<section class="hero"><svg class="ksztalt" viewBox="0 0 100 100" aria-hidden="true"><path fill="#A8C7FA" d="M50 0l12 26 28-4-10 27 20 19-28 6-2 28-20-17-20 17-2-28-28-6 20-19-10-27 28 4z"/></svg>' +
@@ -832,17 +870,17 @@ function widokAll() {
   S.cmp = pop.n ? 'x' : null;
   var zm = visPop == null ? '' : dl(vis, visPop, true, 0, ' pts');
   var h = hero({
-    ocena: visPop == null ? null : vis - visPop > 1e-9 ? ['good', 'Visibility up'] : vis - visPop < -1e-9 ? ['bad', 'Visibility down'] : ['', 'No change'],
-    okres: 'European Imaging Group · latest run of each store · ' + ENG.join(' and ') + ' together',
+    ocena: visPop == null ? null : tot.ment - pop.ment >= PROG_GRUPA ? ['good', 'Visibility up'] : tot.ment - pop.ment <= -PROG_GRUPA ? ['bad', 'Visibility down'] : ['', 'No clear change'],
+    okres: 'European Imaging Group · latest run of each store · ' + ENG.map(nazwaSil).join(' and ') + ' together' + (S.bez4 ? ', without prompt 4' : ''),
     werdykt: 'Our stores are named in <span class="kw">' + tot.ment + ' of ' + tot.n + ' prompts</span>',
     zd: 'Most visible: <b>' + esc(po[0].m.store) + '</b> with ' + fmt(po[0].a.vis) + '%. Least visible: <b>' + esc(po[po.length - 1].m.store) + '</b> with ' + fmt(po[po.length - 1].a.vis) + '%. ' +
-      'Named first in <b>' + tot.first + ' answers</b>, our websites cited in <b>' + tot.cited + ' prompts</b>.',
+      'Named first in <b>' + tot.first + ' prompts</b>, our websites cited in <b>' + tot.cited + ' prompts</b>.',
     prawa: '<div class="kw-l">Visibility, ' + M.length + ' stores</div><div class="kw-v num">' + fmt(vis) + '%</div>' +
       '<div class="kw-d">' + (zm ? zm + '<span>run before: ' + fmt(visPop) + '%</span>' : '<span>no comparison yet</span>') + '</div>' +
       '<div class="kw-w">' + po.map(function (x) { return '<div style="align-items:center;min-height:30px"><span>' + logo(x.m.code, { PL: 20, UK: 19, NL: 14.5, DE: 16.7 }[x.m.code]) + '</span><b class="num">' + fmt(x.a.vis) + '%</b></div>'; }).join('') + '</div>'
   });
   h += '<div class="rk4">' + w.map(function (x) {
-    var lider = x.sk.filter(function (s) { return s.name !== x.m.store; })[0];
+    var lider = x.sk.filter(function (s) { return s.name !== x.m.store && !s.typ; })[0];
     var hist = runy(x.m).map(function (r) { var sv = S.engine; S.engine = 'all'; var v = kpi(x.m, r).vis; S.engine = sv; return v; });
     S.cmp = x.c;
     var d = dl(x.a.vis, x.b && x.b.vis, true, 0, ' pts');
@@ -851,7 +889,7 @@ function widokAll() {
       '<div style="margin:10px 0 12px" title="Visibility in the last ' + hist.length + ' runs">' + spark(hist, false, 360, 44).replace('<svg ', '<svg style="width:100%;height:44px" preserveAspectRatio="none" viewBox="0 0 360 44" ') + '</div>' +
       '<div class="pasek" title="Prompts by our best place in the answer">' + BUCKETS.map(function (bk) { return '<i style="width:' + (x.a.n ? x.a.b[bk[0]] / x.a.n * 100 : 0) + '%;background:' + bk[2] + '" title="' + bk[1] + ': ' + x.a.b[bk[0]] + '"></i>'; }).join('') + '</div>' +
       '<div class="mm"><span>Average position</span><b>' + (x.a.avg == null ? '-' : fmt(x.a.avg, 1)) + '</b></div>' +
-      '<div class="mm"><span>Named first</span><b>' + x.a.first + ' answers</b></div>' +
+      '<div class="mm"><span>Named first</span><b>' + x.a.first + ' prompts</b></div>' +
       '<div class="mm"><span>Top competitor</span><b>' + (lider ? esc(lider.name) + ' (' + fmt(lider.vis) + '%)' : '-') + '</b></div></button>';
   }).join('') + '</div>';
   h += '<div class="legenda" style="margin:-4px 0 18px">' + BUCKETS.map(function (bk) { return '<span><i style="background:' + bk[2] + '"></i>' + bk[1] + '</span>'; }).join('') + '</div>';
@@ -875,32 +913,37 @@ function widokSummary() {
   /* Small trend line in every tile: the same metric in the last 14 runs. */
   var R14 = runy(m).filter(function (r) { return r <= S.run; }).slice(-14), K14 = R14.map(function (r) { return kpi(m, r); });
   function tr(f, max) { return R14.length < 2 ? '' : spark2(K14.map(f), max); }
-  var wsz = sklepy(m, S.run), lider = wsz.filter(function (s) { return s.name !== m.store; })[0], my = wsz.filter(function (s) { return s.name === m.store; })[0];
-  var roz = b ? a.vis - b.vis : null;
+  var wsz = sklepy(m, S.run), lider = wsz.filter(function (s) { return s.name !== m.store && !s.typ; })[0], my = wsz.filter(function (s) { return s.name === m.store; })[0];
+  /* Change in prompts, not in percent: below PROG prompts the difference is within day-to-day variation. */
+  var roz = b ? a.ment - b.ment : null;
+  var R7 = runy(m).filter(function (r) { return r <= S.run; }).slice(-7), V7 = R7.map(function (r) { return kpi(m, r).vis; });
+  var sr7 = V7.length ? V7.reduce(function (x, y) { return x + y; }, 0) / V7.length : null;
+  var roznica = lider ? a.ment - lider.count : null;
   var h = hero({
-    ocena: roz == null ? null : roz > 1e-9 ? ['good', 'Visibility up'] : roz < -1e-9 ? ['bad', 'Visibility down'] : ['', 'No change'],
+    ocena: roz == null ? null : roz >= PROG ? ['good', 'Visibility up'] : roz <= -PROG ? ['bad', 'Visibility down'] : ['', 'No clear change'],
     okres: 'Run of ' + kiedy(S.run) + (S.cmp ? ' compared with ' + kiedy(S.cmp) : ''),
     werdykt: esc(m.store) + ' is named in <span class="kw">' + a.ment + ' of ' + a.n + ' prompts</span>',
-    zd: esc(silnikiTekst()) + (S.topic ? ', topic ' + esc(S.topic) : '') + '. Named first in <b>' + a.first + (a.first === 1 ? ' answer' : ' answers') + '</b>, in the top 3 in <b>' + a.top3 + '</b>. ' +
-      (lider ? (lider.count > a.ment ? '<b>' + esc(lider.name) + '</b> is named more often: ' + lider.count + ' prompts. ' : lider.count < a.ment ? 'Ahead of every competitor, next is <b>' + esc(lider.name) + '</b> with ' + lider.count + ' prompts. ' : 'Level with <b>' + esc(lider.name) + '</b>. ') : '') +
+    zd: esc(silnikiTekst()) + (S.topic ? ', topic ' + esc(S.topic) : '') + '. Of these ' + a.n + ' prompts, named first in <b>' + a.first + '</b> and in the top 3 in <b>' + a.top3 + '</b>. ' +
+      (lider ? (roznica <= -PROG ? '<b>' + esc(lider.name) + '</b> is named more often: ' + lider.count + ' prompts. ' : roznica >= PROG ? 'Ahead of every store, next is <b>' + esc(lider.name) + '</b> with ' + lider.count + ' prompts. ' : 'Close to <b>' + esc(lider.name) + '</b> (' + lider.count + ' prompts), a gap within day-to-day variation. ') : '') +
       (S.cmp ? 'Since ' + esc(dzien(S.cmp)) + ': <b>' + (mv.up.length + mv.nw.length) + '</b> prompts better, <b>' + (mv.down.length + mv.lost.length) + '</b> worse.' : ''),
     akcje: '<button class="btn primary duzy" data-go="rankings">' + ic('i-list') + 'See all ' + a.n + ' prompts</button><button class="btn bialy duzy" data-go="competitors">' + ic('i-store') + 'Competitors</button>',
     prawa: '<div class="kw-l">Visibility</div><div class="kw-v num">' + fmt(a.vis) + '%</div>' +
       '<div class="kw-d">' + (b ? dl(a.vis, b.vis, true, 0, ' pts') + '<span>' + esc(dzien(S.cmp)) + ': ' + fmt(b.vis) + '%</span>' : '<span>no comparison</span>') + '</div>' +
+      (V7.length > 1 ? '<div class="kw-d"><span>Average of the last ' + V7.length + ' runs: <b>' + fmt(sr7) + '%</b>, range ' + fmt(Math.min.apply(null, V7)) + '-' + fmt(Math.max.apply(null, V7)) + '%</span></div>' : '') +
       (R14.length > 1 ? '<div class="kw-s">' + sparkSzeroki(K14.map(function (k) { return k.vis; }), 100) + '</div><div class="kw-p"><span>' + esc(dzien(R14[0])) + '</span><span>last ' + R14.length + ' runs</span><span>' + esc(dzien(R14[R14.length - 1])) + '</span></div>' : '') +
       '<div class="kw-w"><div><span>Top competitor</span><b>' + (lider ? esc(lider.name) + ' · ' + fmt(lider.vis) + '%' : '-') + '</b></div><div><span>Share of voice</span><b>' + fmt(my ? my.sov : 0, 1) + '%</b></div></div>'
   });
   var t = [
     ['Average position', a.avg == null ? '-' : fmt(a.avg, 1), 'when named', dl(a.avg, b && b.avg, false, 1), tr(function (k) { return k.avg == null ? null : -k.avg; })],
-    ['Named first', String(a.first), 'answers', dl(a.first, b && b.first, true), tr(function (k) { return k.first; })],
-    ['Named in top 3', String(a.top3), 'answers', dl(a.top3, b && b.top3, true), tr(function (k) { return k.top3; })],
+    ['Named first', String(a.first), 'of ' + a.n + ' prompts', dl(a.first, b && b.first, true), tr(function (k) { return k.first; })],
+    ['Named in top 3', String(a.top3), 'of ' + a.n + ' prompts', dl(a.top3, b && b.top3, true), tr(function (k) { return k.top3; })],
     ['Improved / declined', '<span style="color:var(--up)">' + mv.up.length + '</span> / <span style="color:var(--down)">' + mv.down.length + '</span>', 'prompts', S.cmp ? '<span class="szary">' + mv.nw.length + ' new · ' + mv.lost.length + ' lost</span>' : ''],
     ['Our website cited', String(a.cited), 'of ' + a.n + ' prompts', dl(a.cited, b && b.cited, true), tr(function (k) { return k.cited; })]
   ];
   h += '<div class="kpi">' + t.map(function (x) { return '<div class="t"><div class="k">' + x[0] + '</div><div class="v"><b class="num">' + x[1] + '</b><small>' + x[2] + '</small></div><div class="d"><span>' + (x[3] || (S.cmp ? '' : '<span class="szary">no comparison</span>')) + '</span>' + (x[4] || '') + '</div></div>'; }).join('') + '</div>';
 
   /* trend chart: us against the 4 most visible competitors */
-  var R = runy(m).filter(function (r) { return r <= S.run; }), konk = sklepy(m, S.run).filter(function (s) { return s.name !== m.store; }).slice(0, 4);
+  var R = runy(m).filter(function (r) { return r <= S.run; }), konk = sklepy(m, S.run).filter(function (s) { return s.name !== m.store && !s.typ; }).slice(0, 4);
   var metr = { vis: ['Visibility', '%', 0, false, 100], avg: ['Average position', '', 1, true, null], sov: ['Share of voice', '%', 0, false, null] }[S.metric];
   function wart(nm, r) {
     var l = sklepy(m, r).filter(function (s) { return s.name === nm; })[0];
@@ -926,10 +969,10 @@ function widokSummary() {
       return '<li data-id="' + x.p.id + '"><span class="q">' + esc(x.p.en) + '</span><span class="z">' + (x.a == null ? 'not named' : x.a) + ' → <b style="color:var(--' + klasa + ')">' + (x.v == null ? 'not named' : x.v) + '</b></span></li>';
     }).join('') + '</ul>' : '<div class="pusto">' + (S.cmp ? 'None.' : 'Pick a run to compare with.') + '</div>') + '</section>';
   }
-  var sk = sklepy(m, S.run).slice(0, 8);
+  var sk = sklepy(m, S.run).filter(function (s) { return !s.typ; }).slice(0, 8);
   h += '<div class="g3">' + lista('Improved', mv.up.concat(mv.nw), 'up') + lista('Declined', mv.down.concat(mv.lost), 'down') +
     '<section class="card"><div class="ch"><h2>Competitors <small>visibility in this run</small></h2></div><table class="t"><tbody>' +
-    sk.map(function (s, i) { return '<tr class="' + (s.name === m.store ? 'us' : '') + '"><td class="szary" style="width:28px">' + (i + 1) + '</td><td>' + esc(s.name) + '</td><td class="r"><b class="num">' + fmt(s.vis) + '%</b></td></tr>'; }).join('') +
+    sk.map(function (s, i) { return '<tr class="' + (s.name === m.store ? 'us' : '') + '"><td class="szary" style="width:28px">' + (s.typ ? '' : i + 1) + '</td><td>' + esc(s.name) + typTag(s.typ) + '</td><td class="r"><b class="num">' + fmt(s.vis) + '%</b></td></tr>'; }).join('') +
     '</tbody></table></section></div>';
   return h;
 }
@@ -959,7 +1002,7 @@ function widokRankings() {
   var m = rynek(S.market), R = runy(m).filter(function (r) { return r <= S.run; }).slice(-14), det = DET[S.run] || {};
   var wiersze = prompty(m).map(function (p) {
     var v = poz(S.run, p.id), a = S.cmp ? poz(S.cmp, p.id) : undefined, lid = '', url = '';
-    silniki().forEach(function (e) { var c = kom(S.run, p.id, e); if (c && c[4] && !lid) lid = c[4].split('; ')[0]; var z = det[p.id + '|' + e]; if (z && z.url && !url) url = z.url; });
+    silniki().forEach(function (e) { var c = kom(S.run, p.id, e); if (c && c[4] && !lid) lid = sklepyWOdp(c[4])[0] || ''; var z = det[p.id + '|' + e]; if (z && z.url && !url) url = z.url; });
     return { p: p, v: v, a: a, lid: lid, url: url };
   });
   var k = S.sort, d = S.dir;
@@ -969,14 +1012,14 @@ function widokRankings() {
   });
   function th(key, t, kl) { return '<th class="srt ' + (kl || '') + (S.sort === key ? ' on' : '') + '" data-sort="' + key + '">' + t + (S.sort === key ? (S.dir > 0 ? ' ↑' : ' ↓') : '') + '</th>'; }
   var a = kpi(m, S.run), nie = wiersze.filter(function (w) { return w.v === null; }).length;
-  var h = naglowek('Rankings', 'Place of <b>' + esc(m.store) + '</b> in each answer, 1 = named first. Named in <b>' + a.ment + '</b> prompts, not named in <b>' + nie + '</b>.',
+  var h = naglowek('Rankings', 'Position of <b>' + esc(m.store) + '</b> in each prompt, 1 = the first store named. Named in <b>' + a.ment + '</b> prompts, not named in <b>' + nie + '</b>.',
     [['Prompts', wiersze.length, S.topic || 'all topics'], ['Named', a.ment, 'of ' + a.n + ' prompts'], ['Average position', a.avg == null ? '-' : fmt(a.avg, 1), 'when named']]);
   h += '<section class="card" style="padding:4px 8px 8px"><div class="tw"><table class="t"><thead><tr>' + th('n', '#') + '<th>Prompt</th><th>Topic</th>' +
-    th('pos', 'Position', 'c') + th('chg', 'Change', 'c') + ENG.filter(function (e) { return silniki().indexOf(e) >= 0; }).map(function (e) { return '<th class="c">' + esc(e) + '</th>'; }).join('') +
+    th('pos', 'Position', 'c') + th('chg', 'Change', 'c') + ENG.filter(function (e) { return silniki().indexOf(e) >= 0; }).map(function (e) { return '<th class="c">' + esc(nazwaSil(e)) + '</th>'; }).join('') +
     '<th>Last ' + R.length + ' runs</th><th>Named first</th><th>Our page cited</th></tr></thead><tbody>' +
     wiersze.map(function (w) {
       return '<tr class="klik" data-id="' + w.p.id + '"><td class="szary num">' + w.p.n + '</td><td class="q" style="min-width:340px">' + esc(w.p.en) + (m.code !== 'UK' ? '<small>' + esc(w.p.text) + '</small>' : '') + '</td>' +
-        '<td><span class="tag">' + esc(w.p.topic) + '</span></td><td class="c">' + pozHtml(w.v) + '</td><td class="c">' + dlPoz(w.v, w.a) + '</td>' +
+        '<td><span class="tag">' + esc(w.p.topic) + '</span>' + (w.p.n === 4 ? ' <span class="tag" title="This prompt names a competitor, so that competitor is almost always named first. The prompt set belongs to EIG.">names a competitor</span>' : '') + '</td><td class="c">' + pozHtml(w.v) + '</td><td class="c">' + dlPoz(w.v, w.a) + '</td>' +
         ENG.filter(function (e) { return silniki().indexOf(e) >= 0; }).map(function (e) { var c = kom(S.run, w.p.id, e); return '<td class="c">' + (c ? (c[6] ? '<span class="szary">error</span>' : c[3] == null ? '<span class="szary">-</span>' : '<span class="num" style="font-weight:500">' + c[3] + '</span>') : '<span class="szary">n/a</span>') + '</td>'; }).join('') +
         '<td>' + spark(R.map(function (r) { var v = poz(r, w.p.id); return v == null ? null : v; }), true) + '</td>' +
         '<td>' + (w.lid ? '<span class="tag' + (w.lid === m.store ? ' us' : '') + '">' + esc(w.lid) + '</span>' : '<span class="szary">no store named</span>') + '</td>' +
@@ -1005,24 +1048,26 @@ function widokHistory() {
 /* ---------- Competitors ---------- */
 function widokCompetitors() {
   var m = rynek(S.market), sk = sklepy(m, S.run), stare = S.cmp ? sklepy(m, S.cmp) : [];
-  var ja = sk.map(function (s) { return s.name; }).indexOf(m.store), lid = sk.filter(function (s) { return s.name !== m.store; })[0], my = sk[ja];
-  var h = naglowek('Competitors', (lid ? '<b>' + esc(lid.name) + '</b> is named in ' + lid.count + ' prompts, ' : '') + '<b>' + esc(m.store) + '</b> in ' + (my ? my.count : 0) + '.',
-    [['Stores named', sk.length, 'in the answers'], ['Our rank', '#' + (ja + 1), 'of ' + sk.length + ' stores'], ['Top competitor', lid ? esc(lid.name) : '-', lid ? fmt(lid.vis) + '% visibility' : '']]);
-  var top = sk.slice(0, 15), max = Math.max.apply(null, top.map(function (s) { return s.count; }).concat([1]));
+  var tylko = sk.filter(function (s) { return !s.typ; });
+  var ja = tylko.map(function (s) { return s.name; }).indexOf(m.store), lid = tylko.filter(function (s) { return s.name !== m.store; })[0], my = tylko[ja];
+  var h = naglowek('Competitors', (lid ? '<b>' + esc(lid.name) + '</b> is named in ' + lid.count + ' prompts, ' : '') + '<b>' + esc(m.store) + '</b> in ' + (my ? my.count : 0) + '.' +
+      (sk.length > tylko.length ? ' Price comparison, classifieds and review sites are listed at the end and take no place.' : ''),
+    [['Stores named', tylko.length, 'in the answers'], ['Our rank', '#' + (ja + 1), 'of ' + tylko.length + ' stores'], ['Top competitor', lid ? esc(lid.name) : '-', lid ? fmt(lid.vis) + '% visibility' : '']]);
+  var top = tylko.slice(0, 15), max = Math.max.apply(null, top.map(function (s) { return s.count; }).concat([1]));
   h += '<section class="card" style="margin-bottom:16px"><div class="ch"><h2>Prompts where each store is named <small>split by the store\'s best place in the answer</small></h2></div>' +
     '<div style="display:flex;flex-direction:column;gap:8px">' + top.map(function (s) {
       var b = { 1: 0, 3: 0, 10: 0 };
       prompty(m).forEach(function (p) {
-        var najl = null; silniki().forEach(function (e) { var c = kom(S.run, p.id, e); if (!c || !c[4]) return; var i = c[4].split('; ').indexOf(s.name); if (i >= 0 && (najl == null || i + 1 < najl)) najl = i + 1; });
+        var najl = null; silniki().forEach(function (e) { var c = kom(S.run, p.id, e); if (!c || !c[4]) return; var i = sklepyWOdp(c[4]).indexOf(s.name); if (i >= 0 && (najl == null || i + 1 < najl)) najl = i + 1; });
         if (najl != null) b[najl === 1 ? 1 : najl <= 3 ? 3 : 10]++;
       });
       return '<div style="display:grid;grid-template-columns:200px 1fr 40px;gap:12px;align-items:center;font-size:14px"><span style="' + (s.name === m.store ? 'font-weight:700;color:var(--acc-dark)' : '') + '">' + esc(s.name) + '</span>' +
         '<span style="display:flex;height:18px;border-radius:9px;overflow:hidden;gap:2px;width:' + (s.count / max * 100) + '%;min-width:2px">' + BUCKETS.slice(0, 3).map(function (bk) { return '<i style="display:block;width:' + (s.count ? b[bk[0]] / s.count * 100 : 0) + '%;background:' + bk[2] + '"></i>'; }).join('') + '</span><b class="num" style="text-align:right">' + s.count + '</b></div>';
     }).join('') + '</div><div class="legenda">' + BUCKETS.slice(0, 3).map(function (bk) { return '<span><i style="background:' + bk[2] + '"></i>' + bk[1] + '</span>'; }).join('') + '</div></section>';
-  h += '<section class="card" style="padding:4px 8px 8px"><table class="t"><thead><tr><th>#</th><th>Store</th><th class="r">Visibility</th><th class="r">Change</th><th class="r">Prompts</th><th class="r">Average position</th><th class="r">Named first</th><th class="r">Share of voice</th></tr></thead><tbody>' +
+  h += '<section class="card" style="padding:4px 8px 8px"><table class="t"><thead><tr><th>#</th><th>Store</th><th class="r">Visibility</th><th class="r">Change</th><th class="r">Prompts</th><th class="r">Average position</th><th class="r">Named first (prompts)</th><th class="r">Share of voice</th></tr></thead><tbody>' +
     sk.map(function (s, i) {
       var o = stare.filter(function (x) { return x.name === s.name; })[0];
-      return '<tr class="' + (s.name === m.store ? 'us' : '') + '"><td class="szary num">' + (i + 1) + '</td><td><b style="font-weight:' + (s.name === m.store ? 700 : 500) + '">' + esc(s.name) + '</b></td>' +
+      return '<tr class="' + (s.name === m.store ? 'us' : '') + '"><td class="szary num">' + (s.typ ? '' : i + 1) + '</td><td><b style="font-weight:' + (s.name === m.store ? 700 : 500) + '">' + esc(s.name) + '</b>' + typTag(s.typ) + '</td>' +
         '<td class="r"><div class="bar-in" style="justify-content:flex-end"><b class="num">' + fmt(s.vis) + '%</b><span class="b" style="max-width:140px"><i style="width:' + s.vis + '%;background:' + (s.name === m.store ? 'var(--b1)' : '#9AA0A6') + '"></i></span></div></td>' +
         '<td class="r">' + dl(s.vis, o ? o.vis : (S.cmp ? 0 : null), true, 0, ' pts') + '</td><td class="r num">' + s.count + '</td><td class="r num">' + (s.avg == null ? '-' : fmt(s.avg, 1)) + '</td><td class="r num">' + s.first + '</td><td class="r num">' + fmt(s.sov, 1) + '%</td></tr>';
     }).join('') + '</tbody></table></section>';
@@ -1278,7 +1323,8 @@ function checklistaSklepu() {
         return '<div class="cit ' + st + '" data-id="' + i.id + '"><button class="cbox" data-tick="' + i.id + '" aria-pressed="' + (st === 'done') + '" aria-label="Mark ' + i.id + ' as done">' + (st === 'done' ? ic('i-tick') : '') + '</button>' +
           '<span class="cid num">' + i.id + '</span><div class="ctx"><button class="cti" data-otworz="' + i.id + '" aria-expanded="' + !!OTWARTE[i.id] + '"><b>' + esc(i.t) + '</b>' + (i.d ? '<span>' + esc(i.d) + '</span>' : '') + (i.x ? '<i class="cmore">' + (OTWARTE[i.id] ? 'Hide details' : 'What, why and how') + '</i>' : '') + '</button>' +
           '<div class="ctg"><span class="tag pr' + i.p.slice(1) + '" title="' + CHL.legend.p[i.p] + '">' + i.p + ' ' + CHL.legend.p[i.p].toLowerCase() + '</span><span class="tag" title="Effort: ' + CHL.legend.e[i.e] + '">Effort ' + i.e + '</span><span class="tag" title="' + CHL.legend.w[i.w] + '">' + { O: 'Official', B: 'Study', P: 'Practice' }[i.w] + '</span>' +
-          (code === 'PL' && i.a ? '<span class="tag audyt">EIG audit 6 Oct: ' + AUDYT[i.a] + '</span>' : '') + '</div>' + (OTWARTE[i.id] && i.x ? szczegolyPozycji(i, x) : '') + '</div>' +
+          (code === 'PL' && i.a ? '<span class="tag audyt">EIG audit 6 Oct: ' + AUDYT[i.a] + '</span>' : '') +
+          (i.uw && i.uw[code] ? '<span class="tag uw" title="' + esc(i.uw[code]) + '">' + esc(i.uw[code].split('. ')[0]) + '</span>' : '') + '</div>' + (OTWARTE[i.id] && i.x ? szczegolyPozycji(i, x) : '') + '</div>' +
           '<div class="cst">' + (x ? '<span>' + (st === 'done' ? 'Done' : 'Not applicable') + ' · ' + esc(kiedyKrotko(x.at)) + '</span><small>' + esc(x.by) + (x.pending ? ' · others see it within ~15 min' : '') + '</small>' : '') + '</div>' +
           '<button class="cna" data-na="' + i.id + '" title="' + (st === 'na' ? 'Count this item again' : 'This item does not apply to our store') + '">' + (st === 'na' ? 'Applies' : 'N/A') + '</button></div>';
       }).join('') + '</section>';
@@ -1336,17 +1382,18 @@ function widokHow() {
   var ost = IDX.runs[IDX.runs.length - 1] || {};
   return '<div class="tytul"><h1>How it works</h1><span class="op">Definitions and method</span></div><div class="metoda">' +
     '<section class="card"><h2>Metrics</h2>' +
-    '<h3>Position</h3><p>The place of our store in the order in which the answer names stores: 1 means named first. Like a keyword position in Google, lower is better. Only stores on the watch list in <code>config/config.json</code> are counted. With "All engines", a prompt\'s position is its best place in any engine.</p>' +
-    '<h3>Visibility</h3><p>Share of prompts where the answer names the store (in the text or with a link to its website).</p>' +
-    '<h3>Average position</h3><p>Average place of the store, counted only over answers that name it, as in Peec AI and Otterly.</p>' +
-    '<h3>Named first, named in top 3</h3><p>Number of answers (not prompts) where the store is the first, or among the first three, stores named.</p>' +
+    '<h3>Position</h3><p>The order in which the answer text first names stores from the watch list in <code>config/config.json</code>: 1 means our store is the first store named. It is the order of names, not a recommendation: a store named in a warning counts too. Price comparison sites, classifieds and review sites (for example Ceneo, Skąpiec, OLX, Optyczne.pl, Marktplaats, Kleinanzeigen) are shown in the lists but take no place. With "All engines", a prompt\'s position is its best place in any engine.</p>' +
+    '<h3>Visibility</h3><p>Share of prompts where the answer text names the store, by name or by domain. A link that appears only in the sources does not count here; it shows in "Our website cited".</p>' +
+    '<h3>Day-to-day variation</h3><p>Each prompt is asked once a day in each engine, and answers change from day to day, so one prompt moves visibility by 4 points. "Visibility up", "Visibility down" and "ahead of" appear only for a difference of at least ' + PROG + ' prompts (' + PROG_GRUPA + ' for all stores together). The average of the last 7 runs shows the steadier level.</p>' +
+    '<h3>Average position</h3><p>Average of the prompt positions, counted only over prompts that name the store.</p>' +
+    '<h3>Named first, named in top 3</h3><p>Number of prompts whose position is 1, or 1 to 3. The unit is always the prompt, not the answer.</p>' +
     '<h3>Share of voice</h3><p>The store\'s mentions divided by all store mentions in the answers.</p>' +
     '<h3>Change, new, lost</h3><p>Compared with the run chosen in "compared with". Green ▲ is better, red ▼ is worse, "new" means named now and not before, "lost" the other way round.</p></section>' +
     '<section class="card"><h2>Method</h2>' +
-    '<h3>Engines</h3><ul>' + IDX.engines.map(function (e) { return '<li><b>' + esc(e.label) + '</b>: <code>' + esc(e.model) + '</code>' + (e.note ? '. ' + esc(e.note) + '.' : '') + '</li>'; }).join('') + '</ul>' +
+    '<h3>Engines</h3><ul>' + (CFG.engines || IDX.engines).map(function (e) { return '<li><b>' + esc(e.short || e.label) + '</b>: <code>' + esc(e.model) + '</code>' + (e.note ? '. ' + esc(e.note) : '') + '</li>'; }).join('') + '</ul>' +
     '<h3>Clean context</h3><p>Each prompt is a new conversation with web search, no history, no account and no mention of our stores. The only extra information is the customer\'s approximate city: ' + esc(M.map(function (m) { return m.city; }).join(', ')) + '.</p>' +
-    '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables.</p>' +
-    '<h3>Schedule</h3><p>Daily at 07:00 UTC. Latest run: ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. Answers vary from day to day, so read trends over several runs.</p>' +
+    '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables. The prompt set belongs to EIG. Prompt 4 of every store names a competitor (Allegro, Amazon, bol.com), so that competitor is almost always named first; tick "Without prompt 4" in the filters to see the results without it.</p>' +
+    '<h3>Schedule</h3><p>Once a day. GitHub Actions plans the run for 07:00 UTC but often starts it several hours later, so the time differs from day to day. Latest measurement started ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. The exact start of every run is in the run log below.</p>' +
     '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored. Everyone signs in with their own e-mail and password; the password never leaves your device and nobody else can read it. To see how the panel is used, it records per person which views are opened, active time and what is clicked, and sends this encrypted to Cyfrowe.pl (the panel author). Checklist ticks and invitations go the same way and are visible to everyone with access, with the name of the person.</p>' +
     '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Google searches</th><th class="r">Cost</th></tr></thead><tbody>' +
     IDX.runs.slice().reverse().map(function (r) {
@@ -1376,7 +1423,7 @@ function csv() {
   prompty(m).forEach(function (p) {
     silniki().forEach(function (e) {
       var c = kom(S.run, p.id, e), z = det[p.id + '|' + e] || {}; if (!c) return;
-      w.push([m.store, S.run, p.id, p.topic, p.text, p.en, e, c[3] == null ? 'not named' : c[3], c[4], z.url, z.sources].map(f).join(','));
+      w.push([m.store, S.run, p.id, p.topic, p.text, p.en, nazwaSil(e), c[3] == null ? 'not named' : c[3], c[4], z.url, z.sources].map(f).join(','));
     });
   });
   var a = document.createElement('a');
@@ -1420,11 +1467,11 @@ async function otworz(id, run) {
   var Rh = runy(m).slice(-30), det = DET[run];
   WYK = {};
   var h = '<section class="card hist"><div class="ch"><h2>Position history <small>' + esc(m.store) + ' in each engine, 1 = named first</small></h2></div>' +
-    wykres('w-prompt', Rh, ENG.map(function (e, i) { return { name: e, color: i ? '#E8710A' : '#0B57D0', w: 2, values: Rh.map(function (r) { var c = kom(r, id, e); return c && !c[6] ? c[3] : null; }) }; }),
+    wykres('w-prompt', Rh, ENG.map(function (e, i) { return { name: nazwaSil(e), color: i ? '#E8710A' : '#0B57D0', w: 2, values: Rh.map(function (r) { var c = kom(r, id, e); return c && !c[6] ? c[3] : null; }) }; }),
       { min: 1, max: 6, invert: true, ticks: [1, 3, 6], h: 170 }) + '</section><div class="ans2">';
   h += ENG.map(function (e) {
     var c = kom(run, id, e), z = det[id + '|' + e];
-    var head = '<div class="h"><div><b>' + esc(e) + '</b>';
+    var head = '<div class="h"><div><b>' + esc(nazwaSil(e)) + '</b>';
     if (!c || !z) return '<div class="ans">' + head + '</div></div><div class="pusto">This prompt was not asked in this run.</div></div>';
     if (c[6]) return '<div class="ans">' + head + '</div></div><div class="pusto">The engine returned an error: ' + esc(z.error) + '</div></div>';
     var v = c[3], st = c[4] ? c[4].split('; ') : [], src = z.sources ? z.sources.split(', ') : [];

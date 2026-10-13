@@ -1,5 +1,5 @@
 {
-  "note": "Items checked automatically from the public website. Only items proven beyond doubt are listed. A person can untick them in the panel.",
+  "note": "Items checked automatically from the public website. Only items proven beyond doubt are listed as done. An entry with \"s\": null withdraws an earlier automatic tick (applied once, like the ticks). A person can untick or tick any item in the panel.",
   "checks": [
     {
       "m": "UK",
@@ -26,28 +26,12 @@
       "evidence": "robots.txt lists Sitemap: https://www.wexphotovideo.com/sitemap.xml, which answers 200 as a sitemap index. Child sitemap-products-cameras-0.xml (200, 460 URLs, 322 distinct lastmod values) and sitemap-products-lenses-0.xml (200, 2503 URLs, 1577 distinct values) have lastmod on every URL, newest 2026-10-09. The index has separate sitemaps for products, categories, blog and other pages."
     },
     {
-      "m": "UK",
-      "id": "3.7",
-      "s": "done",
-      "by": "Automatic check (Claude)",
-      "at": "2026-10-10T10:54:09.888Z",
-      "evidence": "/robots.txt returned HTTP 200 with Content-Type text/plain and content starting \"User-agent: *\" for the full official user agents of Googlebot, bingbot, OAI-SearchBot, PerplexityBot and ClaudeBot; no challenge page."
-    },
-    {
       "m": "NL",
       "id": "3.1",
       "s": "done",
       "by": "Automatic check (Claude)",
       "at": "2026-10-10T10:54:09.888Z",
       "evidence": "https://www.cameranu.nl/robots.txt (200) has no groups for Googlebot, Bingbot, OAI-SearchBot, Claude-SearchBot, PerplexityBot or Applebot, and its * group never disallows '/'; only Baiduspider, CazoodleBot, Fasterfox and Jyxobot get 'Disallow: /'. The msnbot group (which Bing may honour) only sets Crawl-Delay: 20."
-    },
-    {
-      "m": "NL",
-      "id": "3.7",
-      "s": "done",
-      "by": "Automatic check (Claude)",
-      "at": "2026-10-10T10:54:09.888Z",
-      "evidence": "https://www.cameranu.nl/robots.txt returned HTTP 200, text/plain, with the normal robots content (no challenge) for the official Googlebot, bingbot, OAI-SearchBot, PerplexityBot and ClaudeBot UA strings."
     },
     {
       "m": "DE",
@@ -91,14 +75,6 @@
     },
     {
       "m": "PL",
-      "id": "3.1",
-      "s": "done",
-      "by": "Automatic check (Claude)",
-      "at": "2026-10-10T11:02:58.611Z",
-      "evidence": "https://www.cyfrowe.pl/robots.txt (200, plain text) has only a User-agent: * group, with no own groups for Googlebot, Bingbot, OAI-SearchBot, Claude-SearchBot, PerplexityBot or Applebot. Its 16 Disallow rules block only addresses with filter, sort and paging parameters; none blocks / or plain product and category pages. Checked in a browser, because Cloudflare stops command-line requests."
-    },
-    {
-      "m": "PL",
       "id": "3.4",
       "s": "done",
       "by": "Automatic check (Claude)",
@@ -136,6 +112,30 @@
       "by": "Automatic check (Claude)",
       "at": "2026-10-10T11:18:04.061Z",
       "evidence": "Applying the * group of https://www.cameranu.nl/robots.txt (rules matched as Google does), product pages (/p3241204/sony-alpha-a7-iv-..., /p3516060/..., /p3508524/...), categories (/systeemcamera, /spiegelreflexcamera, /c2/digitale-cameras, /c212/occasions-en-demo) and guides (/advies, /b59010/hoe-fotografeer-je-cityscapes) are all allowed. Checked in a browser, because Cloudflare stops command-line requests."
+    },
+    {
+      "m": "PL",
+      "id": "3.1",
+      "s": null,
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-13T13:00:00.000Z",
+      "evidence": "Withdrawn: Cloudflare answers PerplexityBot and Perplexity-User with 403 in 90-95% of requests (managed rules, measured 2 Oct 2026). robots.txt allows the bot, but the firewall blocks it."
+    },
+    {
+      "m": "UK",
+      "id": "3.7",
+      "s": null,
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-13T13:00:00.000Z",
+      "evidence": "Withdrawn: the check sent a bot user agent from an ordinary address. That does not prove what the real bot gets, because firewalls also check the address. Not verified."
+    },
+    {
+      "m": "NL",
+      "id": "3.7",
+      "s": null,
+      "by": "Automatic check (Claude)",
+      "at": "2026-10-13T13:00:00.000Z",
+      "evidence": "Withdrawn: the check sent a bot user agent from an ordinary address. That does not prove what the real bot gets, because firewalls also check the address. Not verified."
     }
   ]
 }

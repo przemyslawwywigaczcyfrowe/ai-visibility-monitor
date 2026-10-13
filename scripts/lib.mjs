@@ -113,11 +113,13 @@ export function analyse(answer, sources, shops) {
     let idx = -1;
     if (s.re) { const m = text.match(s.re); if (m) idx = m.index; }
     for (const d of s.domains) { const i = lower.indexOf(d); if (i >= 0 && (idx < 0 || i < idx)) idx = i; }
-    if (idx >= 0) hits.push({ name: s.name, idx, ours: s.ours });
+    if (idx >= 0) hits.push({ name: s.name, idx, ours: s.ours, kind: s.kind || '' });
   }
   hits.sort((a, b) => a.idx - b.idx);
   const mentioned = hits.map(h => h.name);
-  const pos = hits.findIndex(h => h.ours);
+  /* Price comparison sites, classifieds and review sites (shop.kind in config.json) stay in
+     "mentioned", but take no place: the position counts stores only. */
+  const pos = hits.filter(h => !h.kind).findIndex(h => h.ours);
   const urls = (sources || []).slice();
   (text.match(/https?:\/\/[^\s)\]>"']+/g) || []).forEach(u => urls.push(u.replace(/[.,;]+$/, '')));
   const domains = [];

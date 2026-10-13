@@ -223,7 +223,9 @@ chk.applied = chk.applied || {};
 const ZW = existsSync('config/checklist-verified.json') ? JSON.parse(readFileSync('config/checklist-verified.json', 'utf8')) : { checks: [] };
 for (const e of ZW.checks || []) {
   const k = e.m + '|' + e.id + '|' + e.at;
-  if (chk.applied[k] || !poprawnyChk(e) || e.s !== 'done') continue;
+  /* "s": null withdraws an earlier automatic tick that turned out not to be proven (13 Oct 2026:
+     PL 3.1, UK and NL 3.7). It is applied once and only wins over ticks made before it. */
+  if (chk.applied[k] || !poprawnyChk(e) || (e.s !== 'done' && e.s !== null)) continue;
   chk.applied[k] = 1; auto++;
   odhacz(e, String(e.evidence || '').slice(0, 600));
 }

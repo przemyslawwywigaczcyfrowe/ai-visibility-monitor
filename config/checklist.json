@@ -281,6 +281,9 @@
         "what": "robots.txt is a file on the website that tells bots which pages they may read. The store makes sure it allows the bots that feed search results and AI answers: Googlebot, Bingbot, OAI-SearchBot (ChatGPT search), Claude-SearchBot, PerplexityBot and Applebot.",
         "why": "If a search bot cannot read the store's pages, its AI tool cannot show the store's products, prices or stock. Googlebot also feeds AI Overviews and AI Mode, and Bingbot feeds Copilot, so blocking them removes the store from those answers.",
         "how": "Open the store's address followed by /robots.txt in a browser. Check that none of these six bots has a rule blocking products, categories or guides. Test a product page in Google's robots.txt report in Search Console. Done when all six bots are allowed and the result is noted in the bot policy (item 1.2)."
+      },
+      "uw": {
+        "PL": "Not proven for PerplexityBot. Cloudflare answers PerplexityBot and Perplexity-User with 403 in 90-95% of requests (measured 2 Oct 2026), although robots.txt allows them."
       }
     },
     {
@@ -365,6 +368,12 @@
         "what": "When a bot asks for robots.txt, the server must answer with status 200, which means the file was delivered. It must not return a 5xx server error or a challenge page, the \"check you are human\" screen used by security services.",
         "why": "If a bot cannot read robots.txt, it may stop reading the whole site or treat it as off limits. The file can work in a browser and still fail for bots, because the firewall treats bots differently.",
         "how": "Ask IT to fetch robots.txt with curl, a command-line tool that requests a page, using bot names such as Googlebot, OAI-SearchBot and PerplexityBot. Each request must return 200 and the plain file. Done when all tested bot names get status 200 and the real file content."
+      },
+      "uw": {
+        "PL": "Not proven. Cloudflare stops command-line requests and answers PerplexityBot with 403 (measured 2 Oct 2026).",
+        "UK": "Not verified. The automatic check sent a bot user agent from an ordinary address; it does not prove what the real bot gets, because firewalls also check the address.",
+        "NL": "Not verified. The automatic check sent a bot user agent from an ordinary address; it does not prove what the real bot gets, because firewalls also check the address.",
+        "DE": "Not verified. The automatic check sent a bot user agent from an ordinary address; it does not prove what the real bot gets, because firewalls also check the address."
       }
     },
     {
