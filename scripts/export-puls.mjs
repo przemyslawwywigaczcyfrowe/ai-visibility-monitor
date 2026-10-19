@@ -32,6 +32,8 @@ const MAX_DOMAINS = 15;
 const NO_SITE = /(^|.)vertexaisearch.cloud.google.com$/;
 async function sourceDomains(key, index) {
   const out = {};
+  /* Counts only (the log of a public repository is public): answers, domains kept, redirects dropped. */
+  const log = {};
   for (const r of index.runs || []) {
     const path = 'data/runs/' + r.file + '.enc';
     if (!r.file || !existsSync(path)) continue;
@@ -41,13 +43,16 @@ async function sourceDomains(key, index) {
     Object.entries(d.details || {}).forEach(([k, v]) => {
       const [id, eng] = k.split('|');
       if (!String(id).startsWith(MARKET) || !v || v.error) return;
-      const l = [];
+      const l = [], g = log[eng] = log[eng] || { answers: 0, withDomains: 0, domains: 0, redirects: 0 };
       String(v.sources || '').split(',').map(x => x.trim().toLowerCase().replace(/^www./, '')).forEach(x => {
-        if (x && !NO_SITE.test(x) && !l.includes(x)) l.push(x);
+        if (x && NO_SITE.test(x)) g.redirects++;
+        else if (x && !l.includes(x)) l.push(x);
       });
+      g.answers++; g.domains += l.length; if (l.length) g.withDomains++;
       (run[id] = run[id] || {})[eng] = l.slice(0, MAX_DOMAINS);
     });
   }
+  Object.entries(log).forEach(([e, g]) => console.log(`Sources ${e}: ${g.withDomains} of ${g.answers} answers with domains, ${g.domains} domains, ${g.redirects} unreadable redirects dropped.`));
   return out;
 }
 
