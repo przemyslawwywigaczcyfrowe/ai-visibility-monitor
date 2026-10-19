@@ -2,9 +2,18 @@ name: Export to Puls sklepu
 
 # Writes summary numbers of all runs (Poland) to the Google Sheet read by the "Puls sklepu" panel
 # of cyfrowe.pl. The daily measurement does the same at its end; this one is for a manual run,
-# e.g. right after adding the GOOGLE_SA_KEY secret.
+# e.g. right after adding the GOOGLE_SA_KEY secret. The inputs let a test write source domains
+# to another tab before the measurement does it for the live tab.
 on:
   workflow_dispatch:
+    inputs:
+      tab:
+        description: Tab of the Puls sheet to write
+        default: AI_WIDOCZNOSC
+      sources:
+        description: Add source domains of every answer (field "zrodla")
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -24,4 +33,6 @@ jobs:
         env:
           DATA_KEY: ${{ secrets.DATA_KEY }}
           GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
+          PULS_TAB: ${{ inputs.tab }}
+          PULS_ZRODLA: ${{ inputs.sources }}
         run: node scripts/export-puls.mjs

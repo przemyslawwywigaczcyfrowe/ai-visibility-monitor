@@ -4,14 +4,18 @@
 //
 // Env: PANEL_PASSWORD (decrypts data/index.enc), GOOGLE_SA_KEY (service account JSON with edit access
 // to the sheet), PULS_SHEET_ID (optional, default below), MARKET (optional, default PL).
+// PULS_ZRODLA=1 (optional): every prompt also gets the domains of the answer sources per engine (field
+// "zrodla"), read from the encrypted run files in data/runs. Domains only; the answers stay encrypted.
 // Local test without decryption: node scripts/export-puls.mjs --test <summary.json>
-import { readFileSync } from 'node:fs';
+// Local test without writing: node scripts/export-puls.mjs --dry <out.json> (needs DATA_KEY)
+import { readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { createSign } from 'node:crypto';
 import { dataKey, decryptJson } from './lib.mjs';
 
 const SHEET = process.env.PULS_SHEET_ID || '1WcWoyMqYSgbz3KSQJnNEHQQCGn7ULArc4xvyPuwI95s';
 const TAB = process.env.PULS_TAB || 'AI_WIDOCZNOSC';
 const MARKET = process.env.MARKET || 'PL';
+const ZRODLA = process.env.PULS_ZRODLA === '1' || process.env.PULS_ZRODLA === 'true';
 
 /* ---------- numbers, as in index.html ---------- */
 /* Since 13 Oct 2026, as in the panel: price comparison sites, classifieds and review sites
@@ -19,7 +23,35 @@ const MARKET = process.env.MARKET || 'PL';
 const CFG = JSON.parse(readFileSync('config/config.json', 'utf8'));
 const NOT_STORE = Object.fromEntries((CFG.shops || []).filter(s => s.kind).map(s => [s.name, s.kind]));
 const storesOnly = l => String(l || '').split('; ').filter(n => n && !NOT_STORE[n]);
-function summarise(index) {
+/* ---------- source domains (since 19 Oct 2026, step 3 of the Puls plan) ----------
+   measure.mjs keeps them per answer in data/runs/<file>.enc, details["<id>|<engine>"].sources,
+   as "a.pl, b.com" (sources of the answer plus links written in its text, without www).
+   Gemini gives sources as vertexaisearch redirects; lib.mjs takes the domain from the title, and a
+   redirect it could not read says nothing about the site, so it is dropped here. */
+const MAX_DOMAINS = 15;
+const NO_SITE = /(^|.)vertexaisearch.cloud.google.com$/;
+async function sourceDomains(key, index) {
+  const out = {};
+  for (const r of index.runs || []) {
+    const path = 'data/runs/' + r.file + '.enc';
+    if (!r.file || !existsSync(path)) continue;
+    let d;
+    try { d = await decryptJson(key, readFileSync(path, 'utf8')); } catch (e) { console.log('Cannot decrypt ' + path + ', run without sources.'); continue; }
+    const run = out[d.run || r.run] = {};
+    Object.entries(d.details || {}).forEach(([k, v]) => {
+      const [id, eng] = k.split('|');
+      if (!String(id).startsWith(MARKET) || !v || v.error) return;
+      const l = [];
+      String(v.sources || '').split(',').map(x => x.trim().toLowerCase().replace(/^www./, '')).forEach(x => {
+        if (x && !NO_SITE.test(x) && !l.includes(x)) l.push(x);
+      });
+      (run[id] = run[id] || {})[eng] = l.slice(0, MAX_DOMAINS);
+    });
+  }
+  return out;
+}
+
+function summarise(index, domains) {
   const m = index.markets.find(x => x.code === MARKET);
   const allPrompts = index.prompts.filter(p => p.market === MARKET);
   let prompts = allPrompts;
@@ -112,7 +144,14 @@ function summarise(index) {
         lid[e] = c[4] ? (storesOnly(c[4])[0] || '') : '';
         if (c[5]) cyt = true;
       });
-      return { id: p.id, pytanie: p.text, temat: p.topic || '', pozycje: poz, lider: lid, cytowane: cyt };
+      const x = { id: p.id, pytanie: p.text, temat: p.topic || '', pozycje: poz, lider: lid, cytowane: cyt };
+      /* Domains per engine that answered; an empty list = answer without sources. */
+      if (domains && domains[run]) {
+        const z = {};
+        Object.keys(poz).forEach(e => { z[e] = (domains[run][p.id] || {})[e] || []; });
+        x.zrodla = z;
+      }
+      return x;
     });
     const silnikiOpis = Object.fromEntries((CFG.engines || []).map(e => [e.label, e.short || e.label]));
     return { pomiar: run, poprzedni: prev, rynek: MARKET, sklep: m.store, silniki, bezPytania4, silnikiOpis, sklepy: sklepy(run, engines), ruchy: ruchy(run, prev, engines), pytania };
@@ -159,21 +198,35 @@ async function write(rows) {
   if (!meta.sheets.some(s => s.properties.title === TAB)) {
     await api(tok, 'POST', ':batchUpdate', { requests: [{ addSheet: { properties: { title: TAB } } }] });
   }
-  const values = [['pomiar', 'rynek', 'zapisano', 'dane (JSON)']].concat(rows.map(r => [r.pomiar, r.rynek, new Date().toISOString(), JSON.stringify(r)]));
+  /* A Sheets cell holds at most 50,000 characters. Source domains are the only optional part, so a run
+     that does not fit loses them instead of failing the whole export. */
+  const json = r => {
+    let j = JSON.stringify(r);
+    if (j.length > 49000 && r.pytania.some(p => p.zrodla)) {
+      j = JSON.stringify({ ...r, pytania: r.pytania.map(({ zrodla, ...p }) => p) });
+      console.log(`Run ${r.pomiar}: too long for one cell, written without source domains.`);
+    }
+    return j;
+  };
+  const values = [['pomiar', 'rynek', 'zapisano', 'dane (JSON)']].concat(rows.map(r => [r.pomiar, r.rynek, new Date().toISOString(), json(r)]));
   await api(tok, 'POST', '/values/' + encodeURIComponent(TAB) + ':clear', {});
   await api(tok, 'PUT', '/values/' + encodeURIComponent(TAB + '!A1') + '?valueInputOption=RAW', { values });
   console.log(`Puls: wrote ${rows.length} runs of ${MARKET} to ${TAB}.`);
 }
 
 /* ---------- main ---------- */
+const DRY = process.argv[2] === '--dry' ? process.argv[3] : '';
 if (process.argv[2] === '--test') {
   await write(JSON.parse(readFileSync(process.argv[3], 'utf8')));
 } else {
-  if (!process.env.GOOGLE_SA_KEY) { console.log('No GOOGLE_SA_KEY secret, export to Puls skipped.'); process.exit(0); }
+  if (!process.env.GOOGLE_SA_KEY && !DRY) { console.log('No GOOGLE_SA_KEY secret, export to Puls skipped.'); process.exit(0); }
   const key = await dataKey();
   const index = await decryptJson(key, readFileSync('data/index.enc', 'utf8'));
-  const rows = summarise(index);
+  const domains = ZRODLA ? await sourceDomains(key, index) : null;
+  const rows = summarise(index, domains);
+  if (domains) console.log(`Source domains: ${Object.keys(domains).length} runs read, ${rows.filter(r => r.pytania.some(p => p.zrodla)).length} runs with domains.`);
   const last = rows[rows.length - 1];
   if (last) console.log(`Last run ${last.pomiar}: visibility ${last.silniki.wszystkie.widocznosc}% (${last.silniki.wszystkie.widoczne} of ${last.silniki.wszystkie.pytan}), avg position ${last.silniki.wszystkie.srednieMiejsce}, cited ${last.silniki.wszystkie.cytowane}.`);
-  await write(rows);
+  if (DRY) { writeFileSync(DRY, JSON.stringify(rows)); console.log('Dry run, written to ' + DRY); }
+  else await write(rows);
 }
