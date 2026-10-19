@@ -1,6 +1,6 @@
 # AI Visibility Monitor
 
-Daily check of whether ChatGPT and Google AI Mode recommend the EIG photo stores when customers ask
+Check, every second day, of whether ChatGPT and Google AI Mode recommend the EIG photo stores when customers ask
 for advice: cyfrowe.pl (PL), Wex Photo Video (UK), Cameranu (NL) and Calumet (DE). 25 prompts per market,
 each in the local language. Works like a keyword rank tracker: for every prompt you see the position of
 our store in each model's answer, the change since the previous run and which store is named first.
@@ -16,7 +16,7 @@ Panel: https://przemyslawwywigaczcyfrowe.github.io/ai-visibility-monitor/ (passw
   The only instruction is the user's approximate location (Warsaw, London, Amsterdam, Hamburg),
   which the consumer apps also know. Without it, English prompts get answers for US shoppers.
 - Position = where our store appears in the order the answer names stores from `config/config.json`.
-- Daily at 07:00 UTC (`.github/workflows/measure.yml`), also runnable by hand from the Actions tab,
+- Every second day at 07:00 UTC (`.github/workflows/measure.yml` starts daily; `measure.mjs` skips the day after a run), also runnable by hand from the Actions tab,
   optionally for selected markets or prompt ids.
 
 ## Privacy

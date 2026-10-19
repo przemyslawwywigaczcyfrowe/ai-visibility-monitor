@@ -2,7 +2,7 @@ name: Measure AI visibility
 
 on:
   schedule:
-    - cron: '0 7 * * *'   # 07:00 UTC = 09:00 Warsaw (summer time), 08:00 (winter time)
+    - cron: '0 7 * * *'   # daily trigger; measure.mjs runs only every second day (skips when the last run was yesterday or today)
   workflow_dispatch:
     inputs:
       markets:

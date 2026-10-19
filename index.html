@@ -431,7 +431,7 @@ table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }
   <form id="brama-form" autocomplete="off">
     <span class="logo-eig" role="img" aria-label="AI Visibility, European Imaging Group"></span>
     <h1>AI Visibility</h1>
-    <p>Daily rank tracking of our stores in ChatGPT and Google AI Mode answers.</p>
+    <p>Rank tracking of our stores in ChatGPT and Google AI Mode answers, every second day.</p>
     <div class="loga"><img src="assets/stores/pl-cyfrowe.svg" alt="Cyfrowe.pl" style="height:18.3px"><img src="assets/stores/uk-wex.png" alt="Wex Photo Video" style="height:17.5px"><img src="assets/stores/nl-cameranu.svg" alt="Cameranu" style="height:13.3px"><img src="assets/stores/de-calumet.svg" alt="Calumet" style="height:15.3px"></div>
     <input type="email" id="login" placeholder="Work e-mail" autocomplete="username" required aria-label="Work e-mail">
     <input type="password" id="haslo" placeholder="Password" autocomplete="current-password" required aria-label="Password">
@@ -728,10 +728,11 @@ function rysuj() {
   });
   document.querySelectorAll('.rlink[data-v]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-v') === S.view); });
   /* Run status: how many runs there are, when the last one was, when the next one is due. */
-  var ost = IDX.runs[IDX.runs.length - 1], nast = new Date(); nast.setUTCHours(7, 0, 0, 0); if (nast <= new Date()) nast.setUTCDate(nast.getUTCDate() + 1);
+  /* runs every second day: the next one is planned 2 calendar days after the last, at 07:00 UTC (GitHub often starts later) */
+  var ost = IDX.runs[IDX.runs.length - 1], nast = new Date(ost && ost.start ? ost.start : Date.now()); nast.setUTCHours(7, 0, 0, 0); nast.setUTCDate(nast.getUTCDate() + 2); while (nast <= new Date()) nast.setUTCDate(nast.getUTCDate() + 1);
   var st = document.getElementById('stan');
-  /* orange dot when the last run is older than 30 hours: the daily run did not happen */
-  st.classList.toggle('stary', !ost || !ost.start || Date.now() - new Date(ost.start) > 30 * 36e5);
+  /* orange dot when the last run is older than 60 hours: the run every second day did not happen */
+  st.classList.toggle('stary', !ost || !ost.start || Date.now() - new Date(ost.start) > 60 * 36e5);
   st.innerHTML = '<i></i>' + IDX.runs.length + (IDX.runs.length === 1 ? ' run' : ' runs') + ' · last ' + esc(ost ? kiedy(ost.run) : '-') + '<span class="dalej"> · next ' +
     esc(nast.toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })) + '</span>';
   st.onclick = function () { S.view = 'how'; rysuj(); var l = document.getElementById('dziennik'); if (l) l.scrollIntoView({ block: 'start' }); };
@@ -1393,7 +1394,7 @@ function widokHow() {
     '<h3>Engines</h3><ul>' + (CFG.engines || IDX.engines).map(function (e) { return '<li><b>' + esc(e.short || e.label) + '</b>: <code>' + esc(e.model) + '</code>' + (e.note ? '. ' + esc(e.note) : '') + '</li>'; }).join('') + '</ul>' +
     '<h3>Clean context</h3><p>Each prompt is a new conversation with web search, no history, no account and no mention of our stores. The only extra information is the customer\'s approximate city: ' + esc(M.map(function (m) { return m.city; }).join(', ')) + '.</p>' +
     '<h3>Prompts</h3><p>25 prompts per store, in the local language, with an English version in the tables. The prompt set belongs to EIG. Prompt 4 of every store names a competitor (Allegro, Amazon, bol.com), so that competitor is almost always named first; tick "Without prompt 4" in the filters to see the results without it.</p>' +
-    '<h3>Schedule</h3><p>Once a day. GitHub Actions plans the run for 07:00 UTC but often starts it several hours later, so the time differs from day to day. Latest measurement started ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. The exact start of every run is in the run log below.</p>' +
+    '<h3>Schedule</h3><p>Every second day. GitHub Actions plans the run for 07:00 UTC but often starts it several hours later, so the time differs from run to run. Latest measurement started ' + esc(kiedy(ost.run)) + (ost.cost ? ', cost ' + fmt(ost.cost, 2) + ' USD' : '') + '. The exact start of every run is in the run log below.</p>' +
     '<h3>Privacy</h3><p>Results are encrypted (AES-256) before they are stored. Everyone signs in with their own e-mail and password; the password never leaves your device and nobody else can read it. To see how the panel is used, it records per person which views are opened, active time and what is clicked, and sends this encrypted to Cyfrowe.pl (the panel author). Checklist ticks and invitations go the same way and are visible to everyone with access, with the name of the person.</p>' +
     '<h3 id="dziennik">Run log</h3><table class="t" style="margin-top:6px"><thead><tr><th>Run</th><th class="r">Answers</th><th class="r">Errors</th><th class="r">Duration</th><th class="r">Google searches</th><th class="r">Cost</th></tr></thead><tbody>' +
     IDX.runs.slice().reverse().map(function (r) {
