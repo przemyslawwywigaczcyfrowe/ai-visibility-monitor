@@ -36,11 +36,11 @@ if (process.env.EVENT === 'schedule' && index.runs.some(r => r.run.slice(0, 10) 
   console.log(`A run for ${today} already exists, scheduled run skipped.`);
   process.exit(0);
 }
-/* Since 19 Oct 2026 the measurement runs every second day (decision of Przemysław Wywigacz, to halve
-   the cost). The trigger stays daily; a scheduled run goes ahead only when the last run is from
-   the day before yesterday or earlier. Counting calendar days keeps the rhythm even when GitHub
-   starts a run several hours late. A manual run always goes ahead. */
-const DNI_MIEDZY = 2;
+/* Since 19 Oct 2026 the measurement ran every second day, since 26 Oct 2026 every fourth day (decisions
+   of Przemysław Wywigacz, to cut the cost). The trigger stays daily; a scheduled run goes ahead only when
+   the last run is at least DNI_MIEDZY calendar days old. Counting calendar days keeps the rhythm even when
+   GitHub starts a run several hours late. A manual run always goes ahead. */
+const DNI_MIEDZY = 4;
 const ostatni = index.runs.map(r => r.run.slice(0, 10)).sort().pop();
 const dni = ostatni ? Math.round((Date.parse(today + 'T12:00:00Z') - Date.parse(ostatni + 'T12:00:00Z')) / 864e5) : 99;
 if (process.env.EVENT === 'schedule' && dni < DNI_MIEDZY) {
