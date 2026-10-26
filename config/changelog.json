@@ -1,0 +1,12 @@
+[
+  { "version": "3.3", "date": "2026-10-26", "text": "Measurement every fourth day instead of every second day. The next-run date in the top bar follows." },
+  { "version": "3.2", "date": "2026-10-19", "text": "Measurement every second day instead of daily, to halve the cost. A run started by hand still goes ahead at any time." },
+  { "version": "3.1", "date": "2026-10-13", "text": "Changes after an audit of the numbers. Engines are shown as the API models that approximate ChatGPT and Google AI Mode. Position counts stores only: price comparison, classifieds and review sites take no place. Named first, top 3 and average position are counted per prompt, the same unit as visibility. \"Visibility up\", \"Visibility down\" and \"ahead of\" appear only for a difference of at least 3 prompts. New filter \"Without prompt 4\", because prompt 4 names a competitor." },
+  { "version": "3.0", "date": "2026-10-10", "text": "Personal accounts: everyone signs in with their own e-mail and password instead of one shared password. Anyone with access can invite or remove people in the Access view." },
+  { "version": "2.1", "date": "2026-10-10", "text": "Checklist view: the AI readiness checklist (122 items) for each store, with progress and a plain-language explanation of every item. Each store ticks its own items; some items are checked automatically on the public websites." },
+  { "version": "2.0", "date": "2026-10-10", "text": "New look of the panel: navigation rail, header card with the verdict and change pills." },
+  { "version": "1.3", "date": "2026-10-07", "text": "Google AI Mode answers come from the Gemini API with Google Search grounding; OpenRouter stays as a fallback. The run log shows which way each run went." },
+  { "version": "1.2", "date": "2026-10-07", "text": "Run status in the top bar and a run log in How it works. Links open the same view, store, run and filters. A scheduled run is skipped when someone already ran the measurement by hand that day." },
+  { "version": "1.1", "date": "2026-10-06", "text": "Rank-tracker layout: summary, rankings, position history, competitors and sources for each store, with a view of all stores together." },
+  { "version": "1.0", "date": "2026-10-06", "text": "First version: daily measurement of 25 prompts per store in ChatGPT and Google AI Mode, encrypted results and a password-protected panel." }
+]

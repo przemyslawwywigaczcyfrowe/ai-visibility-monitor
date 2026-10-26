@@ -33,5 +33,6 @@ Panel: https://przemyslawwywigaczcyfrowe.github.io/ai-visibility-monitor/ (passw
 
 - `index.html` - the panel (static, no build step).
 - `config/config.json` - markets, models, prompts, topics, stores and their name patterns.
+- `config/changelog.json` - change log shown at the end of How it works. Every change that people in the EIG stores should know about (measurement, schedule, metrics, views, access) gets a new entry on top with the next version number; internal changes (exports, usage tracking) do not.
 - `scripts/measure.mjs`, `scripts/lib.mjs` - measurement, analysis, encryption.
 - `data/` - encrypted results: `index.enc` (positions history), `runs/*.enc` (full answers per run).
