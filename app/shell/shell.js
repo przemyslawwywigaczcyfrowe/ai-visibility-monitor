@@ -3,7 +3,6 @@
    the slice registry (app/shared/slices.js) and knows no view by name. */
 function rysuj() {
   var def = PLASTRY[S.view], grupa = !!(def.grupa && def.grupa());
-  zbierz('przedRysowaniem');
   document.body.classList.toggle('bez-filtrow', !def.filtry);
   document.getElementById('projekty').innerHTML = '<button class="all ' + (grupa ? 'on' : '') + '" data-p="all">All stores</button>' + M.map(function (m) {
     return '<button data-p="' + m.code + '" class="' + (!grupa && def.naSklep && S.market === m.code ? 'on' : '') + '" title="' + esc(m.name + ': ' + m.store) + '">' + logo(m.code) + '<span class="kod">' + m.code + '</span></button>';
@@ -85,7 +84,7 @@ function zapiszAdres() {
 function czytajAdres() {
   var h = (location.hash || '').replace(/^#\/?/, ''), sciezka = h.split('?')[0].split('/'), q = new URLSearchParams(h.split('?')[1] || '');
   var def = PLASTRY[sciezka[0]];
-  if (!sciezka[0] || !def || !def.rysuj || def.zLinku === false) return false;
+  if (!sciezka[0] || !def || !def.rysuj) return false;
   S.view = sciezka[0];
   var kod = (sciezka[1] || '').toUpperCase();
   if (kod && M.some(function (m) { return m.code === kod; })) { S.market = kod; }

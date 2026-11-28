@@ -45,7 +45,7 @@ The panel is cut into vertical slices: one folder per feature, with everything t
 - `app/slices/<name>/` - one feature: its view, its click handlers, its part of the address and its styles.
   Views: `all-stores`, `summary`, `rankings`, `position-history`, `competitors`, `sources`, `checklist`,
   `how-it-works`, `access`. Without a view: `prompt-detail` (the answer drawer), `csv-export`, `sign-in`,
-  `usage-tracking`. `usage-legacy` is the counter and the Usage view from before 10 Oct 2026; nothing links to it.
+  `usage-tracking`.
 - `app/shared/` - only what at least two slices use: the slice registry, decryption, the measurement data
   and its numbers, charts and header cards, the session.
 - `app/shell/` - the frame around the views: rail, store switcher, filter bar, address.

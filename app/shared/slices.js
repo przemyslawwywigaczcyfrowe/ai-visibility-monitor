@@ -17,13 +17,12 @@
    grupa()             true when the view now shows all stores together
    naWszystkie()       what a click on "All stores" does inside this view (default: go to the main view)
    poKliknieciuSklepu()  runs after a store is picked in the store switcher
-   zLinku: false       the view cannot be opened from an address
    adres()             builds the whole address of the view (default: #/view/store?filters)
    doAdresu(q)         adds the slice's own parameters to the address
    zAdresu(q, sciezka) reads the slice's own parameters from the address
    poAdresie(ok)       runs after a view opened from an address is drawn
    wczytaj()           loads the slice's own data at sign-in (may return a promise)
-   przedRysowaniem(), poRysowaniu()   run around every draw
+   poRysowaniu()       runs after every draw, before the handlers are attached
    poZalogowaniu()     runs once, after sign-in
    przyciskFiltrow(), podepnijFiltry()  a button of the slice in the filter bar
    zamknij()           closes what the slice has open on top of the view
