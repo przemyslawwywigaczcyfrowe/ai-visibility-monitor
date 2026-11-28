@@ -1,0 +1,8 @@
+/* how it works */
+.metoda { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:16px; }
+.metoda h3 { font-size:16px; font-weight:500; margin:20px 0 4px; }
+.metoda h2 + h3 { margin-top:12px; }
+.metoda p, .metoda li { font-size:15px; color:var(--muted); line-height:1.6; }
+.metoda ul { margin:4px 0 0 20px; }
+.metoda code { font-size:12.5px; background:var(--paper); border-radius:6px; padding:2px 6px; color:var(--ink); }
+@media (max-width:1280px) { .metoda { grid-template-columns:minmax(0,1fr); } }

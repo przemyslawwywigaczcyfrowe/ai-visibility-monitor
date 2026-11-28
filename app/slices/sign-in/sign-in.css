@@ -1,0 +1,25 @@
+/* ---------- sign-in ---------- */
+.brama { display:grid; place-items:center; min-height:100vh; padding:16px; }
+body:not(.zamkniety) .brama { display:none; }
+body.zamkniety .rail, body.zamkniety .kol { display:none; }
+.brama form { width:min(460px,100%); background:#fff; border-radius:32px; padding:40px 40px 32px; display:flex; flex-direction:column; gap:16px; }
+.brama .logo-eig { width:150px; height:98px; background:url(../../../assets/ai-visibility-mark.svg) left center/contain no-repeat; }
+.brama h1 { font-size:36px; font-weight:500; letter-spacing:-.02em; line-height:1.15; }
+.brama p { font-size:16px; color:var(--muted); line-height:1.5; }
+/* Four store logos in one row, sized optically to the same area, with equal gaps. */
+.brama .loga { display:flex; align-items:center; justify-content:space-between; padding:18px 20px; margin:2px 0; background:var(--paper); border-radius:20px; }
+.brama .loga img { display:block; width:auto; max-width:100%; }
+.brama input[type=email], .brama input[type=password] { height:56px; border-radius:16px; border:0; padding:0 18px; font-size:16px; background:var(--tonal); outline:none; box-shadow:inset 0 -2px 0 transparent; }
+.brama input[type=email]:focus, .brama input[type=password]:focus { background:#fff; box-shadow:inset 0 0 0 2px var(--acc); }
+.brama label { display:flex; gap:8px; align-items:center; font-size:14px; color:var(--muted); cursor:pointer; }
+.brama .postep { font-size:14px; color:var(--muted); min-height:18px; }
+.brama .blad { font-size:14px; color:var(--down); font-weight:500; min-height:18px; }
+.brama .postep:empty, .brama .blad:empty { min-height:0; margin-top:-16px; }
+.brama .autor { gap:12px; font-size:13px; padding-top:16px; margin-top:4px; border-top:1px solid var(--edge); }
+.brama .autor .av { width:40px; height:40px; }
+.brama .autor span span { display:block; }
+.brama label.pole-t { align-items:stretch; cursor:default; }
+.h-wiersz { display:flex; align-items:center; gap:4px; background:var(--tonal); border-radius:14px; padding-right:6px; }
+.h-wiersz input { background:transparent; }
+.h-wiersz:focus-within { background:#fff; box-shadow:inset 0 0 0 2px var(--acc); }
+.h-wiersz input:focus { box-shadow:none; background:transparent; }

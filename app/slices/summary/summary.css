@@ -1,0 +1,12 @@
+/* distribution */
+.rozklad .wiersz { display:grid; grid-template-columns:14px 1fr 46px 92px; gap:10px; align-items:center; height:48px; border-top:1px solid var(--edge); font-size:14px; }
+.rozklad .wiersz:first-of-type { border-top:0; }
+.rozklad .wiersz i { width:12px; height:12px; border-radius:3px; }
+.rozklad .wiersz b { text-align:right; font-weight:500; font-size:16px; }
+
+/* movers */
+.ruch { list-style:none; }
+.ruch li { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; min-height:56px; padding:8px 0; border-top:1px solid var(--edge); font-size:14px; cursor:pointer; }
+.ruch li:first-child { border-top:0; }
+.ruch li:hover .q { color:var(--acc); }
+.ruch .z { white-space:nowrap; font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums; display:flex; align-items:center; gap:6px; }

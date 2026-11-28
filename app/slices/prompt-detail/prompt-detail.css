@@ -1,0 +1,28 @@
+/* answer drawer */
+.cien { position:fixed; inset:0; background:rgba(31,31,31,.32); z-index:80; display:none; }
+.szuf { position:fixed; top:8px; right:8px; bottom:8px; width:min(1180px,calc(100vw - 16px)); background:var(--paper); z-index:90; display:none; flex-direction:column; border-radius:28px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,.18); }
+.szuf.on { display:flex; } .cien.on { display:block; }
+.szuf .sg { padding:24px 28px 12px; display:flex; gap:20px; align-items:flex-start; }
+.szuf .sg .k { font-size:14px; color:var(--muted); display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.szuf .sg .k select { height:32px; border:0; border-radius:16px; background:var(--tonal); padding:0 12px; font-size:13px; font-weight:500; color:var(--ink); }
+.szuf .sg h3 { font-size:28px; font-weight:500; line-height:1.25; letter-spacing:-.01em; margin-top:8px; }
+.szuf .sg .o { font-size:15px; color:var(--muted); margin-top:6px; }
+.szuf .x { border:0; background:var(--tonal); border-radius:20px; width:40px; height:40px; display:grid; place-items:center; cursor:pointer; flex:none; color:var(--ink); }
+.szuf .x:hover { background:var(--tonal-h); }
+.szuf .sb { overflow:auto; padding:8px 28px 40px; }
+.szuf .hist { margin-bottom:16px; }
+.ans2 { display:grid; grid-template-columns:repeat(auto-fit, minmax(420px,1fr)); gap:16px; align-items:start; }
+.ans { background:#fff; border-radius:28px; padding:24px; min-width:0; }
+.ans .h { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.ans .h b { font-size:20px; font-weight:500; }
+.ans .h .m { font-size:12px; color:var(--muted); margin-top:2px; }
+.ans .bd { font-size:14px; font-weight:500; height:32px; display:inline-flex; align-items:center; padding:0 12px; border-radius:8px; background:var(--same-soft); color:var(--ink); white-space:nowrap; }
+.ans .bd.ok { background:var(--up-soft); color:var(--up); }
+.ans .lab { font-size:12px; font-weight:500; color:var(--muted); margin:18px 0 8px; }
+.ans .tags { display:flex; flex-wrap:wrap; gap:6px; }
+.tresc { font-size:15px; color:var(--ink); line-height:1.65; border-top:1px solid var(--edge); margin-top:18px; padding-top:16px; }
+.tresc p { margin:0 0 10px; } .tresc ul { margin:0 0 10px 20px; } .tresc li { margin:0 0 6px; }
+.tresc h4 { font-size:16px; font-weight:600; margin:14px 0 6px; }
+.tresc a { color:var(--acc); }
+.tresc mark { background:var(--acc-soft); color:var(--acc-dark); font-weight:600; padding:0 4px; border-radius:4px; }
+@media (max-width:900px) { .ans2 { grid-template-columns:minmax(0,1fr); } }

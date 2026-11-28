@@ -1,5 +1,5 @@
 // Shared logic: OpenRouter request, response parsing, answer analysis, encryption.
-// The browser panel (index.html) uses the same encryption format.
+// The browser panel (app/shared/crypto.js) uses the same encryption format.
 import { gzipSync, gunzipSync } from 'node:zlib';
 
 const { subtle } = globalThis.crypto;
@@ -155,7 +155,7 @@ export async function decryptJson(key, b64) {
 
 /* The data key. Since 10 Oct 2026 every file is encrypted with one random key (secret DATA_KEY,
    base64 of 32 bytes). People sign in with their own e-mail and password; data/logins.json holds the
-   data key wrapped with a key derived from each person's password (see index.html). Before the
+   data key wrapped with a key derived from each person's password (see app/slices/sign-in/sign-in.js). Before the
    switch the key was derived from one shared PANEL_PASSWORD, kept here only for the migration. */
 export async function dataKey() {
   if (process.env.DATA_KEY) return subtle.importKey('raw', Buffer.from(process.env.DATA_KEY, 'base64'), { name: 'AES-GCM' }, true, ['encrypt', 'decrypt']);

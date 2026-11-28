@@ -1,6 +1,6 @@
 // Export of SUMMARY NUMBERS to the "Puls sklepu" panel of cyfrowe.pl (Google Sheet, tab AI_WIDOCZNOSC).
 // Only counts and prompt ids/texts (prompts are public in config.json anyway). Answers stay encrypted here.
-// Definitions are the same as in index.html (kpi, sklepy, ruchy), so Puls shows the same numbers as this panel.
+// Definitions are the same as in app/shared/data.js (kpi, sklepy, ruchy), so Puls shows the same numbers as this panel.
 //
 // Env: PANEL_PASSWORD (decrypts data/index.enc), GOOGLE_SA_KEY (service account JSON with edit access
 // to the sheet), PULS_SHEET_ID (optional, default below), MARKET (optional, default PL).
@@ -17,7 +17,7 @@ const TAB = process.env.PULS_TAB || 'AI_WIDOCZNOSC';
 const MARKET = process.env.MARKET || 'PL';
 const ZRODLA = process.env.PULS_ZRODLA === '1' || process.env.PULS_ZRODLA === 'true';
 
-/* ---------- numbers, as in index.html ---------- */
+/* ---------- numbers, as in app/shared/data.js ---------- */
 /* Since 13 Oct 2026, as in the panel: price comparison sites, classifieds and review sites
    (shop.kind in config.json) take no place, and "named first / top 3" are also given in prompts. */
 const CFG = JSON.parse(readFileSync('config/config.json', 'utf8'));

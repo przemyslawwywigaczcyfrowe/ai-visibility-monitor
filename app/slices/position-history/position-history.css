@@ -1,0 +1,8 @@
+/* position history grid (Senuto): cells as tonal tiles */
+table.hg { border-collapse:separate; border-spacing:0 4px; }
+table.hg td { height:44px; border-bottom:0; }
+table.hg td.d { text-align:center; padding:4px 2px; font-size:14px; font-weight:500; font-variant-numeric:tabular-nums; min-width:48px; }
+table.hg td.d span { display:grid; place-items:center; height:36px; border-radius:10px; background:var(--paper); }
+table.hg th.d { text-align:center; padding:10px 2px; }
+table.hg td.d.up span { background:var(--up-soft); color:var(--up); } table.hg td.d.down span { background:var(--down-soft); color:var(--down); }
+table.hg td.d.nn span { color:#A8ABAE; font-weight:400; background:#F6F8FB; }

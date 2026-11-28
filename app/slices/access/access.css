@@ -1,0 +1,9 @@
+/* access */
+.acc-grid { display:grid; grid-template-columns:minmax(0,1fr) 420px; gap:16px; align-items:start; }
+.stat { display:inline-flex; align-items:center; height:26px; padding:0 10px; border-radius:13px; font-size:12px; font-weight:600; white-space:nowrap; }
+.stat.ok { background:var(--up-soft); color:var(--up); } .stat.wait { background:#FFE8C2; color:#6B3B00; }
+.os { display:flex; align-items:center; gap:12px; }
+.av2 { width:36px; height:36px; border-radius:18px; background:var(--acc-soft); color:var(--acc-dark); display:grid; place-items:center; font-weight:600; font-size:13px; flex:none; overflow:hidden; }
+.av2 img { width:100%; height:100%; transform:scale(1.08); }
+.os b { display:block; font-weight:500; } .os small { display:block; color:var(--muted); font-size:12.5px; }
+@media (max-width:1280px) { .acc-grid { grid-template-columns:minmax(0,1fr); } }
